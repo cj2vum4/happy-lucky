@@ -7,7 +7,7 @@ travel-site/
 ├─ index.html              ← 主頁（行事曆+列表，不要動）
 ├─ trips.json              ← 旅行索引（每次新增旅行手動加一筆）
 ├─ template.html           ← 旅行 HTML 範本（複製來改）
-├─ nantou-2026.html        ← 南投旅行（已完成的範例）
+├─ 260522南投.html          ← 南投旅行（已完成的範例）
 └─ README.md
 ```
 
@@ -28,7 +28,7 @@ travel-site/
 
 Cursor 會自動替換 `{{XXX}}` placeholder。
 
-或者你也可以參考 `nantou-2026.html` 當作完整範例。
+或者你也可以參考 `260522南投.html` 當作完整範例。
 
 ### Step 3: 更新 trips.json
 
@@ -46,7 +46,7 @@ Cursor 會自動替換 `{{XXX}}` placeholder。
       "people": 2,
       "status": "planning",
       "tags": ["深山", "秘境"],
-      "file": "nantou-2026.html"
+      "file": "260522南投.html"
     },
     {
       "id": "kyoto-2027",
