@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>劇本殺：一場可以親身扮演的懸疑故事</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Animate On Scroll (AOS) Library for scroll animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        /* 使用更具故事性的 Noto Serif TC 作為標題字體 */
+        h1, h2, h3 {
+            font-family: 'Noto Serif TC', serif;
+        }
+        /* 內文則使用清晰的 Noto Sans TC */
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        /* 自定義背景漸層，營造神秘氛圍 */
+        .gradient-bg {
+            background-color: #111827; /* dark gray */
+            background-image: radial-gradient(at 47% 33%, hsl(218.00, 45%, 15%) 0, transparent 59%), 
+                              radial-gradient(at 82% 65%, hsl(286.00, 35%, 18%) 0, transparent 55%);
+        }
+        /* 手風琴 (Accordion) 樣式 */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased">
+
+    <!-- Home Button -->
+    <a href="index.html" class="fixed top-6 left-6 z-50 bg-gray-700/50 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center space-x-2 backdrop-blur-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+        </svg>
+        <span>回到主頁</span>
+    </a>
+
+    <!-- Header / Banner -->
+    <header class="gradient-bg text-white min-h-screen flex flex-col justify-center items-center p-6 relative">
+        <div class="text-center" data-aos="fade-up">
+            <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-4 text-shadow">什麼是劇本殺？</h1>
+            <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+                一種讓你從讀者、觀眾，變身為故事主角的沉浸式角色扮演遊戲。
+            </p>
+            <a href="#evolution" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-full transition duration-300 text-lg">
+                探索故事的起點
+            </a>
+        </div>
+        <!-- 向下滾動的提示箭頭 -->
+        <div class="absolute bottom-10 animate-bounce">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                <path d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-20">
+
+        <!-- Section: The Evolution of Storytelling -->
+        <section id="evolution" class="mb-24">
+            <h2 class="text-4xl font-bold text-center mb-16 text-white" data-aos="fade-up">故事體驗的演進</h2>
+            <div class="relative grid md:grid-cols-3 gap-8">
+                <!-- 連接線 (僅在桌面版顯示) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-700 -translate-y-1/2"></div>
+                
+                <!-- Card 1: Novel -->
+                <div class="relative bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700 z-10" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-3xl mb-4">📖</div>
+                    <h3 class="text-2xl font-bold mb-4 text-indigo-400">1. 從小說開始</h3>
+                    <p class="font-semibold text-gray-400 mb-3">提供「文字敘事」</p>
+                    <p>讀者用自己的想像力，在腦中建構場景與人物。每個人的世界都獨一無二。</p>
+                </div>
+                <!-- Card 2: Movie -->
+                <div class="relative bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700 z-10" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-3xl mb-4">🎬</div>
+                    <h3 class="text-2xl font-bold mb-4 text-teal-400">2. 電影的出現</h3>
+                    <p class="font-semibold text-gray-400 mb-3">轉為「聲音與影像」</p>
+                    <p>導演與演員幫你「想像好」一切，觀眾多半是被動接受故事。</p>
+                </div>
+                <!-- Card 3: LARP -->
+                <div class="relative bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700 z-10" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-3xl mb-4">🎭</div>
+                    <h3 class="text-2xl font-bold mb-4 text-rose-400">3. 劇本殺的誕生</h3>
+                    <p class="font-semibold text-gray-400 mb-3">讓你「親身扮演」</p>
+                    <p>你不再是旁觀者，而是用你的選擇與互動，親自推動劇情的發展。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The Charm of LARP -->
+        <section id="charm" class="mb-24 bg-gray-800/50 p-8 md:p-12 rounded-xl shadow-2xl border border-gray-700" data-aos="zoom-in">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white">劇本殺的核心魅力</h2>
+             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                <div class="p-4">
+                    <div class="text-5xl mb-4">📜</div>
+                    <h4 class="font-bold text-xl text-white">沉浸感</h4>
+                    <p>像讀小說一樣理解角色</p>
+                </div>
+                <div class="p-4">
+                    <div class="text-5xl mb-4">🎭</div>
+                    <h4 class="font-bold text-xl text-white">代入感</h4>
+                    <p>像演電影一樣成為角色</p>
+                </div>
+                <div class="p-4">
+                    <div class="text-5xl mb-4">💬</div>
+                    <h4 class="font-bold text-xl text-white">互動性</h4>
+                    <p>用對話與選擇推進劇情</p>
+                </div>
+                <div class="p-4">
+                    <div class="text-5xl mb-4">🎲</div>
+                    <h4 class="font-bold text-xl text-white">多重結局</h4>
+                    <p>你的選擇決定故事走向</p>
+                </div>
+            </div>
+            <div class="mt-12 bg-gray-900 border border-gray-700 text-white p-8 rounded-lg text-center">
+                <h3 class="text-2xl font-bold mb-4">簡單比喻</h3>
+                <div class="flex flex-col md:flex-row justify-around items-center">
+                    <p class="text-lg mb-2 md:mb-0"><span class="font-bold text-indigo-300">小說</span>：你是讀者。</p>
+                    <div class="text-gray-500 text-2xl mx-4 hidden md:block">&rarr;</div>
+                    <p class="text-lg mb-2 md:mb-0"><span class="font-bold text-teal-300">電影</span>：你是觀眾。</p>
+                    <div class="text-gray-500 text-2xl mx-4 hidden md:block">&rarr;</div>
+                    <p class="text-xl"><span class="font-bold text-rose-300">劇本殺</span>：你是演員兼編劇。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: What is LARP in detail -->
+        <section id="what-is-larp" class="mb-24">
+            <div class="max-w-6xl mx-auto px-4" data-aos="fade-up">
+                <h2 class="text-4xl font-bold text-center mb-16 text-white">還是不太懂劇本殺嗎？</h2>
+
+                <!-- Row 1: The Character -->
+                <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 mb-16">
+                    <div class="md:w-1/2" data-aos="fade-right">
+                        <img src="https://picsum.photos/800/600?random=1" alt="玩家閱讀劇本" class="rounded-lg shadow-2xl object-cover w-full h-80">
+                    </div>
+                    <div class="md:w-1/2 text-lg" data-aos="fade-left">
+                        <h3 class="text-3xl font-bold mb-4 text-indigo-300">第一步：化身為另一個人</h3>
+                        <p class="mb-4">遊戲開始時，你會拿到一份專屬劇本。裡面記載了你的角色背景、秘密任務與人際關係。你將「成為」這個角色，體驗他的人生，替他做出選擇。</p>
+                        <p>過程中不需要死記硬背，隨時可以翻閱劇本。有時還會有小劇場環節，大家只需唸出台詞，就能一同還原故事中的精彩場景。</p>
+                    </div>
+                </div>
+
+                <!-- Row 2: The Mystery -->
+                <div class="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12 mb-16">
+                    <div class="md:w-1/2" data-aos="fade-left">
+                        <img src="https://picsum.photos/800/600?random=2" alt="推理線索" class="rounded-lg shadow-2xl object-cover w-full h-80">
+                    </div>
+                    <div class="md:w-1/2 text-lg" data-aos="fade-right">
+                        <h3 class="text-3xl font-bold mb-4 text-teal-300">核心樂趣：推理與謊言</h3>
+                        <p class="mb-4">多數故事都圍繞著一樁懸案，而兇手就隱藏在玩家之中。你們必須透過搜查線索、互相質詢，一步步揭開真相。</p>
+                        <p>但劇本殺最特別的是——你可以說謊。如果你是兇手，如何編織謊言、隱藏動機；如果你是好人，如何識破騙局、找出矛盾，這正是遊戲最刺激的部分。</p>
+                    </div>
+                </div>
+
+                <!-- Row 3: The Experience -->
+                <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                    <div class="md:w-1/2" data-aos="fade-right">
+                        <img src="https://picsum.photos/800/600?random=3" alt="一群朋友在玩遊戲" class="rounded-lg shadow-2xl object-cover w-full h-80">
+                    </div>
+                    <div class="md:w-1/2 text-lg" data-aos="fade-left">
+                        <h3 class="text-3xl font-bold mb-4 text-rose-300">最終目的：體驗一段人生</h3>
+                        <p class="mb-4">除了推理，劇本殺更迷人的是「角色扮演」。每個角色都有鮮明的情感與掙扎，你可能上一秒是被命運捉弄的戀人，下一場則是懷抱祕密的嫌疑人。</p>
+                        <p>這是一個暫時脫離現實，探索不同人格的機會。你會在故事中學會共情與傾聽，這段獨一無二的體驗，遠比勝負更重要。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Terminology with Accordion -->
+        <section id="terms" class="mb-24">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white" data-aos="fade-up">🎭 劇本殺專業術語</h2>
+            <div class="max-w-3xl mx-auto space-y-4" data-aos="fade-up">
+                <!-- Accordion Item 1 -->
+                <div class="bg-gray-800 rounded-lg border border-gray-700">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-white">
+                        <span>一、角色與人員相關</span>
+                        <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-5 pt-0 grid md:grid-cols-2 gap-4 text-gray-400">
+                             <p><strong class="text-indigo-400">玩家：</strong>拿到角色劇本並進行扮演的人。</p>
+                             <p><strong class="text-indigo-400">GM/DM：</strong>主持人，負責掌控流程與推進故事。</p>
+                             <p><strong class="text-indigo-400">NPC：</strong>非玩家角色，由GM扮演，用於補足劇情。</p>
+                             <p><strong class="text-indigo-400">OB：</strong>旁觀者，不參與遊戲，只觀看或學習。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Accordion Item 2 -->
+                <div class="bg-gray-800 rounded-lg border border-gray-700">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-white">
+                        <span>二、遊戲流程與行為相關</span>
+                         <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-5 pt-0 grid md:grid-cols-3 gap-4 text-gray-400">
+                             <p><strong class="text-teal-400">上車：</strong>報名參加遊戲。</p>
+                             <p><strong class="text-teal-400">退車：</strong>退出已報名的遊戲。</p>
+                             <p><strong class="text-teal-400">開車：</strong>店家開放某劇本場次。</p>
+                             <p><strong class="text-teal-400">車頭：</strong>主要召集玩家的人。</p>
+                             <p><strong class="text-teal-400">車隊：</strong>固定一起玩的玩家群體。</p>
+                             <p><strong class="text-teal-400">翻車：</strong>遊戲體驗失敗或氛圍崩壞。</p>
+                             <p><strong class="text-teal-400">水龍頭：</strong>指在情感本中很容易哭的玩家。</p>
+                             <p><strong class="text-teal-400">推土機：</strong>指專注於盤清所有邏輯線，強力推進劇情的玩家。</p>
+                             <p><strong class="text-teal-400">地雷：</strong>指體驗極差的玩家，可能會毀掉整場遊戲。</p>
+                             <p><strong class="text-teal-400">C位：</strong>劇本中的核心角色，通常掌握關鍵資訊。</p>
+                             <p><strong class="text-teal-400">邊緣：</strong>劇本中資訊較少、與核心劇情關聯較弱的角色。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Accordion Item 3 -->
+                <div class="bg-gray-800 rounded-lg border border-gray-700">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-white">
+                        <span>三、劇本分類相關</span>
+                         <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-5 pt-0 grid md:grid-cols-2 gap-4 text-gray-400">
+                            <p><strong class="text-rose-400">盒裝本：</strong>公開販售的劇本。</p>
+                            <p><strong class="text-rose-400">城限本：</strong>僅限特定城市的劇本。</p>
+                            <p><strong class="text-rose-400">獨家本：</strong>僅供單一店家使用的劇本。</p>
+                            <p><strong class="text-rose-400">硬核本：</strong>專注於高難度推理與邏輯。</p>
+                            <p><strong class="text-rose-400">情感本：</strong>以情感體驗為核心，催人淚下。</p>
+                            <p><strong class="text-rose-400">歡樂本：</strong>以娛樂、互動搞笑為主。</p>
+                            <p><strong class="text-rose-400">機制本：</strong>引入卡牌、數值等遊戲機制。</p>
+                            <p><strong class="text-rose-400">沉浸本：</strong>強調角色情感與故事氛圍。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Tips for Beginners -->
+        <section id="tips" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white" data-aos="fade-up">💡 新手入門小提示</h2>
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto" data-aos="fade-up">
+                <div class="bg-gray-800 p-6 rounded-lg flex items-start space-x-4 border border-gray-700">
+                    <div class="text-3xl pt-1">📖</div>
+                    <div>
+                        <h4 class="font-bold text-lg text-white">認真閱讀劇本</h4>
+                        <p class="text-gray-400">你的角色背景、任務和秘密都在裡面，這是你發言的基礎。</p>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg flex items-start space-x-4 border border-gray-700">
+                    <div class="text-3xl pt-1">🗣️</div>
+                    <div>
+                        <h4 class="font-bold text-lg text-white">勇敢發言與互動</h4>
+                        <p class="text-gray-400">劇本殺是溝通的遊戲，分享你的線索（或謊言）才能推動劇情。</p>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg flex items-start space-x-4 border border-gray-700">
+                    <div class="text-3xl pt-1">🧘</div>
+                    <div>
+                        <h4 class="font-bold text-lg text-white">投入角色，但別走心</h4>
+                        <p class="text-gray-400">遊戲中的爭執都是扮演，結束後大家還是朋友。</p>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg flex items-start space-x-4 border border-gray-700">
+                    <div class="text-3xl pt-1">🏆</div>
+                    <div>
+                        <h4 class="font-bold text-lg text-white">享受過程，勝負其次</h4>
+                        <p class="text-gray-400">體驗故事和角色扮演的樂趣，比找出兇手更重要。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-gray-400 text-center p-6 border-t border-gray-800">
+        <p>&copy; 2025 海星最愛主持劇本殺啦哈哈哈哈快約我</p>
+    </footer>
+
+    <!-- AOS Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // 初始化 AOS 動畫庫
+        AOS.init({
+            duration: 800, // 動畫持續時間
+            once: true,    // 動畫只觸發一次
+        });
+
+        // 手風琴 (Accordion) 功能
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const icon = header.querySelector('svg');
+
+                // 檢查是否已經展開
+                const isExpanded = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+                // 先關閉所有已展開的項目
+                document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = '0px');
+                document.querySelectorAll('.accordion-header svg').forEach(i => i.classList.remove('rotate-180'));
+
+                // 如果當前項目是關閉的，則展開它
+                if (!isExpanded) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.classList.add('rotate-180');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
