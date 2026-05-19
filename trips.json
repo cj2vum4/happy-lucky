@@ -1,5 +1,15 @@
 {
   "trips": [
-    "nantou-2026"
+    {
+      "id": "nantou-2026",
+      "title": "南投仁愛深山秘境",
+      "startDate": "2026-05-22",
+      "endDate": "2026-05-24",
+      "destination": "南投・仁愛鄉",
+      "people": 2,
+      "status": "planning",
+      "tags": ["深山", "秘境", "溫泉", "部落"],
+      "file": "nantou-2026.html"
+    }
   ]
 }
