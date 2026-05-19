@@ -48,7 +48,7 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
     position: relative;
     box-shadow: 0 0 60px rgba(61, 46, 31, 0.15);
-    padding-bottom: 60px;
+    padding-bottom: 110px;
   }
   .phone-frame::before {
     content: '';
@@ -80,6 +80,9 @@
 
   .page-content {
     padding: 16px 24px 30px;
+  }
+  .section-box {
+    scroll-margin-top: 16px;
   }
 
   /* ============ 旅行封面 ============ */
@@ -377,6 +380,36 @@
     letter-spacing: 1px;
   }
   .footer-note::before, .footer-note::after { content: '✦'; color: var(--rose); margin: 0 8px; }
+  .quick-nav {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(100%, 430px);
+    background: rgba(251, 247, 236, 0.96);
+    border-top: 1.5px solid var(--coffee);
+    box-shadow: 0 -3px 10px rgba(61, 46, 31, 0.12);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    display: flex;
+    gap: 6px;
+    z-index: 40;
+  }
+  .quick-nav-btn {
+    border: 1px solid var(--coffee-light);
+    background: var(--paper);
+    color: var(--coffee);
+    border-radius: 14px;
+    padding: 6px 4px;
+    flex: 1;
+    font-size: 11px;
+    font-family: var(--body);
+    white-space: nowrap;
+  }
+  .quick-nav-btn.active {
+    background: var(--pea-dark);
+    color: var(--paper);
+    border-color: var(--pea-dark);
+  }
 </style>
 </head>
 <body>
@@ -402,7 +435,7 @@
     </div>
 
     <!-- 出發前必讀 -->
-    <div class="section-box">
+    <div class="section-box" id="section-prep">
       <button class="section-toggle" type="button" aria-expanded="true">
         <span class="menu-icon">☰</span>
         <span class="section-title-text">出發前必讀</span>
@@ -422,7 +455,7 @@
     </div>
 
     <!-- 經費 -->
-    <div class="section-box">
+    <div class="section-box" id="section-budget">
       <button class="section-toggle" type="button" aria-expanded="true">
         <span class="menu-icon">☰</span>
         <span class="section-title-text">經費</span>
@@ -447,7 +480,7 @@
     </div>
 
     <!-- 交通 -->
-    <div class="section-box">
+    <div class="section-box" id="section-traffic">
       <button class="section-toggle" type="button" aria-expanded="true">
         <span class="menu-icon">☰</span>
         <span class="section-title-text">交通</span>
@@ -486,7 +519,7 @@
     </div>
 
     <!-- 行程 -->
-    <div class="section-box">
+    <div class="section-box" id="section-itinerary">
       <button class="section-toggle" type="button" aria-expanded="true">
         <span class="menu-icon">☰</span>
         <span class="section-title-text">行程</span>
@@ -646,7 +679,7 @@
     </div>
 
     <!-- 景點清單 -->
-    <div class="section-box">
+    <div class="section-box" id="section-spots">
       <button class="section-toggle" type="button" aria-expanded="true">
         <span class="menu-icon">☰</span>
         <span class="section-title-text">景點</span>
@@ -760,6 +793,8 @@
 </div>
 
 <script>
+const quickNavButtons = document.querySelectorAll('.quick-nav-btn');
+
 document.querySelectorAll('.section-toggle').forEach(button => {
   button.addEventListener('click', () => {
     const section = button.closest('.section-box');
@@ -767,7 +802,32 @@ document.querySelectorAll('.section-toggle').forEach(button => {
     button.setAttribute('aria-expanded', section.classList.contains('collapsed') ? 'false' : 'true');
   });
 });
+
+quickNavButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const target = document.querySelector(button.dataset.target);
+    if (!target) return;
+
+    if (target.classList.contains('collapsed')) {
+      target.classList.remove('collapsed');
+      const sectionToggle = target.querySelector('.section-toggle');
+      if (sectionToggle) sectionToggle.setAttribute('aria-expanded', 'true');
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    quickNavButtons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+  });
+});
 </script>
+
+<nav class="quick-nav" aria-label="快速導覽">
+  <button class="quick-nav-btn active" type="button" data-target="#section-prep">必讀</button>
+  <button class="quick-nav-btn" type="button" data-target="#section-budget">經費</button>
+  <button class="quick-nav-btn" type="button" data-target="#section-traffic">交通</button>
+  <button class="quick-nav-btn" type="button" data-target="#section-itinerary">行程</button>
+  <button class="quick-nav-btn" type="button" data-target="#section-spots">景點</button>
+</nav>
 
 </body>
 </html>
