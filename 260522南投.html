@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>南投仁愛深山秘境 - 旅行手帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Gloock&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pea: #8FA869;
+    --pea-dark: #6B8348;
+    --pea-light: #C4D4A0;
+    --cream: #F5EFE0;
+    --cream-dark: #EDE4CC;
+    --paper: #FBF7EC;
+    --rose: #C97A6E;
+    --rose-dark: #A45448;
+    --coffee: #3D2E1F;
+    --coffee-light: #6B5640;
+    --tape: rgba(201, 122, 110, 0.35);
+    --tape-green: rgba(143, 168, 105, 0.35);
+    --hand-display: 'Caveat', cursive;
+    --hand-loose: 'Shadows Into Light', cursive;
+    --serif-display: 'Gloock', serif;
+    --body: 'Noto Serif TC', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { overflow-x: hidden; }
+  body {
+    font-family: var(--body);
+    color: var(--coffee);
+    background: var(--cream);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(143, 168, 105, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(201, 122, 110, 0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    min-height: 100vh;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  .phone-frame {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--paper);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    position: relative;
+    box-shadow: 0 0 60px rgba(61, 46, 31, 0.15);
+    padding-bottom: 60px;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: 14px; top: 60px; bottom: 60px;
+    width: 1px;
+    background: repeating-linear-gradient(to bottom, transparent 0px, transparent 18px, var(--rose) 18px, var(--rose) 20px);
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .back-bar {
+    padding: 16px 20px 0;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--coffee);
+    text-decoration: none;
+    font-family: var(--hand-display);
+    font-size: 18px;
+    padding: 4px 10px;
+    background: var(--cream);
+    border-radius: 16px;
+    border: 1.5px solid var(--cream-dark);
+  }
+  .back-link:active { background: var(--pea-light); }
+
+  .page-content {
+    padding: 16px 24px 30px;
+  }
+
+  /* ============ 旅行封面 ============ */
+  .trip-cover {
+    background: linear-gradient(135deg, var(--pea-light) 0%, var(--cream-dark) 100%);
+    border: 2px solid var(--coffee);
+    border-radius: 6px;
+    padding: 30px 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 4px 4px 0 var(--coffee);
+  }
+  .trip-cover::before {
+    content: '';
+    position: absolute;
+    top: -10px; left: 30px;
+    width: 80px; height: 22px;
+    background: var(--tape);
+    transform: rotate(-5deg);
+  }
+  .trip-cover::after {
+    content: '';
+    position: absolute;
+    bottom: -10px; right: 40px;
+    width: 60px; height: 20px;
+    background: var(--tape-green);
+    transform: rotate(8deg);
+  }
+  .trip-cover h1 {
+    font-family: var(--hand-display);
+    font-size: 38px; color: var(--coffee);
+    line-height: 1; margin-bottom: 10px;
+    transform: rotate(-1deg);
+  }
+  .trip-cover .cover-meta {
+    font-family: var(--body); font-size: 13px;
+    color: var(--coffee-light); margin-bottom: 16px;
+  }
+  .cover-stamps { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cover-stamp {
+    background: var(--paper);
+    border: 1.5px solid var(--coffee);
+    padding: 4px 10px;
+    font-family: var(--hand-display);
+    font-size: 14px; color: var(--coffee);
+    border-radius: 4px;
+    transform: rotate(-2deg);
+  }
+  .cover-stamp:nth-child(2) { transform: rotate(1deg); }
+  .cover-stamp:nth-child(3) { transform: rotate(-1deg); }
+  .cover-stamp:nth-child(4) { transform: rotate(2deg); }
+
+  /* ============ 區塊 ============ */
+  .section-box {
+    background: var(--paper);
+    border: 1.5px solid var(--coffee);
+    border-radius: 4px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .section-toggle {
+    width: 100%;
+    border: none;
+    background: var(--pea-light);
+    color: var(--coffee);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    font-family: var(--body);
+    border-bottom: 1.5px solid var(--coffee);
+  }
+  .menu-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+  .section-title-text {
+    font-family: var(--hand-display);
+    font-size: 24px;
+    line-height: 1;
+    flex: 1;
+    text-align: left;
+  }
+  .toggle-arrow {
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+  .section-box.collapsed .toggle-arrow {
+    transform: rotate(-90deg);
+  }
+  .section-content {
+    padding: 16px;
+  }
+  .section-box.collapsed .section-content {
+    display: none;
+  }
+
+  /* ============ 經費 ============ */
+  .budget-total {
+    text-align: center;
+    padding: 16px 0;
+    border-bottom: 1.5px dashed var(--pea-light);
+    margin-bottom: 14px;
+  }
+  .budget-total .amount {
+    font-family: var(--serif-display);
+    font-size: 42px; color: var(--pea-dark);
+    display: block; line-height: 1;
+  }
+  .budget-total .label {
+    font-family: var(--hand-display);
+    font-size: 14px; color: var(--coffee-light);
+    margin-top: 4px;
+  }
+  .budget-bar {
+    display: flex;
+    height: 24px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    border: 1.5px solid var(--coffee);
+  }
+  .budget-segment { height: 100%; }
+  .budget-list { display: flex; flex-direction: column; gap: 8px; }
+  .budget-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .budget-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+  .budget-item .name { flex: 1; color: var(--coffee); }
+  .budget-item .price {
+    font-family: var(--serif-display);
+    color: var(--coffee); font-size: 15px;
+  }
+
+  /* ============ 交通 ============ */
+  .transport-item {
+    display: flex; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--cream-dark);
+  }
+  .transport-item:last-child { border-bottom: none; }
+  .transport-icon { font-size: 24px; flex-shrink: 0; width: 40px; text-align: center; }
+  .transport-detail { flex: 1; font-size: 13px; }
+  .transport-detail strong {
+    display: block;
+    color: var(--coffee); margin-bottom: 2px;
+    font-family: var(--hand-display);
+    font-size: 17px; font-weight: 600;
+  }
+  .transport-detail span { color: var(--coffee-light); font-size: 12px; }
+
+  /* ============ 行程 ============ */
+  .day-header {
+    display: flex; align-items: baseline;
+    gap: 10px;
+    margin: 24px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--rose);
+  }
+  .day-header .day-num {
+    font-family: var(--hand-display);
+    font-size: 36px; color: var(--rose);
+    line-height: 0.8;
+  }
+  .day-header .day-title {
+    font-family: var(--hand-display);
+    font-size: 20px; color: var(--coffee);
+    flex: 1;
+  }
+  .day-header .day-date { font-family: var(--body); font-size: 11px; color: var(--coffee-light); }
+
+  .timeline { position: relative; padding-left: 18px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 5px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: repeating-linear-gradient(to bottom, var(--pea-dark) 0, var(--pea-dark) 4px, transparent 4px, transparent 8px);
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 16px;
+    padding-left: 12px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -16px; top: 6px;
+    width: 10px; height: 10px;
+    background: var(--paper);
+    border: 2px solid var(--pea-dark);
+    border-radius: 50%;
+  }
+  .timeline-item .time {
+    font-family: var(--hand-display);
+    font-size: 18px; color: var(--rose-dark);
+    line-height: 1; margin-bottom: 4px;
+  }
+  .timeline-item h5 {
+    font-family: var(--body);
+    font-size: 14px; font-weight: 600;
+    color: var(--coffee); margin-bottom: 3px;
+  }
+  .timeline-item p { font-size: 12px; color: var(--coffee-light); line-height: 1.5; }
+  .timeline-item .item-type {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 10px;
+    color: var(--paper);
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: var(--pea-dark);
+    vertical-align: middle;
+    font-family: var(--hand-display);
+  }
+  .timeline-item .item-type.food { background: var(--rose); }
+  .timeline-item .item-type.stay { background: var(--coffee); }
+  .timeline-item .item-type.move { background: var(--coffee-light); }
+  .map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--rose-dark);
+    text-decoration: none;
+    border: 1px solid var(--rose-dark);
+    border-radius: 12px;
+    padding: 1px 8px;
+    background: rgba(201, 122, 110, 0.08);
+  }
+  .map-link:active {
+    background: rgba(201, 122, 110, 0.2);
+  }
+
+  /* ============ 景點清單 ============ */
+  .activity-grid { display: grid; gap: 10px; }
+  .activity-card {
+    background: var(--cream);
+    border: 1.5px solid var(--coffee-light);
+    border-radius: 4px;
+    padding: 10px 12px;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .activity-card:nth-child(odd) { transform: rotate(-0.3deg); }
+  .activity-card:nth-child(even) { transform: rotate(0.3deg); }
+  .activity-emoji {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    background: var(--paper);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid var(--coffee-light);
+  }
+  .activity-info { flex: 1; min-width: 0; }
+  .activity-info h6 {
+    font-family: var(--body);
+    font-size: 13px; font-weight: 600;
+    color: var(--coffee);
+  }
+  .activity-info p { font-size: 11px; color: var(--coffee-light); }
+  .activity-badge {
+    font-family: var(--hand-display);
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: var(--pea-light);
+    color: var(--pea-dark);
+    flex-shrink: 0;
+  }
+  .activity-badge.indoor { background: var(--cream-dark); color: var(--coffee); }
+
+  /* ============ 提醒 ============ */
+  .alert-box {
+    background: rgba(201, 122, 110, 0.1);
+    border: 1.5px solid var(--rose);
+    border-radius: 4px;
+    padding: 14px;
+  }
+  .alert-box h4 {
+    font-family: var(--hand-display);
+    font-size: 20px; color: var(--rose-dark);
+    margin-bottom: 8px;
+  }
+  .alert-box ul { list-style: none; font-size: 12px; color: var(--coffee); line-height: 1.7; }
+  .alert-box ul li { padding-left: 16px; position: relative; margin-bottom: 4px; }
+  .alert-box ul li::before { content: '✿'; position: absolute; left: 0; color: var(--rose); }
+
+  .footer-note {
+    text-align: center;
+    padding: 30px 20px 20px;
+    font-family: var(--hand-loose);
+    font-size: 13px; color: var(--coffee-light);
+    letter-spacing: 1px;
+  }
+  .footer-note::before, .footer-note::after { content: '✦'; color: var(--rose); margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <div class="back-bar">
+    <a href="index.html" class="back-link">‹ 回到手帳</a>
+  </div>
+
+  <div class="page-content">
+
+    <!-- 封面 -->
+    <div class="trip-cover">
+      <h1>南投仁愛深山秘境</h1>
+      <div class="cover-meta">2026年5月22-24日 · 南投・仁愛鄉 · 2人</div>
+      <div class="cover-stamps">
+        <div class="cover-stamp">深山</div>
+        <div class="cover-stamp">秘境</div>
+        <div class="cover-stamp">溫泉</div>
+        <div class="cover-stamp">部落</div>
+      </div>
+    </div>
+
+    <!-- 出發前必讀 -->
+    <div class="section-box">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span class="menu-icon">☰</span>
+        <span class="section-title-text">出發前必讀</span>
+        <span class="toggle-arrow">▾</span>
+      </button>
+      <div class="section-content">
+        <div class="alert-box">
+          <ul>
+            <li>入山證務必出發前一週上警政署網站線上申辦（甲種、免費）</li>
+            <li>力行產業道路路況惡劣，建議白天通行、雨天易坍方</li>
+            <li>霧社後再無加油站，務必加滿油</li>
+            <li>訊號斷續，下載離線地圖、把住宿電話抄在紙上</li>
+            <li>紅香部落屬山地管制區，建議晚上6點前抵達住宿</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 經費 -->
+    <div class="section-box">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span class="menu-icon">☰</span>
+        <span class="section-title-text">經費</span>
+        <span class="toggle-arrow">▾</span>
+      </button>
+      <div class="section-content">
+        <div class="budget-total">
+          <span class="amount">NT$ 4,800</span>
+          <span class="label">只保留住宿費用</span>
+        </div>
+        <div class="budget-bar">
+          <div style="width:100%;background:#6B8348;height:100%"></div>
+        </div>
+        <div class="budget-list">
+          <div class="budget-item">
+            <div class="budget-dot" style="background:#6B8348"></div>
+            <span class="name">住宿2晚</span>
+            <span class="price">NT$ 4,800</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 交通 -->
+    <div class="section-box">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span class="menu-icon">☰</span>
+        <span class="section-title-text">交通</span>
+        <span class="toggle-arrow">▾</span>
+      </button>
+      <div class="section-content">
+        <div class="transport-item">
+          <div class="transport-icon">🚄</div>
+          <div class="transport-detail">
+            <strong>高鐵 台北 → 台中</strong>
+            <span>5/22 09:20 出發・10:18 抵達</span>
+          </div>
+        </div>
+        <div class="transport-item">
+          <div class="transport-icon">🚗</div>
+          <div class="transport-detail">
+            <strong>台中高鐵站取車（自備汽車）</strong>
+            <span>不租車，直接開自己的車上山</span>
+          </div>
+        </div>
+        <div class="transport-item">
+          <div class="transport-icon">🛣️</div>
+          <div class="transport-detail">
+            <strong>主要路線</strong>
+            <span>台中高鐵 → 國道6 → 埔里 → 台14 → 霧社 → 投89力行產業道路</span>
+          </div>
+        </div>
+        <div class="transport-item">
+          <div class="transport-icon">🚄</div>
+          <div class="transport-detail">
+            <strong>高鐵 台中 → 台北</strong>
+            <span>5/24 16:30 後車次（從台中高鐵直接搭乘）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 行程 -->
+    <div class="section-box">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span class="menu-icon">☰</span>
+        <span class="section-title-text">行程</span>
+        <span class="toggle-arrow">▾</span>
+      </button>
+      <div class="section-content">
+        <div class="day-header">
+          <span class="day-num">D1</span>
+          <div class="day-title">台中高鐵 → 埔里美食日</div>
+          <span class="day-date">5/22</span>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="time">10:18</div>
+            <h5>台中高鐵站取車出發<span class="item-type move">動</span></h5>
+            <p>從高鐵站停車區取自己的車，正式啟程</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%8F%B0%E4%B8%AD%E9%AB%98%E9%90%B5%E7%AB%99" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">12:00</div>
+            <h5>鹿篙咖啡莊園</h5>
+            <p>午餐+下午茶・茶園包圍、得獎紅茶</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E9%B9%BF%E7%AF%99%E5%92%96%E5%95%A1%E8%8E%8A%E5%9C%92" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">14:30</div>
+            <h5>紙教堂 Paper Dome</h5>
+            <p>桃米生態村・門票100元可折抵</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E7%B4%99%E6%95%99%E5%A0%82%20Paper%20Dome" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">16:15</div>
+            <h5>18度C巧克力工坊<span class="item-type food">食</span></h5>
+            <p>生吐司、義式冰淇淋、巧克力</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=18%E5%BA%A6C%E5%B7%A7%E5%85%8B%E5%8A%9B%E5%B7%A5%E6%88%BF" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">17:00</div>
+            <h5>Check in 埔里故事館<span class="item-type stay">宿</span></h5>
+            <p>今晚住宿</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%9F%94%E9%87%8C%E6%95%85%E4%BA%8B%E9%A4%A8" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">18:30</div>
+            <h5>娜娜泰式時尚料理<span class="item-type food">食</span></h5>
+            <p>紅咖哩、月亮蝦餅、泰式米線</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%A8%9C%E5%A8%9C%E6%B3%B0%E5%BC%8F%E6%99%82%E5%B0%9A%E6%96%99%E7%90%86%20%E5%9F%94%E9%87%8C" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+        </div>
+
+        <div class="day-header">
+          <span class="day-num">D2</span>
+          <div class="day-title">埔里 → 投89上山日</div>
+          <span class="day-date">5/23</span>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="time">09:15</div>
+            <h5>享日咖啡<span class="item-type food">食</span></h5>
+            <p>早午餐+與水豚互動</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E4%BA%AB%E6%97%A5%E5%92%96%E5%95%A1%20%E6%A1%83%E7%B1%B3" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">11:00</div>
+            <h5>霧社加油站<span class="item-type move">動</span></h5>
+            <p>最後一個加油站・順便補給</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E9%9C%A7%E7%A4%BE%E5%8A%A0%E6%B2%B9%E7%AB%99" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">12:30</div>
+            <h5>塔洛灣景觀餐廳<span class="item-type food">食</span></h5>
+            <p>碧湖view・進投89前最後文明餐廳</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%A1%94%E6%B4%9B%E7%81%A3%E6%99%AF%E8%A7%80%E9%A4%90%E5%BB%B3" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">13:30</div>
+            <h5>走投89力行產業道路<span class="item-type move">動</span></h5>
+            <p>一路慢開、會車靠邊</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%8A%9B%E8%A1%8C%E7%94%A2%E6%A5%AD%E9%81%93%E8%B7%AF" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">16:00</div>
+            <h5>Check in 馬累了吧<span class="item-type stay">宿</span></h5>
+            <p>今晚住宿・先預訂晚餐</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E9%A6%AC%E7%B4%AF%E4%BA%86%E5%90%A7%20%E4%BB%81%E6%84%9B%E9%84%89" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">16:30</div>
+            <h5>發祥國小</h5>
+            <p>部落小學・操場視野極佳</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E7%99%BC%E7%A5%A5%E5%9C%8B%E5%B0%8F" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">17:30</div>
+            <h5>紅香溫泉</h5>
+            <p>免費野溪溫泉公共浴池</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E7%B4%85%E9%A6%99%E6%BA%AB%E6%B3%89" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">19:00</div>
+            <h5>馬累了吧晚餐+觀星<span class="item-type food">食</span></h5>
+            <p>海拔1300m無光害</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E9%A6%AC%E7%B4%AF%E4%BA%86%E5%90%A7%20%E4%BB%81%E6%84%9B%E9%84%89" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+        </div>
+
+        <div class="day-header">
+          <span class="day-num">D3</span>
+          <div class="day-title">帖比倫瀑布 → 返台北</div>
+          <span class="day-date">5/24</span>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="time">07:30</div>
+            <h5>出發前往帖比倫瀑布<span class="item-type move">動</span></h5>
+            <p>車程20分鐘・停車後步行前往</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%B8%96%E6%AF%94%E5%80%AB%E7%80%91%E5%B8%83" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">08:00</div>
+            <h5>帖比倫步道</h5>
+            <p>來回30分鐘・有拉繩陡坡</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%B8%96%E6%AF%94%E5%80%AB%E6%AD%A5%E9%81%93" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">08:30</div>
+            <h5>帖比倫峽谷瀑布</h5>
+            <p>五彩岩壁・深潭勿下水</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%B8%96%E6%AF%94%E5%80%AB%E5%B3%BD%E8%B0%B7%E7%80%91%E5%B8%83" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">11:00</div>
+            <h5>下山（沿投89回霧社）<span class="item-type move">動</span></h5>
+            <p>車程2-2.5小時、專心開</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E9%9C%A7%E7%A4%BE" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">13:00</div>
+            <h5>霧社午餐補給<span class="item-type food">食</span></h5>
+            <p>下山後簡單用餐再續行</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E9%9C%A7%E7%A4%BE" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">15:30</div>
+            <h5>抵達台中高鐵站停車場<span class="item-type move">動</span></h5>
+            <p>整理行李後進站</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%8F%B0%E4%B8%AD%E9%AB%98%E9%90%B5%E7%AB%99" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+          <div class="timeline-item">
+            <div class="time">16:30</div>
+            <h5>搭高鐵北返<span class="item-type move">動</span></h5>
+            <p>約18:00抵達台北</p>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E5%8F%B0%E4%B8%AD%E9%AB%98%E9%90%B5%E7%AB%99" target="_blank" rel="noopener noreferrer">🧭 導航</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 景點清單 -->
+    <div class="section-box">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span class="menu-icon">☰</span>
+        <span class="section-title-text">景點</span>
+        <span class="toggle-arrow">▾</span>
+      </button>
+      <div class="section-content">
+        <div class="activity-grid">
+        <div class="activity-card">
+          <div class="activity-emoji">☕</div>
+          <div class="activity-info">
+            <h6>鹿篙咖啡莊園</h6>
+            <p>魚池茶區・得獎紅茶</p>
+          </div>
+          <span class="activity-badge">室外</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">⛪</div>
+          <div class="activity-info">
+            <h6>紙教堂</h6>
+            <p>桃米生態村・日本移建</p>
+          </div>
+          <span class="activity-badge">室外</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">🍫</div>
+          <div class="activity-info">
+            <h6>18度C巧克力工坊</h6>
+            <p>埔里・生吐司冰淇淋</p>
+          </div>
+          <span class="activity-badge indoor">室內</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">🍜</div>
+          <div class="activity-info">
+            <h6>娜娜泰式料理</h6>
+            <p>埔里・道地泰式</p>
+          </div>
+          <span class="activity-badge indoor">室內</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">🏠</div>
+          <div class="activity-info">
+            <h6>埔里故事館</h6>
+            <p>D1住宿・老闆自建</p>
+          </div>
+          <span class="activity-badge indoor">室內</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">🐹</div>
+          <div class="activity-info">
+            <h6>享日咖啡</h6>
+            <p>桃米・水豚咖啡廳</p>
+          </div>
+          <span class="activity-badge">室外</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">🍱</div>
+          <div class="activity-info">
+            <h6>塔洛灣景觀餐廳</h6>
+            <p>碧湖view・原民料理</p>
+          </div>
+          <span class="activity-badge">室外</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">🏫</div>
+          <div class="activity-info">
+            <h6>發祥國小</h6>
+            <p>部落小學・操場view</p>
+          </div>
+          <span class="activity-badge">室外</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">♨️</div>
+          <div class="activity-info">
+            <h6>紅香溫泉</h6>
+            <p>免費野溪溫泉</p>
+          </div>
+          <span class="activity-badge">室外</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">⛺</div>
+          <div class="activity-info">
+            <h6>馬累了吧</h6>
+            <p>D2住宿・觀星</p>
+          </div>
+          <span class="activity-badge">室外</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">🥾</div>
+          <div class="activity-info">
+            <h6>帖比倫步道</h6>
+            <p>拉繩陡坡30分鐘</p>
+          </div>
+          <span class="activity-badge">室外</span>
+        </div>
+        <div class="activity-card">
+          <div class="activity-emoji">🌊</div>
+          <div class="activity-info">
+            <h6>帖比倫峽谷瀑布</h6>
+            <p>五彩岩壁秘境</p>
+          </div>
+          <span class="activity-badge">室外</span>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-note">made with care</div>
+</div>
+
+<script>
+document.querySelectorAll('.section-toggle').forEach(button => {
+  button.addEventListener('click', () => {
+    const section = button.closest('.section-box');
+    section.classList.toggle('collapsed');
+    button.setAttribute('aria-expanded', section.classList.contains('collapsed') ? 'false' : 'true');
+  });
+});
+</script>
+
+</body>
+</html>
