@@ -1227,11 +1227,14 @@ body {
     <!-- PAGE: 照片 -->
     <div class="page" id="page-photos">
       <div class="page-section-title">📷 旅途回憶</div>
-      <div class="photo-empty">
-        <div class="photo-empty-icon">🏔️</div>
-        旅途中的照片放這裡<br>出發後慢慢補上！
+      <div class="photo-grid" id="photoGrid">
+        <div class="photo-grid-item" onclick="openLightbox('photo_01.jpg')">
+          <img src="photo_01.jpg" alt="旅途照片" loading="lazy">
+        </div>
+        <div class="photo-grid-item" onclick="openLightbox('photo_02.jpg')">
+          <img src="photo_02.jpg" alt="旅途照片" loading="lazy">
+        </div>
       </div>
-      <div class="photo-grid" id="photoGrid"></div>
     </div>
 
     <!-- Lightbox -->
@@ -1289,6 +1292,10 @@ const lightboxImg = document.getElementById('lightboxImg');
 const lightboxClose = document.getElementById('lightboxClose');
 lightboxClose.addEventListener('click', () => lightbox.classList.remove('open'));
 lightbox.addEventListener('click', e => { if(e.target === lightbox) lightbox.classList.remove('open'); });
+function openLightbox(src) {
+  lightboxImg.src = src;
+  lightbox.classList.add('open');
+}
 
 const dayTabBtns = document.querySelectorAll('.day-tab-btn');
 const dayPanels = document.querySelectorAll('.day-panel');
