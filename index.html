@@ -617,6 +617,9 @@
     <div class="section-title">即將出發</div>
     <div id="upcoming-trips"></div>
 
+    <div class="section-title">過往旅行</div>
+    <div id="past-trips-list"></div>
+
     <div class="section-title">回憶相簿</div>
     <div id="past-trips"></div>
   </div>
@@ -726,16 +729,39 @@ function renderHome() {
     <div class="stat-card"><span class="stat-num">${totalPlaces}</span><span class="stat-label">個地方</span></div>
   `;
 
-  const upcoming = TRIPS.filter(t => t.status === 'planning');
+  const upcoming   = TRIPS.filter(t => t.status === 'planning');
+  const past       = TRIPS.filter(t => t.status === 'done');
   const withPhotos = TRIPS.filter(t => t.photos && t.photos.length > 0);
 
   document.getElementById('upcoming-trips').innerHTML = upcoming.length
     ? upcoming.map(renderTripCard).join('')
     : `<div class="empty-state"><div class="icon">✿</div><h4>還沒有規劃中的旅行</h4><p>新的目的地等著我們呢</p></div>`;
 
+  document.getElementById('past-trips-list').innerHTML = past.length
+    ? past.map(renderPastRow).join('')
+    : `<div class="empty-state"><div class="icon">🗺️</div><h4>還沒有過往旅行</h4><p>旅行結束後把 status 改成 done</p></div>`;
+
   document.getElementById('past-trips').innerHTML = withPhotos.length
     ? withPhotos.map(renderAlbumBlock).join('')
     : `<div class="empty-state"><div class="icon">📷</div><h4>還沒有回憶</h4><p>旅行結束後把照片加進來吧</p></div>`;
+}
+
+function renderPastRow(trip) {
+  const s = new Date(trip.startDate);
+  const e = new Date(trip.endDate);
+  const sameDay = trip.startDate === trip.endDate;
+  const dateText = sameDay
+    ? `${s.getMonth()+1}/${s.getDate()}`
+    : `${s.getMonth()+1}/${s.getDate()}–${e.getDate()}`;
+  return `
+    <a class="mini-trip-link" href="${trip.file}">
+      <div class="date-block">${dateText}</div>
+      <div class="info">
+        <div class="info-title">${trip.title}</div>
+        <div class="info-meta">${trip.destination} · ${trip.people}人</div>
+      </div>
+      <div class="arrow">→</div>
+    </a>`;
 }
 
 function renderAlbumBlock(trip) {
