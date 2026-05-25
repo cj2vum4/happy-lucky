@@ -678,6 +678,106 @@ body {
 .review-item-stars { font-size: 15px; margin-bottom: 5px; }
 .review-item-comment { font-size: 13px; color: var(--coffee); line-height: 1.55; margin-bottom: 6px; }
 .review-item-date { font-size: 11px; color: var(--coffee-light); }
+
+/* ===== 景點評分按鈕 ===== */
+.rate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  background: var(--amber-bg);
+  border: 1px solid rgba(212,136,60,0.25);
+  border-radius: 16px;
+  padding: 4px 9px;
+  color: #8C5A1A;
+  cursor: pointer;
+  font-family: var(--body);
+  font-weight: 500;
+  touch-action: manipulation;
+  transition: background 0.12s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.rate-btn:active { background: #F0DFC8; transform: scale(0.95); }
+.rate-btn.has-rating { border-color: rgba(212,136,60,0.5); }
+
+/* ===== 評分底部彈窗 ===== */
+.rate-sheet-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0,0,0,0.45);
+}
+.rate-sheet-bg.open { display: block; }
+.rate-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(430px, 100%);
+  background: var(--paper);
+  border-radius: 20px 20px 0 0;
+  padding: 8px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+  z-index: 301;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
+}
+.rate-sheet-handle {
+  width: 36px; height: 4px;
+  background: var(--cream-dark);
+  border-radius: 2px;
+  margin: 0 auto 14px;
+}
+.rate-sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+.rate-sheet-name {
+  font-family: var(--hand);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--coffee);
+  flex: 1;
+  line-height: 1.2;
+}
+.rate-sheet-close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: var(--coffee-light);
+  cursor: pointer;
+  padding: 0 0 0 10px;
+  line-height: 1;
+}
+.rate-sheet-count {
+  font-size: 12px;
+  color: var(--coffee-light);
+  margin-bottom: 10px;
+}
+.rate-sheet-revs {
+  max-height: 100px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+.sheet-review-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--cream-dark);
+  font-size: 12px;
+}
+.sheet-review-item:last-child { border-bottom: none; }
+.sheet-review-text { color: var(--coffee); line-height: 1.4; }
+.rate-sheet .star-row {
+  font-size: 30px;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.rate-sheet .review-textarea { height: 72px; margin-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -1340,29 +1440,25 @@ body {
       <div class="photo-wall" id="photoWall"></div>
     </div>
 
-    <!-- PAGE: 評價 -->
-    <div class="page" id="page-review">
-      <div class="page-section-title">✍️ 留下評分</div>
-      <div class="review-form-card">
-        <div class="star-row" id="starRow">
-          <span class="star" data-v="1">⭐</span>
-          <span class="star" data-v="2">⭐</span>
-          <span class="star" data-v="3">⭐</span>
-          <span class="star" data-v="4">⭐</span>
-          <span class="star" data-v="5">⭐</span>
+    <!-- 評分底部彈窗 -->
+    <div class="rate-sheet-bg" id="rateSheetBg">
+      <div class="rate-sheet">
+        <div class="rate-sheet-handle"></div>
+        <div class="rate-sheet-header">
+          <div class="rate-sheet-name" id="rateSheetName"></div>
+          <button class="rate-sheet-close-btn" id="rateSheetClose">✕</button>
         </div>
-        <textarea class="review-textarea" id="reviewText" placeholder="寫下這趟旅行的感想…"></textarea>
-        <button class="submit-btn" id="submitBtn" disabled>請先選擇星數</button>
-      </div>
-
-      <div class="page-section-title">💬 旅行回憶</div>
-      <div id="avgWrap" class="avg-score-wrap" style="display:none">
-        <div class="avg-score-num" id="avgNum">-</div>
-        <div class="avg-score-stars" id="avgStars"></div>
-        <div class="avg-score-count" id="avgCount"></div>
-      </div>
-      <div class="reviews-list" id="reviewsList">
-        <div style="text-align:center;padding:24px;color:var(--coffee-light);font-size:13px">載入中…</div>
+        <div class="rate-sheet-count" id="rateSheetCount"></div>
+        <div class="rate-sheet-revs" id="rateSheetRevs"></div>
+        <div class="star-row" id="rateSheetStars">
+          <span class="star sheet-star" data-v="1">⭐</span>
+          <span class="star sheet-star" data-v="2">⭐</span>
+          <span class="star sheet-star" data-v="3">⭐</span>
+          <span class="star sheet-star" data-v="4">⭐</span>
+          <span class="star sheet-star" data-v="5">⭐</span>
+        </div>
+        <textarea class="review-textarea" id="rateSheetText" placeholder="寫下感想（選填）…"></textarea>
+        <button class="submit-btn" id="rateSheetBtn" disabled>請先選擇星數</button>
       </div>
     </div>
 
@@ -1396,10 +1492,6 @@ body {
       <span class="tab-icon">📷</span>
       <span class="tab-label">照片</span>
     </button>
-    <button class="tab-btn" data-page="page-review" type="button">
-      <span class="tab-icon">⭐</span>
-      <span class="tab-label">評價</span>
-    </button>
   </nav>
 
 </div>
@@ -1426,7 +1518,6 @@ tabBtns.forEach(btn => {
       overlay.classList.remove('active');
       refreshBtn.classList.remove('visible');
     }
-    if (target === 'page-review') loadReviewsOnce();
   });
 });
 
@@ -1546,75 +1637,144 @@ dayTabBtns.forEach(btn => {
   });
 });
 
-// ── Supabase 評價 ──
+// ── 景點 / 行程 per-item 評分 ──
 const SB_URL = 'https://cmwtceczabbszhdgvwcj.supabase.co';
 const SB_KEY = 'sb_publishable_hDrADaLoZfAGDJH1i_JeHw_OSv_oqAu';
-const TRIP_ID = 'nantou-2026';
-let reviewsLoaded = false;
-let selectedRating = 0;
+const ITEM_PREFIX = 'nantou2026__';
 
-const starRow = document.getElementById('starRow');
-const starsEls = starRow.querySelectorAll('.star');
-const reviewText = document.getElementById('reviewText');
-const submitBtn = document.getElementById('submitBtn');
-const reviewsList = document.getElementById('reviewsList');
-const avgWrap = document.getElementById('avgWrap');
-const avgNum = document.getElementById('avgNum');
-const avgStars = document.getElementById('avgStars');
-const avgCount = document.getElementById('avgCount');
+let itemReviews = {};
 
-starsEls.forEach(star => {
-  star.addEventListener('click', () => {
-    selectedRating = parseInt(star.dataset.v);
-    starsEls.forEach(s => s.classList.toggle('lit', parseInt(s.dataset.v) <= selectedRating));
-    submitBtn.disabled = false;
-    submitBtn.textContent = '送出評分';
-  });
-});
-
-async function loadReviewsOnce() {
-  if (reviewsLoaded) return;
-  reviewsLoaded = true;
+async function loadItemReviews() {
   try {
     const res = await fetch(
-      `${SB_URL}/rest/v1/trip_reviews?trip_id=eq.${TRIP_ID}&order=created_at.desc`,
+      `${SB_URL}/rest/v1/trip_reviews?trip_id=like.${ITEM_PREFIX}*&order=created_at.desc`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
     );
     const data = await res.json();
-    renderReviews(data);
-  } catch {
-    reviewsList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--coffee-light);font-size:13px">無法載入評價</div>';
-  }
+    if (!Array.isArray(data)) return;
+    itemReviews = {};
+    data.forEach(r => {
+      if (!itemReviews[r.trip_id]) itemReviews[r.trip_id] = [];
+      itemReviews[r.trip_id].push(r);
+    });
+    refreshRateBtns();
+  } catch (e) { console.warn('評分載入失敗', e); }
 }
 
-function renderReviews(data) {
-  if (!Array.isArray(data) || data.length === 0) {
-    reviewsList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--coffee-light);font-size:13px">還沒有評價，快來留下第一則！🌟</div>';
-    avgWrap.style.display = 'none';
-    return;
-  }
-  const ratings = data.filter(d => d.rating).map(d => d.rating);
-  if (ratings.length > 0) {
-    const avg = (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1);
-    avgNum.textContent = avg;
-    avgStars.textContent = '⭐'.repeat(Math.round(parseFloat(avg)));
-    avgCount.textContent = `共 ${data.length} 則評價`;
-    avgWrap.style.display = 'block';
-  }
-  reviewsList.innerHTML = data.map(d => `
-    <div class="review-item">
-      ${d.rating ? `<div class="review-item-stars">${'⭐'.repeat(d.rating)}</div>` : ''}
-      <div class="review-item-comment">${d.comment ? escHtml(d.comment) : '<em style="opacity:0.5">（無留言）</em>'}</div>
-      <div class="review-item-date">${fmtDate(d.created_at)}</div>
-    </div>
-  `).join('');
+function refreshRateBtns() {
+  document.querySelectorAll('[data-item-id]').forEach(card => {
+    const revs = itemReviews[card.dataset.itemId] || [];
+    const btn = card.querySelector('.rate-btn');
+    if (!btn) return;
+    const ratings = revs.filter(r => r.rating).map(r => r.rating);
+    if (ratings.length > 0) {
+      const avg = (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1);
+      btn.innerHTML = `⭐ ${avg}`;
+      btn.classList.add('has-rating');
+    } else {
+      btn.innerHTML = '⭐ 評分';
+      btn.classList.remove('has-rating');
+    }
+  });
 }
 
-submitBtn.addEventListener('click', async () => {
-  if (!selectedRating) return;
-  submitBtn.disabled = true;
-  submitBtn.textContent = '送出中…';
-  const comment = reviewText.value.trim() || null;
+function injectRateButtons() {
+  document.querySelectorAll('.itinerary-card').forEach(card => {
+    const nameEl = card.querySelector('.itinerary-name');
+    if (!nameEl) return;
+    const name = nameEl.textContent.trim();
+    const itemId = ITEM_PREFIX + name;
+    card.dataset.itemId = itemId;
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;justify-content:flex-end;margin-top:8px';
+    const btn = document.createElement('button');
+    btn.className = 'rate-btn';
+    btn.innerHTML = '⭐ 評分';
+    btn.type = 'button';
+    btn.addEventListener('click', e => { e.stopPropagation(); openRateSheet(itemId, name); });
+    wrap.appendChild(btn);
+    card.appendChild(wrap);
+  });
+
+  document.querySelectorAll('.spot-card').forEach(card => {
+    const nameEl = card.querySelector('.spot-name');
+    if (!nameEl) return;
+    const name = nameEl.textContent.trim();
+    const itemId = ITEM_PREFIX + name;
+    card.dataset.itemId = itemId;
+    const btn = document.createElement('button');
+    btn.className = 'rate-btn';
+    btn.innerHTML = '⭐ 評分';
+    btn.type = 'button';
+    btn.style.marginLeft = '8px';
+    btn.addEventListener('click', e => { e.stopPropagation(); openRateSheet(itemId, name); });
+    card.appendChild(btn);
+  });
+
+  loadItemReviews();
+}
+
+// Sheet
+let sheetItemId = '';
+let sheetRating = 0;
+const rateSheetBg    = document.getElementById('rateSheetBg');
+const rateSheetName  = document.getElementById('rateSheetName');
+const rateSheetCount = document.getElementById('rateSheetCount');
+const rateSheetRevs  = document.getElementById('rateSheetRevs');
+const rateSheetStars = document.getElementById('rateSheetStars');
+const rateSheetText  = document.getElementById('rateSheetText');
+const rateSheetBtn   = document.getElementById('rateSheetBtn');
+
+function openRateSheet(itemId, name) {
+  sheetItemId = itemId;
+  sheetRating = 0;
+  rateSheetName.textContent = name;
+  rateSheetText.value = '';
+  rateSheetBtn.disabled = true;
+  rateSheetBtn.textContent = '請先選擇星數';
+  rateSheetStars.querySelectorAll('.sheet-star').forEach(s => s.classList.remove('lit'));
+
+  const revs = itemReviews[itemId] || [];
+  if (revs.length > 0) {
+    const ratings = revs.filter(r => r.rating).map(r => r.rating);
+    const avg = ratings.length
+      ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
+      : '–';
+    rateSheetCount.textContent = `平均 ${avg} 分・共 ${revs.length} 則`;
+    rateSheetRevs.innerHTML = revs.slice(0, 3).map(r => `
+      <div class="sheet-review-item">
+        ${r.rating ? `<span>${'⭐'.repeat(r.rating)}</span>` : ''}
+        ${r.comment ? `<span class="sheet-review-text">${escHtml(r.comment)}</span>` : ''}
+      </div>`).join('');
+  } else {
+    rateSheetCount.textContent = '還沒有評分，成為第一個吧！';
+    rateSheetRevs.innerHTML = '';
+  }
+  rateSheetBg.classList.add('open');
+}
+
+rateSheetBg.addEventListener('click', e => {
+  if (e.target === rateSheetBg) rateSheetBg.classList.remove('open');
+});
+document.getElementById('rateSheetClose').addEventListener('click', () => {
+  rateSheetBg.classList.remove('open');
+});
+
+rateSheetStars.querySelectorAll('.sheet-star').forEach(star => {
+  star.addEventListener('click', () => {
+    sheetRating = parseInt(star.dataset.v);
+    rateSheetStars.querySelectorAll('.sheet-star')
+      .forEach(s => s.classList.toggle('lit', parseInt(s.dataset.v) <= sheetRating));
+    rateSheetBtn.disabled = false;
+    rateSheetBtn.textContent = '送出評分';
+  });
+});
+
+rateSheetBtn.addEventListener('click', async () => {
+  if (!sheetRating) return;
+  rateSheetBtn.disabled = true;
+  rateSheetBtn.textContent = '送出中…';
+  const comment = rateSheetText.value.trim() || null;
   try {
     const res = await fetch(`${SB_URL}/rest/v1/trip_reviews`, {
       method: 'POST',
@@ -1622,22 +1782,24 @@ submitBtn.addEventListener('click', async () => {
         apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
         'Content-Type': 'application/json', Prefer: 'return=minimal'
       },
-      body: JSON.stringify({ trip_id: TRIP_ID, rating: selectedRating, comment })
+      body: JSON.stringify({ trip_id: sheetItemId, rating: sheetRating, comment })
     });
     if (res.ok || res.status === 201) {
-      submitBtn.textContent = '謝謝你的評價 ✓';
-      reviewText.value = '';
-      selectedRating = 0;
-      starsEls.forEach(s => s.classList.remove('lit'));
-      reviewsLoaded = false;
-      loadReviewsOnce();
+      if (!itemReviews[sheetItemId]) itemReviews[sheetItemId] = [];
+      itemReviews[sheetItemId].unshift({
+        trip_id: sheetItemId, rating: sheetRating, comment,
+        created_at: new Date().toISOString()
+      });
+      refreshRateBtns();
+      rateSheetBtn.textContent = '謝謝你的評分 ✓';
+      setTimeout(() => rateSheetBg.classList.remove('open'), 1200);
     } else {
-      submitBtn.textContent = '送出失敗，請重試';
-      submitBtn.disabled = false;
+      rateSheetBtn.textContent = '送出失敗，請重試';
+      rateSheetBtn.disabled = false;
     }
   } catch {
-    submitBtn.textContent = '送出失敗，請重試';
-    submitBtn.disabled = false;
+    rateSheetBtn.textContent = '送出失敗，請重試';
+    rateSheetBtn.disabled = false;
   }
 });
 
@@ -1645,11 +1807,7 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function fmtDate(ts) {
-  if (!ts) return '';
-  const d = new Date(ts);
-  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
-}
+injectRateButtons();
 </script>
 
 <div id="photoOverlay"></div>
