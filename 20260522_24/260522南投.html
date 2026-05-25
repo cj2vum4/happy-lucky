@@ -528,11 +528,40 @@ body {
 }
 .polaroid img {
   display: block;
-  width: 140px;
-  height: 140px;
+  width: 160px;
+  height: 160px;
   object-fit: cover;
   background: var(--cream-dark);
 }
+#photoOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  display: none;
+}
+#photoOverlay.active { display: block; }
+#photoRefreshBtn {
+  position: fixed;
+  bottom: calc(var(--tab-h) + var(--safe-bottom) + 14px);
+  right: 18px;
+  z-index: 55;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: rgba(253,250,243,0.94);
+  border: 1.5px solid var(--cream-dark);
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  display: none;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  touch-action: manipulation;
+  transition: opacity 0.15s;
+}
+#photoRefreshBtn.visible { display: flex; }
+#photoRefreshBtn:active { opacity: 0.65; }
 .polaroid-caption {
   font-family: var(--hand);
   font-size: 13px;
@@ -1285,57 +1314,120 @@ tabBtns.forEach(btn => {
     pages.forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(target).classList.add('active');
-    if (target === 'page-photos') setTimeout(initPhotoWall, 80);
+    const overlay = document.getElementById('photoOverlay');
+    const refreshBtn = document.getElementById('photoRefreshBtn');
+    if (target === 'page-photos') {
+      overlay.classList.add('active');
+      refreshBtn.classList.add('visible');
+      setTimeout(initPhotoWall, 80);
+    } else {
+      overlay.classList.remove('active');
+      refreshBtn.classList.remove('visible');
+    }
   });
 });
 
 // ── 照片牆 ──
 const photoData = [
   { src: 'photo_01.jpg', caption: '出發囉 🚄' },
-  { src: 'photo_02.jpg', caption: '家人送行 👨‍👩‍👧‍👦' },
-  { src: 'photo_03.jpg', caption: '大家一起 🍮' },
+  { src: 'photo_02.jpg', caption: '見爺奶啦' },
+  { src: 'photo_03.jpg', caption: '見馬麻啦' },
   { src: 'photo_04.jpg', caption: '民宿鏡子 🪞' },
-  { src: 'photo_05.jpg', caption: '你背我走 😂' },
-  { src: 'photo_06.jpg', caption: '山路自拍 🕶️' },
+  { src: 'photo_05.jpg', caption: '太胖ㄌ' },
+  { src: 'photo_06.jpg', caption: 'happy耍色' },
   { src: 'photo_07.jpg', caption: '生日快樂 💋' },
   { src: 'photo_08.jpg', caption: '慶生派對 🎉' },
   { src: 'photo_09.jpg', caption: '壽星登場 🌺' },
-  { src: 'photo_10.jpg', caption: '驚喜！😱' },
-  { src: 'photo_11.jpg', caption: '吐舌頭 👅' },
+  { src: 'photo_10.jpg', caption: 'lucky耍色' },
+  { src: 'photo_11.jpg', caption: '啊嘿' },
+];
+
+// 11張照片的分區座標（相對viewport比例），讓照片充滿整個螢幕並遮住上下導覽
+const ZONES = [
+  [0.00, -0.03], // 左上角、略超出螢幕頂部
+  [0.38, -0.05], // 頂部中間
+  [0.60,  0.02], // 右上角
+  [-0.08, 0.20], // 左側稍微出血
+  [0.28,  0.22], // 中左
+  [0.58,  0.17], // 中右
+  [0.04,  0.45], // 下左
+  [0.38,  0.47], // 下中
+  [0.60,  0.42], // 下右
+  [-0.03, 0.66], // 底左、遮住 tab bar
+  [0.48,  0.69], // 底右、遮住 tab bar
 ];
 
 let photoWallReady = false;
+
 function initPhotoWall() {
   if (photoWallReady) return;
-  const wall = document.getElementById('photoWall');
-  if (!wall) return;
-  const W = wall.offsetWidth, H = wall.offsetHeight;
-  if (!W || !H) { requestAnimationFrame(initPhotoWall); return; }
+  const overlay = document.getElementById('photoOverlay');
+  if (!overlay) return;
   photoWallReady = true;
 
-  const PW = 156, PH = 178;
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const PW = 176; // 160px photo + 8px*2 padding
+  const PH = 218; // 160px photo + 8px top + 50px bottom
 
   photoData.forEach((p, i) => {
     setTimeout(() => {
       const el = document.createElement('div');
       el.className = 'polaroid';
-      const x = randBetween(W * 0.04, W - PW - W * 0.04);
-      const y = randBetween(H * 0.04, H - PH - H * 0.04);
+
+      const zone = ZONES[i % ZONES.length];
+      const x = zone[0] * W + randBetween(-PW * 0.15, PW * 0.15);
+      const y = zone[1] * H + randBetween(-PH * 0.12, PH * 0.12);
       const rot = randBetween(-15, 15);
-      el.style.cssText = `left:${x}px;top:${y}px;z-index:${i + 1}`;
+
+      el.style.cssText = `position:fixed;left:${x}px;top:${y}px;z-index:${50 + i};pointer-events:auto`;
       el.style.setProperty('--r', rot + 'deg');
       el.innerHTML = `<img src="${p.src}" alt="${p.caption}" loading="lazy"><div class="polaroid-caption">${p.caption}</div>`;
+
+      // 長按 → lightbox
+      let pressTimer, longPressed = false;
+      const startPress = () => {
+        longPressed = false;
+        pressTimer = setTimeout(() => { longPressed = true; openLightbox(p.src); }, 480);
+      };
+      const cancelPress = () => clearTimeout(pressTimer);
+      el.addEventListener('touchstart', startPress, { passive: true });
+      el.addEventListener('touchend',   cancelPress);
+      el.addEventListener('touchmove',  cancelPress, { passive: true });
+      el.addEventListener('mousedown',  startPress);
+      el.addEventListener('mouseup',    cancelPress);
+      el.addEventListener('mouseleave', cancelPress);
+
+      // 點擊 → 移除（長按後不觸發）
       el.addEventListener('click', () => {
+        if (longPressed) return;
         el.classList.remove('placing');
         void el.offsetWidth;
         el.classList.add('removing');
         el.addEventListener('animationend', () => el.remove(), { once: true });
       });
-      wall.appendChild(el);
+
+      overlay.appendChild(el);
       requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('placing')));
-    }, i * 380 + 150);
+    }, i * 350 + 150);
   });
 }
+
+function resetPhotoWall() {
+  const overlay = document.getElementById('photoOverlay');
+  overlay.innerHTML = '';
+  photoWallReady = false;
+  setTimeout(initPhotoWall, 80);
+}
+
+// ── Lightbox ──
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxClose = document.getElementById('lightboxClose');
+lightboxClose.addEventListener('click', () => lightbox.classList.remove('open'));
+lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+function openLightbox(src) { lightboxImg.src = src; lightbox.classList.add('open'); }
+
 function randBetween(a, b) { return a + Math.random() * (b - a); }
 
 const dayTabBtns = document.querySelectorAll('.day-tab-btn');
@@ -1351,6 +1443,9 @@ dayTabBtns.forEach(btn => {
   });
 });
 </script>
+
+<div id="photoOverlay"></div>
+<button id="photoRefreshBtn" onclick="resetPhotoWall()">↺</button>
 
 <audio id="bgm" src="留下來陪我.mp3" autoplay loop muted></audio>
     <script>
