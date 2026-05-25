@@ -7,9 +7,22 @@
       "endDate": "2026-05-24",
       "destination": "南投・仁愛鄉",
       "people": 2,
-      "status": "planning",
+      "status": "done",
       "tags": ["深山", "秘境", "溫泉", "部落"],
-      "file": "20260522_24/260522南投.html"
+      "file": "20260522_24/260522南投.html",
+      "photos": [
+        { "src": "20260522_24/photo_01.jpg", "caption": "出發囉 🚄" },
+        { "src": "20260522_24/photo_02.jpg", "caption": "見爺奶啦" },
+        { "src": "20260522_24/photo_03.jpg", "caption": "見馬麻啦" },
+        { "src": "20260522_24/photo_04.jpg", "caption": "民宿鏡子 🪞" },
+        { "src": "20260522_24/photo_05.jpg", "caption": "太胖ㄌ" },
+        { "src": "20260522_24/photo_06.jpg", "caption": "happy耍色" },
+        { "src": "20260522_24/photo_07.jpg", "caption": "生日快樂 💋" },
+        { "src": "20260522_24/photo_08.jpg", "caption": "慶生派對 🎉" },
+        { "src": "20260522_24/photo_09.jpg", "caption": "壽星登場 🌺" },
+        { "src": "20260522_24/photo_10.jpg", "caption": "lucky耍色" },
+        { "src": "20260522_24/photo_11.jpg", "caption": "啊嘿" }
+      ]
     }
   ]
 }

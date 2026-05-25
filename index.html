@@ -498,6 +498,98 @@
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 11px;
   }
+
+  /* ============ 回憶相簿 photo strip ============ */
+  .album-block { margin-bottom: 28px; }
+  .album-trip-label {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .album-trip-name {
+    font-family: var(--hand-display);
+    font-size: 18px;
+    color: var(--coffee);
+  }
+  .album-trip-date {
+    font-family: var(--body);
+    font-size: 11px;
+    color: var(--coffee-light);
+    letter-spacing: 0.5px;
+  }
+  .strip-outer {
+    margin: 0 -24px;
+    padding: 8px 24px 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .strip-outer::-webkit-scrollbar { display: none; }
+  .strip-inner {
+    display: flex;
+    gap: 14px;
+    align-items: flex-end;
+    width: max-content;
+    padding-bottom: 4px;
+  }
+  .mini-polaroid {
+    flex-shrink: 0;
+    background: #fff;
+    padding: 5px 5px 22px;
+    box-shadow: 1px 3px 10px rgba(0,0,0,0.18), 0 0 0 0.5px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    touch-action: manipulation;
+  }
+  .mini-polaroid:nth-child(3n+1) { transform: rotate(-2.5deg) translateY(2px); }
+  .mini-polaroid:nth-child(3n+2) { transform: rotate(2deg); }
+  .mini-polaroid:nth-child(3n)   { transform: rotate(-0.8deg) translateY(-2px); }
+  .mini-polaroid:active { transform: scale(0.92) rotate(0deg) !important; box-shadow: 1px 1px 4px rgba(0,0,0,0.12) !important; }
+  .mini-polaroid img {
+    display: block;
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    background: var(--cream-dark);
+  }
+  .mini-polaroid-caption {
+    font-family: var(--hand-display);
+    font-size: 11px;
+    color: #888;
+    text-align: center;
+    padding-top: 5px;
+    height: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 88px;
+  }
+
+  /* lightbox */
+  .ix-lightbox {
+    display: none;
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.9);
+    align-items: center; justify-content: center;
+  }
+  .ix-lightbox.open { display: flex; }
+  .ix-lightbox img { max-width: 92%; max-height: 88vh; border-radius: 4px; object-fit: contain; }
+  .ix-lightbox-caption {
+    position: absolute;
+    bottom: 28px; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--hand-display);
+    font-size: 18px;
+    color: rgba(255,255,255,0.75);
+    white-space: nowrap;
+  }
+  .ix-close {
+    position: absolute; top: 16px; right: 20px;
+    font-size: 28px; color: white;
+    background: none; border: none; cursor: pointer;
+    line-height: 1;
+  }
 </style>
 </head>
 <body>
@@ -553,6 +645,13 @@
   </div>
 
   <div class="footer-note">made with care</div>
+</div>
+
+<!-- lightbox -->
+<div id="ix-lightbox" class="ix-lightbox">
+  <button class="ix-close" id="ix-close">✕</button>
+  <img id="ix-img" src="" alt="">
+  <div class="ix-lightbox-caption" id="ix-caption"></div>
 </div>
 
 <script>
@@ -628,16 +727,49 @@ function renderHome() {
   `;
 
   const upcoming = TRIPS.filter(t => t.status === 'planning');
-  const past = TRIPS.filter(t => t.status === 'done');
+  const withPhotos = TRIPS.filter(t => t.photos && t.photos.length > 0);
 
   document.getElementById('upcoming-trips').innerHTML = upcoming.length
     ? upcoming.map(renderTripCard).join('')
     : `<div class="empty-state"><div class="icon">✿</div><h4>還沒有規劃中的旅行</h4><p>新的目的地等著我們呢</p></div>`;
 
-  document.getElementById('past-trips').innerHTML = past.length
-    ? past.map(renderTripCard).join('')
-    : `<div class="empty-state"><div class="icon">📷</div><h4>還沒有回憶</h4><p>等第一趟旅行結束後<br>把 status 改成 done</p></div>`;
+  document.getElementById('past-trips').innerHTML = withPhotos.length
+    ? withPhotos.map(renderAlbumBlock).join('')
+    : `<div class="empty-state"><div class="icon">📷</div><h4>還沒有回憶</h4><p>旅行結束後把照片加進來吧</p></div>`;
 }
+
+function renderAlbumBlock(trip) {
+  const items = (trip.photos || []).map((p, i) => `
+    <div class="mini-polaroid" onclick="openIxLightbox('${p.src}','${p.caption}')">
+      <img src="${p.src}" alt="${p.caption}" loading="lazy">
+      <div class="mini-polaroid-caption">${p.caption}</div>
+    </div>`).join('');
+
+  return `
+    <div class="album-block">
+      <div class="album-trip-label">
+        <span class="album-trip-name">${trip.title}</span>
+        <span class="album-trip-date">${formatDateRange(trip.startDate, trip.endDate)}</span>
+      </div>
+      <div class="strip-outer">
+        <div class="strip-inner">${items}</div>
+      </div>
+    </div>`;
+}
+
+// lightbox
+function openIxLightbox(src, caption) {
+  document.getElementById('ix-img').src = src;
+  document.getElementById('ix-caption').textContent = caption || '';
+  document.getElementById('ix-lightbox').classList.add('open');
+}
+document.getElementById('ix-close').addEventListener('click', () => {
+  document.getElementById('ix-lightbox').classList.remove('open');
+});
+document.getElementById('ix-lightbox').addEventListener('click', e => {
+  if (e.target === document.getElementById('ix-lightbox'))
+    document.getElementById('ix-lightbox').classList.remove('open');
+});
 
 function renderTripCard(trip) {
   const statusText = trip.status === 'planning' ? '計畫中' : '完成';
