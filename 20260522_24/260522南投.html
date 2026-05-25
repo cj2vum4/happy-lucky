@@ -492,28 +492,70 @@ body {
 .badge-out { background: var(--pea-bg); color: var(--pea-dark); }
 .badge-in { background: var(--amber-bg); color: #7A4E1A; }
 
-/* ===== 照片 ===== */
-.photo-empty {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--coffee-faint);
-  font-size: 13px;
-}
-.photo-empty-icon { font-size: 48px; margin-bottom: 12px; }
-.photo-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.photo-grid-item {
+/* ===== 照片牆 ===== */
+#page-photos { padding: 0 !important; overflow: hidden !important; }
+.photo-wall {
   position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  aspect-ratio: 1;
-  background: var(--cream-dark);
-  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background: #c9a87c;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 18% 25%, rgba(210,170,110,0.5) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 70% at 80% 75%, rgba(155,105,55,0.35) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px);
 }
-.photo-grid-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.polaroid {
+  position: absolute;
+  background: #fefcf8;
+  padding: 8px 8px 30px;
+  box-shadow: 1px 2px 4px rgba(0,0,0,0.1), 2px 8px 20px rgba(0,0,0,0.22);
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform, opacity;
+}
+.polaroid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+  pointer-events: none;
+}
+.polaroid:hover {
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.14), 4px 16px 36px rgba(0,0,0,0.3);
+  z-index: 200 !important;
+}
+.polaroid img {
+  display: block;
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  background: var(--cream-dark);
+}
+.polaroid-caption {
+  font-family: var(--hand);
+  font-size: 13px;
+  color: #777;
+  text-align: center;
+  padding-top: 5px;
+  line-height: 1.2;
+  height: 18px;
+  overflow: hidden;
+}
+@keyframes placePhoto {
+  0%   { opacity: 0; transform: scale(0.45) rotate(var(--r)) translateY(-60px); }
+  60%  { opacity: 1; transform: scale(1.07) rotate(var(--r)) translateY(6px); }
+  80%  { transform: scale(0.97) rotate(var(--r)) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) rotate(var(--r)); }
+}
+@keyframes removePhoto {
+  0%   { opacity: 1; transform: scale(1) rotate(var(--r)); }
+  20%  { transform: scale(1.1) rotate(calc(var(--r) + 6deg)); }
+  100% { opacity: 0; transform: scale(0.15) rotate(calc(var(--r) + 30deg)) translateY(80px); }
+}
+.polaroid.placing  { animation: placePhoto 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.polaroid.removing { animation: removePhoto 0.38s ease-in forwards; pointer-events: none; }
 .lightbox {
   display: none;
   position: fixed; inset: 0; z-index: 100;
@@ -1194,12 +1236,7 @@ body {
 
     <!-- PAGE: 照片 -->
     <div class="page" id="page-photos">
-      <div class="page-section-title">📷 旅途回憶</div>
-      <div class="photo-grid" id="photoGrid">
-        <div class="photo-grid-item" onclick="openLightbox('photo_01.jpg')">
-          <img src="photo_01.jpg" alt="旅途照片" loading="lazy">
-        </div>
-      </div>
+      <div class="photo-wall" id="photoWall"></div>
     </div>
 
     <!-- Lightbox -->
@@ -1248,19 +1285,48 @@ tabBtns.forEach(btn => {
     pages.forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(target).classList.add('active');
+    if (target === 'page-photos') setTimeout(initPhotoWall, 80);
   });
 });
 
-// ── 照片 lightbox ──
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = document.getElementById('lightboxImg');
-const lightboxClose = document.getElementById('lightboxClose');
-lightboxClose.addEventListener('click', () => lightbox.classList.remove('open'));
-lightbox.addEventListener('click', e => { if(e.target === lightbox) lightbox.classList.remove('open'); });
-function openLightbox(src) {
-  lightboxImg.src = src;
-  lightbox.classList.add('open');
+// ── 照片牆 ──
+const photoData = [
+  { src: 'photo_01.jpg', caption: '出發囉 🚄' }
+];
+
+let photoWallReady = false;
+function initPhotoWall() {
+  if (photoWallReady) return;
+  const wall = document.getElementById('photoWall');
+  if (!wall) return;
+  const W = wall.offsetWidth, H = wall.offsetHeight;
+  if (!W || !H) { requestAnimationFrame(initPhotoWall); return; }
+  photoWallReady = true;
+
+  const PW = 156, PH = 178;
+
+  photoData.forEach((p, i) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'polaroid';
+      const x = randBetween(W * 0.04, W - PW - W * 0.04);
+      const y = randBetween(H * 0.04, H - PH - H * 0.04);
+      const rot = randBetween(-15, 15);
+      el.style.cssText = `left:${x}px;top:${y}px;z-index:${i + 1}`;
+      el.style.setProperty('--r', rot + 'deg');
+      el.innerHTML = `<img src="${p.src}" alt="${p.caption}" loading="lazy"><div class="polaroid-caption">${p.caption}</div>`;
+      el.addEventListener('click', () => {
+        el.classList.remove('placing');
+        void el.offsetWidth;
+        el.classList.add('removing');
+        el.addEventListener('animationend', () => el.remove(), { once: true });
+      });
+      wall.appendChild(el);
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('placing')));
+    }, i * 380 + 150);
+  });
 }
+function randBetween(a, b) { return a + Math.random() * (b - a); }
 
 const dayTabBtns = document.querySelectorAll('.day-tab-btn');
 const dayPanels = document.querySelectorAll('.day-panel');
