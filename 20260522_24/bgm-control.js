@@ -14,6 +14,7 @@
     function onVisibilityChange() {
       if (document.visibilityState === 'hidden') {
         wasPlaying = !audio.paused;
+        if (wasPlaying) try { audio.pause(); } catch (_) {}
       } else if (document.visibilityState === 'visible') {
         tryResume();
       }
