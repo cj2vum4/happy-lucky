@@ -590,6 +590,100 @@
     background: none; border: none; cursor: pointer;
     line-height: 1;
   }
+
+  /* ============ 查詢 ============ */
+  .search-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .chip {
+    background: none;
+    border: 1.5px solid var(--coffee);
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-family: var(--hand-display);
+    font-size: 15px;
+    color: var(--coffee);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .chip.active {
+    background: var(--pea-dark);
+    color: var(--paper);
+    border-color: var(--pea-dark);
+    box-shadow: 2px 2px 0 var(--coffee);
+    transform: rotate(-1deg);
+  }
+  .chip:active { transform: translate(1px, 1px) !important; }
+  .search-count {
+    font-family: var(--hand-display);
+    font-size: 14px;
+    color: var(--coffee-light);
+    margin-bottom: 18px;
+    padding-left: 2px;
+  }
+  .spot-result-card {
+    background: var(--paper);
+    border: 1.5px solid var(--coffee);
+    border-radius: 4px;
+    padding: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 2px 2px 0 var(--coffee-light);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .spot-result-card:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 var(--coffee-light);
+  }
+  .spot-result-emoji {
+    font-size: 26px;
+    width: 46px; height: 46px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--cream);
+    border: 1px solid var(--cream-dark);
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .spot-result-body { flex: 1; min-width: 0; }
+  .spot-result-name {
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--coffee);
+    margin-bottom: 3px;
+  }
+  .spot-result-desc {
+    font-size: 12px;
+    color: var(--coffee-light);
+    line-height: 1.5;
+    margin-bottom: 5px;
+  }
+  .spot-result-trip {
+    font-family: var(--hand-display);
+    font-size: 12px;
+    color: var(--rose-dark);
+  }
+  .spot-cat-badge {
+    position: absolute;
+    top: 8px; right: 10px;
+    font-family: var(--hand-display);
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 10px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .spot-cat-badge.食物 { background: #FDF3E7; color: #8C5A1A; border-color: rgba(212,136,60,0.35); }
+  .spot-cat-badge.室內景點 { background: #EEF0F8; color: #4A4F8C; border-color: rgba(74,79,140,0.3); }
+  .spot-cat-badge.室外景點 { background: #EEF4E3; color: #5E7338; border-color: rgba(94,115,56,0.3); }
 </style>
 </head>
 <body>
@@ -603,6 +697,7 @@
   <div class="tabs">
     <button class="tab-btn active" data-tab="home">首頁</button>
     <button class="tab-btn" data-tab="calendar">行事曆</button>
+    <button class="tab-btn" data-tab="search">查詢</button>
   </div>
 
   <!-- 首頁 -->
@@ -647,6 +742,19 @@
     </div>
   </div>
 
+  <!-- 查詢 -->
+  <div id="page-search" class="page">
+    <div class="section-title">快速查詢</div>
+    <div class="search-chips">
+      <button class="chip active" data-cat="all">全部</button>
+      <button class="chip" data-cat="食物">🍜 食物</button>
+      <button class="chip" data-cat="室內景點">🏛️ 室內景點</button>
+      <button class="chip" data-cat="室外景點">🌿 室外景點</button>
+    </div>
+    <div class="search-count" id="search-count"></div>
+    <div id="search-results"></div>
+  </div>
+
   <div class="footer-note">made with care</div>
 </div>
 
@@ -677,6 +785,7 @@ async function bootstrap() {
     TRIPS = data.trips || [];
 
     renderHome();
+    renderSearch();
 
     // 跳到第一個有旅行的月份（如果有的話）
     if (TRIPS.length > 0) {
@@ -939,6 +1048,53 @@ document.getElementById('next-month').onclick = () => {
   if (currentMonth > 11) { currentMonth = 0; currentYear++; }
   renderCalendar();
 };
+
+// ============ 查詢 ============
+let activeCategory = 'all';
+
+function renderSearch() {
+  const allSpots = [];
+  TRIPS.forEach(trip => {
+    (trip.spots || []).forEach(spot => {
+      allSpots.push({ ...spot, tripTitle: trip.title, tripFile: trip.file });
+    });
+  });
+
+  const filtered = activeCategory === 'all'
+    ? allSpots
+    : allSpots.filter(s => s.category === activeCategory);
+
+  const countEl = document.getElementById('search-count');
+  countEl.textContent = activeCategory === 'all'
+    ? `共 ${filtered.length} 個地點`
+    : `${activeCategory} · ${filtered.length} 個`;
+
+  const container = document.getElementById('search-results');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h4>沒有符合的地點</h4><p>試試其他類別</p></div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(spot => `
+    <a class="spot-result-card" href="${spot.tripFile}">
+      <div class="spot-result-emoji">${spot.emoji}</div>
+      <div class="spot-result-body">
+        <div class="spot-result-name">${spot.name}</div>
+        <div class="spot-result-desc">${spot.desc}</div>
+        <div class="spot-result-trip">📍 ${spot.tripTitle}</div>
+      </div>
+      <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
+    </a>`).join('');
+}
+
+document.querySelectorAll('.search-chips .chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.search-chips .chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCategory = btn.dataset.cat;
+    renderSearch();
+  });
+});
 
 // 啟動
 bootstrap();
