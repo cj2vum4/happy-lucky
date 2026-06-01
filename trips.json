@@ -10,6 +10,7 @@
       "status": "done",
       "tags": ["深山", "秘境", "溫泉", "部落"],
       "file": "20260522_24/260522南投.html",
+      "itemPrefix": "nantou2026__",
       "photos": [
         { "src": "20260522_24/photo_01.jpg", "caption": "出發囉 🚄" },
         { "src": "20260522_24/photo_02.jpg", "caption": "見爺奶啦" },
@@ -24,21 +25,19 @@
         { "src": "20260522_24/photo_11.jpg", "caption": "啊嘿" }
       ],
       "spots": [
-        { "name": "Cona's 尼那巧克力夢想城堡", "category": "食物", "emoji": "🏰", "desc": "歐風莊園・手工巧克力體驗・打卡超美建築" },
-        { "name": "鹿篙咖啡莊園", "category": "食物", "emoji": "☕", "desc": "午餐+下午茶・茶園環繞・得獎紅茶" },
-        { "name": "18度C 巧克力工坊", "category": "食物", "emoji": "🍫", "desc": "生吐司・義式冰淇淋・伴手禮" },
-        { "name": "享日咖啡", "category": "食物", "emoji": "🐹", "desc": "早午餐+與水豚互動・桃米生態村" },
-        { "name": "塔洛灣景觀餐廳", "category": "食物", "emoji": "🍱", "desc": "碧湖view・進投89前最後文明餐廳・原民料理" },
-        { "name": "午餐伊達邵碼頭", "category": "食物", "emoji": "🛶", "desc": "九蛙糕・節瓜塔・湖邊風景" },
-        { "name": "娜娜泰式時尚料理", "category": "食物", "emoji": "🍜", "desc": "紅咖哩・月亮蝦餅・泰式米線" },
-        { "name": "馬累了吧餐廳", "category": "食物", "emoji": "⛺", "desc": "海拔1300m・原民料理・無光害觀星" },
-        { "name": "紙教堂 Paper Dome", "category": "室內景點", "emoji": "⛪", "desc": "桃米生態村・日本移建・紙管建築" },
-        { "name": "日月潭遊湖", "category": "室外景點", "emoji": "⛵", "desc": "早晨薄霧・水社→玄光寺→伊達邵環湖" },
-        { "name": "發祥國小", "category": "室外景點", "emoji": "🏫", "desc": "部落小學・操場視野極佳" },
-        { "name": "紅香溫泉", "category": "室外景點", "emoji": "♨️", "desc": "免費野溪溫泉公共浴池" },
-        { "name": "馬累了吧觀星台", "category": "室外景點", "emoji": "🌟", "desc": "海拔1300m・無光害・滿天星斗" },
-        { "name": "帖比倫步道", "category": "室外景點", "emoji": "🥾", "desc": "拉繩陡坡・來回30分鐘" },
-        { "name": "帖比倫峽谷瀑布", "category": "室外景點", "emoji": "🌊", "desc": "五彩岩壁・深潭秘境・勿下水" }
+        { "name": "Cona's 尼那巧克力夢想城堡", "category": "食物",   "region": "埔里",   "emoji": "🏰", "desc": "歐風莊園・手工巧克力體驗・打卡超美建築" },
+        { "name": "鹿篙咖啡莊園",             "category": "食物",   "region": "埔里",   "emoji": "☕", "desc": "午餐+下午茶・茶園環繞・得獎紅茶" },
+        { "name": "18度C 巧克力工坊",          "category": "食物",   "region": "埔里",   "emoji": "🍫", "desc": "生吐司・義式冰淇淋・伴手禮" },
+        { "name": "娜娜泰式料理",              "category": "食物",   "region": "埔里",   "emoji": "🍜", "desc": "紅咖哩・月亮蝦餅・泰式米線" },
+        { "name": "紙教堂 Paper Dome",         "category": "室內景點","region": "埔里",   "emoji": "⛪", "desc": "桃米生態村・日本移建・紙管建築" },
+        { "name": "享日咖啡",                  "category": "食物",   "region": "日月潭", "emoji": "🐹", "desc": "早午餐+與水豚互動・桃米生態村" },
+        { "name": "塔洛灣景觀餐廳",            "category": "食物",   "region": "日月潭", "emoji": "🍱", "desc": "碧湖view・原民料理" },
+        { "name": "日月潭遊湖",                "category": "室外景點","region": "日月潭", "emoji": "⛵", "desc": "早晨薄霧・水社→玄光寺→伊達邵環湖" },
+        { "name": "發祥國小",                  "category": "室外景點","region": "仁愛山區","emoji": "🏫", "desc": "部落小學・操場視野極佳" },
+        { "name": "紅香溫泉",                  "category": "室外景點","region": "仁愛山區","emoji": "♨️", "desc": "免費野溪溫泉公共浴池" },
+        { "name": "馬累了吧",                  "category": "室外景點","region": "仁愛山區","emoji": "⛺", "desc": "海拔1300m・無光害觀星" },
+        { "name": "帖比倫步道",                "category": "室外景點","region": "仁愛山區","emoji": "🥾", "desc": "拉繩陡坡・來回30分鐘" },
+        { "name": "帖比倫峽谷瀑布",            "category": "室外景點","region": "仁愛山區","emoji": "🌊", "desc": "五彩岩壁・深潭秘境・勿下水" }
       ]
     }
   ]

@@ -592,22 +592,30 @@
   }
 
   /* ============ 查詢 ============ */
+  .filter-row { margin-bottom: 14px; }
+  .filter-label {
+    font-family: var(--hand-display);
+    font-size: 13px;
+    color: var(--coffee-light);
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
   .search-chips {
     display: flex;
-    gap: 8px;
+    gap: 7px;
     flex-wrap: wrap;
-    margin-bottom: 8px;
   }
   .chip {
     background: none;
     border: 1.5px solid var(--coffee);
     border-radius: 20px;
-    padding: 8px 18px;
+    padding: 6px 15px;
     font-family: var(--hand-display);
-    font-size: 15px;
+    font-size: 14px;
     color: var(--coffee);
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
   }
   .chip.active {
     background: var(--pea-dark);
@@ -619,17 +627,17 @@
   .chip:active { transform: translate(1px, 1px) !important; }
   .search-count {
     font-family: var(--hand-display);
-    font-size: 14px;
+    font-size: 13px;
     color: var(--coffee-light);
-    margin-bottom: 18px;
+    margin: 14px 0 16px;
     padding-left: 2px;
   }
   .spot-result-card {
     background: var(--paper);
     border: 1.5px solid var(--coffee);
     border-radius: 4px;
-    padding: 14px;
-    margin-bottom: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -644,21 +652,21 @@
     box-shadow: 0 0 0 var(--coffee-light);
   }
   .spot-result-emoji {
-    font-size: 26px;
-    width: 46px; height: 46px;
+    font-size: 24px;
+    width: 44px; height: 44px;
     display: flex; align-items: center; justify-content: center;
     background: var(--cream);
     border: 1px solid var(--cream-dark);
     border-radius: 8px;
     flex-shrink: 0;
   }
-  .spot-result-body { flex: 1; min-width: 0; }
+  .spot-result-body { flex: 1; min-width: 0; padding-right: 56px; }
   .spot-result-name {
     font-family: var(--body);
     font-weight: 600;
     font-size: 14px;
     color: var(--coffee);
-    margin-bottom: 3px;
+    margin-bottom: 2px;
   }
   .spot-result-desc {
     font-size: 12px;
@@ -666,22 +674,39 @@
     line-height: 1.5;
     margin-bottom: 5px;
   }
+  .spot-result-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
   .spot-result-trip {
     font-family: var(--hand-display);
-    font-size: 12px;
+    font-size: 11px;
     color: var(--rose-dark);
   }
+  .spot-rating {
+    font-family: var(--hand-display);
+    font-size: 13px;
+    color: #8C5A1A;
+  }
+  .spot-rating.unrated {
+    font-size: 11px;
+    color: var(--coffee-light);
+    opacity: 0.7;
+  }
+  .rating-count { font-size: 11px; color: var(--coffee-light); }
   .spot-cat-badge {
     position: absolute;
-    top: 8px; right: 10px;
+    top: 8px; right: 8px;
     font-family: var(--hand-display);
     font-size: 11px;
-    padding: 2px 9px;
+    padding: 2px 8px;
     border-radius: 10px;
     border: 1px solid;
     white-space: nowrap;
   }
-  .spot-cat-badge.食物 { background: #FDF3E7; color: #8C5A1A; border-color: rgba(212,136,60,0.35); }
+  .spot-cat-badge.食物    { background: #FDF3E7; color: #8C5A1A; border-color: rgba(212,136,60,0.35); }
   .spot-cat-badge.室內景點 { background: #EEF0F8; color: #4A4F8C; border-color: rgba(74,79,140,0.3); }
   .spot-cat-badge.室外景點 { background: #EEF4E3; color: #5E7338; border-color: rgba(94,115,56,0.3); }
 </style>
@@ -745,12 +770,22 @@
   <!-- 查詢 -->
   <div id="page-search" class="page">
     <div class="section-title">快速查詢</div>
-    <div class="search-chips">
-      <button class="chip active" data-cat="all">全部</button>
-      <button class="chip" data-cat="食物">🍜 食物</button>
-      <button class="chip" data-cat="室內景點">🏛️ 室內景點</button>
-      <button class="chip" data-cat="室外景點">🌿 室外景點</button>
+
+    <div class="filter-row">
+      <div class="filter-label">類別</div>
+      <div class="search-chips" id="cat-chips">
+        <button class="chip active" data-cat="all">全部</button>
+        <button class="chip" data-cat="食物">🍜 食物</button>
+        <button class="chip" data-cat="室內景點">🏛️ 室內景點</button>
+        <button class="chip" data-cat="室外景點">🌿 室外景點</button>
+      </div>
     </div>
+
+    <div class="filter-row">
+      <div class="filter-label">地區</div>
+      <div class="search-chips" id="region-chips"></div>
+    </div>
+
     <div class="search-count" id="search-count"></div>
     <div id="search-results"></div>
   </div>
@@ -785,7 +820,9 @@ async function bootstrap() {
     TRIPS = data.trips || [];
 
     renderHome();
+    buildRegionChips();
     renderSearch();
+    loadAllRatings();
 
     // 跳到第一個有旅行的月份（如果有的話）
     if (TRIPS.length > 0) {
@@ -1050,46 +1087,118 @@ document.getElementById('next-month').onclick = () => {
 };
 
 // ============ 查詢 ============
+const SB_URL = 'https://cmwtceczabbszhdgvwcj.supabase.co';
+const SB_KEY = 'sb_publishable_hDrADaLoZfAGDJH1i_JeHw_OSv_oqAu';
+let ratingsMap = {};      // { "nantou2026__馬累了吧": { avg: "4.5", count: 2 } }
 let activeCategory = 'all';
+let activeRegion    = 'all';
+const REGION_EMOJI  = { '埔里': '🏘️', '日月潭': '💧', '仁愛山區': '🏔️' };
+
+async function loadAllRatings() {
+  for (const trip of TRIPS) {
+    if (!trip.itemPrefix) continue;
+    try {
+      const res = await fetch(
+        `${SB_URL}/rest/v1/trip_reviews?trip_id=like.${trip.itemPrefix}*&order=created_at.desc`,
+        { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+      );
+      const data = await res.json();
+      if (!Array.isArray(data)) continue;
+      const acc = {};
+      data.forEach(r => {
+        if (!r.rating) return;
+        if (!acc[r.trip_id]) acc[r.trip_id] = { sum: 0, count: 0 };
+        acc[r.trip_id].sum   += r.rating;
+        acc[r.trip_id].count += 1;
+      });
+      Object.entries(acc).forEach(([key, { sum, count }]) => {
+        ratingsMap[key] = { avg: (sum / count).toFixed(1), count };
+      });
+    } catch (e) { console.warn('評分載入失敗', e); }
+  }
+  renderSearch();
+}
+
+function buildRegionChips() {
+  const regions = [...new Set(
+    TRIPS.flatMap(t => (t.spots || []).map(s => s.region)).filter(Boolean)
+  )];
+  const container = document.getElementById('region-chips');
+  container.innerHTML =
+    `<button class="chip active" data-region="all">全部</button>` +
+    regions.map(r => `<button class="chip" data-region="${r}">${REGION_EMOJI[r] || ''} ${r}</button>`).join('');
+
+  container.querySelectorAll('.chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeRegion = btn.dataset.region;
+      renderSearch();
+    });
+  });
+}
 
 function renderSearch() {
   const allSpots = [];
   TRIPS.forEach(trip => {
     (trip.spots || []).forEach(spot => {
-      allSpots.push({ ...spot, tripTitle: trip.title, tripFile: trip.file });
+      allSpots.push({ ...spot, tripTitle: trip.title, tripFile: trip.file, prefix: trip.itemPrefix || '' });
     });
   });
 
-  const filtered = activeCategory === 'all'
-    ? allSpots
-    : allSpots.filter(s => s.category === activeCategory);
+  let filtered = allSpots;
+  if (activeCategory !== 'all') filtered = filtered.filter(s => s.category === activeCategory);
+  if (activeRegion    !== 'all') filtered = filtered.filter(s => s.region    === activeRegion);
+
+  // 按評分排序（有評分的高到低，無評分的最後）
+  filtered = [...filtered].sort((a, b) => {
+    const ra = ratingsMap[a.prefix + a.name];
+    const rb = ratingsMap[b.prefix + b.name];
+    if (ra && rb)  return parseFloat(rb.avg) - parseFloat(ra.avg);
+    if (ra && !rb) return -1;
+    if (!ra && rb) return 1;
+    return 0;
+  });
 
   const countEl = document.getElementById('search-count');
-  countEl.textContent = activeCategory === 'all'
-    ? `共 ${filtered.length} 個地點`
-    : `${activeCategory} · ${filtered.length} 個`;
+  const parts = [];
+  if (activeCategory !== 'all') parts.push(activeCategory);
+  if (activeRegion    !== 'all') parts.push(activeRegion);
+  countEl.textContent = parts.length
+    ? `${parts.join(' · ')} · ${filtered.length} 個地點`
+    : `共 ${filtered.length} 個地點`;
 
   const container = document.getElementById('search-results');
   if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h4>沒有符合的地點</h4><p>試試其他類別</p></div>`;
+    container.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h4>沒有符合的地點</h4><p>試試其他條件</p></div>`;
     return;
   }
 
-  container.innerHTML = filtered.map(spot => `
+  container.innerHTML = filtered.map(spot => {
+    const ratingData = ratingsMap[spot.prefix + spot.name];
+    const ratingHTML = ratingData
+      ? `<span class="spot-rating">⭐ ${ratingData.avg} <span class="rating-count">(${ratingData.count}則)</span></span>`
+      : `<span class="spot-rating unrated">尚未評分</span>`;
+    return `
     <a class="spot-result-card" href="${spot.tripFile}">
       <div class="spot-result-emoji">${spot.emoji}</div>
       <div class="spot-result-body">
         <div class="spot-result-name">${spot.name}</div>
         <div class="spot-result-desc">${spot.desc}</div>
-        <div class="spot-result-trip">📍 ${spot.tripTitle}</div>
+        <div class="spot-result-meta">
+          ${ratingHTML}
+          <span class="spot-result-trip">📍 ${spot.region}</span>
+        </div>
       </div>
       <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
-    </a>`).join('');
+    </a>`;
+  }).join('');
 }
 
-document.querySelectorAll('.search-chips .chip').forEach(btn => {
+// 類別 chips
+document.getElementById('cat-chips').querySelectorAll('.chip').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.search-chips .chip').forEach(b => b.classList.remove('active'));
+    document.getElementById('cat-chips').querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     activeCategory = btn.dataset.cat;
     renderSearch();
