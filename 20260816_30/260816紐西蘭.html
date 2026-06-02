@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>紐西蘭南北島 - 旅行手帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Gloock&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pea: #3E8FA8;
+    --pea-dark: #2A6B88;
+    --pea-light: #A8D8E8;
+    --cream: #EDF5F8;
+    --cream-dark: #D0E5EE;
+    --paper: #F5FBFD;
+    --rose: #C97A6E;
+    --rose-dark: #A45448;
+    --coffee: #1E3A4A;
+    --coffee-light: #4A7A92;
+    --tape: rgba(62,143,168,0.3);
+    --tape-green: rgba(201,122,110,0.3);
+    --hand-display: 'Caveat', cursive;
+    --hand-loose: 'Shadows Into Light', cursive;
+    --serif-display: 'Gloock', serif;
+    --body: 'Noto Serif TC', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { overflow-x: hidden; }
+  body {
+    font-family: var(--body); color: var(--coffee); background: var(--cream);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(62,143,168,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(201,122,110,0.06) 0%, transparent 50%);
+    min-height: 100vh; line-height: 1.7; font-size: 15px;
+  }
+  .phone-frame {
+    max-width: 430px; margin: 0 auto; min-height: 100vh;
+    background: var(--paper); position: relative;
+    box-shadow: 0 0 60px rgba(30,58,74,0.15); padding-bottom: 60px;
+  }
+  .phone-frame::before {
+    content: ''; position: absolute;
+    left: 14px; top: 60px; bottom: 60px; width: 1px;
+    background: repeating-linear-gradient(to bottom, transparent 0px, transparent 18px, var(--rose) 18px, var(--rose) 20px);
+    opacity: 0.18; pointer-events: none;
+  }
+  .back-bar { padding: 16px 20px 0; }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--coffee); text-decoration: none;
+    font-family: var(--hand-display); font-size: 18px;
+    padding: 4px 10px; background: var(--cream);
+    border-radius: 16px; border: 1.5px solid var(--cream-dark);
+  }
+  .back-link:active { background: var(--pea-light); }
+  .page-content { padding: 16px 24px 30px; }
+  .trip-cover {
+    background: linear-gradient(135deg, var(--pea-light) 0%, var(--cream-dark) 100%);
+    border: 2px solid var(--coffee); border-radius: 6px;
+    padding: 30px 24px; margin-bottom: 20px;
+    position: relative; overflow: hidden;
+    box-shadow: 4px 4px 0 var(--coffee);
+  }
+  .trip-cover::before { content: ''; position: absolute; top: -10px; left: 30px; width: 80px; height: 22px; background: var(--tape); transform: rotate(-5deg); }
+  .trip-cover::after  { content: ''; position: absolute; bottom: -10px; right: 40px; width: 60px; height: 20px; background: var(--tape-green); transform: rotate(8deg); }
+  .trip-cover h1 { font-family: var(--hand-display); font-size: 38px; color: var(--coffee); line-height: 1; margin-bottom: 10px; transform: rotate(-1deg); }
+  .trip-cover .cover-meta { font-family: var(--body); font-size: 13px; color: var(--coffee-light); margin-bottom: 16px; }
+  .cover-stamps { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cover-stamp { background: var(--paper); border: 1.5px solid var(--coffee); padding: 4px 10px; font-family: var(--hand-display); font-size: 14px; color: var(--coffee); border-radius: 4px; transform: rotate(-2deg); }
+  .cover-stamp:nth-child(2) { transform: rotate(1deg); }
+  .cover-stamp:nth-child(3) { transform: rotate(-1deg); }
+  .cover-stamp:nth-child(4) { transform: rotate(2deg); }
+  .section-box { background: var(--paper); border: 1.5px solid var(--coffee); border-radius: 4px; padding: 16px; margin-bottom: 18px; position: relative; }
+  .section-box .corner { position: absolute; top: -8px; left: 16px; background: var(--rose); color: var(--paper); padding: 2px 10px; font-family: var(--hand-display); font-size: 14px; border-radius: 2px; transform: rotate(-2deg); letter-spacing: 1px; }
+  .budget-total { text-align: center; padding: 16px 0; border-bottom: 1.5px dashed var(--pea-light); margin-bottom: 14px; }
+  .budget-total .amount { font-family: var(--serif-display); font-size: 42px; color: var(--pea-dark); display: block; line-height: 1; }
+  .budget-total .label { font-family: var(--hand-display); font-size: 14px; color: var(--coffee-light); margin-top: 4px; }
+  .budget-bar { display: flex; height: 24px; border-radius: 4px; overflow: hidden; margin-bottom: 14px; border: 1.5px solid var(--coffee); }
+  .budget-list { display: flex; flex-direction: column; gap: 8px; }
+  .budget-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .budget-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+  .budget-item .name { flex: 1; color: var(--coffee); }
+  .budget-item .price { font-family: var(--serif-display); color: var(--coffee); font-size: 15px; }
+  .transport-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--cream-dark); }
+  .transport-item:last-child { border-bottom: none; }
+  .transport-icon { font-size: 24px; flex-shrink: 0; width: 40px; text-align: center; }
+  .transport-detail { flex: 1; font-size: 13px; }
+  .transport-detail strong { display: block; color: var(--coffee); margin-bottom: 2px; font-family: var(--hand-display); font-size: 17px; font-weight: 600; }
+  .transport-detail span { color: var(--coffee-light); font-size: 12px; }
+  .day-header { display: flex; align-items: baseline; gap: 10px; margin: 24px 0 14px; padding-bottom: 6px; border-bottom: 2px solid var(--rose); }
+  .day-header .day-num { font-family: var(--hand-display); font-size: 36px; color: var(--rose); line-height: 0.8; }
+  .day-header .day-title { font-family: var(--hand-display); font-size: 20px; color: var(--coffee); flex: 1; }
+  .day-header .day-date { font-family: var(--body); font-size: 11px; color: var(--coffee-light); }
+  .timeline { position: relative; padding-left: 18px; }
+  .timeline::before { content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px; background: repeating-linear-gradient(to bottom, var(--pea-dark) 0, var(--pea-dark) 4px, transparent 4px, transparent 8px); }
+  .timeline-item { position: relative; padding-bottom: 16px; padding-left: 12px; }
+  .timeline-item::before { content: ''; position: absolute; left: -16px; top: 6px; width: 10px; height: 10px; background: var(--paper); border: 2px solid var(--pea-dark); border-radius: 50%; }
+  .timeline-item .time { font-family: var(--hand-display); font-size: 18px; color: var(--rose-dark); line-height: 1; margin-bottom: 4px; }
+  .timeline-item h5 { font-family: var(--body); font-size: 14px; font-weight: 600; color: var(--coffee); margin-bottom: 3px; }
+  .timeline-item p { font-size: 12px; color: var(--coffee-light); line-height: 1.5; }
+  .item-type { display: inline-block; margin-left: 6px; font-size: 10px; color: var(--paper); padding: 1px 6px; border-radius: 8px; background: var(--pea-dark); vertical-align: middle; font-family: var(--hand-display); }
+  .item-type.food { background: var(--rose); }
+  .item-type.stay { background: var(--coffee); }
+  .item-type.move { background: var(--coffee-light); }
+  .activity-grid { display: grid; gap: 10px; }
+  .activity-card { background: var(--cream); border: 1.5px solid var(--coffee-light); border-radius: 4px; padding: 10px 12px; display: flex; gap: 10px; align-items: center; }
+  .activity-card:nth-child(odd)  { transform: rotate(-0.3deg); }
+  .activity-card:nth-child(even) { transform: rotate(0.3deg); }
+  .activity-emoji { font-size: 22px; flex-shrink: 0; width: 36px; height: 36px; background: var(--paper); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--coffee-light); }
+  .activity-info { flex: 1; min-width: 0; }
+  .activity-info h6 { font-family: var(--body); font-size: 13px; font-weight: 600; color: var(--coffee); }
+  .activity-info p { font-size: 11px; color: var(--coffee-light); }
+  .activity-badge { font-family: var(--hand-display); font-size: 11px; padding: 1px 6px; border-radius: 8px; background: var(--pea-light); color: var(--pea-dark); flex-shrink: 0; }
+  .activity-badge.indoor { background: var(--cream-dark); color: var(--coffee); }
+  .alert-box { background: rgba(201,122,110,0.1); border: 1.5px solid var(--rose); border-radius: 4px; padding: 14px; margin-bottom: 18px; }
+  .alert-box h4 { font-family: var(--hand-display); font-size: 20px; color: var(--rose-dark); margin-bottom: 8px; }
+  .alert-box ul { list-style: none; font-size: 12px; color: var(--coffee); line-height: 1.7; }
+  .alert-box ul li { padding-left: 16px; position: relative; margin-bottom: 4px; }
+  .alert-box ul li::before { content: '✿'; position: absolute; left: 0; color: var(--rose); }
+  .footer-note { text-align: center; padding: 30px 20px 20px; font-family: var(--hand-loose); font-size: 13px; color: var(--coffee-light); letter-spacing: 1px; }
+  .footer-note::before, .footer-note::after { content: '✦'; color: var(--rose); margin: 0 8px; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="back-bar">
+    <a href="../index.html" class="back-link">‹ 回到手帳</a>
+  </div>
+  <div class="page-content">
+
+    <div class="trip-cover">
+      <h1>紐西蘭南北島</h1>
+      <div class="cover-meta">2026年8月16日–30日 · 南北島自駕 · 2人</div>
+      <div class="cover-stamps">
+        <div class="cover-stamp">自駕</div>
+        <div class="cover-stamp">峽灣</div>
+        <div class="cover-stamp">滑雪</div>
+        <div class="cover-stamp">星空</div>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <h4>出發前必讀</h4>
+      <ul>
+        <li>入境前72小時申請 NZeTA 電子入境許可（NZD $23/人）+ IVL 旅客保育捐（NZD $100/人）</li>
+        <li>台灣駕照須先辦理國際駕照（公路監理站），在紐西蘭靠左行駛</li>
+        <li>8月為紐西蘭冬季，山區道路可能結冰，租車需加購雪地選項或確認輪胎狀況</li>
+        <li>米佛峽灣路段冬季偶有大雪封路，建議出發前查詢 NZTA 路況網站</li>
+        <li>旅遊保險建議含醫療、極限運動（蹦極/滑雪）、行程取消等項目</li>
+        <li>紐西蘭超市（Countdown/New World/Pak'nSave）自炊可省不少餐費</li>
+      </ul>
+    </div>
+
+    <div class="section-box">
+      <div class="corner">經費</div>
+      <div class="budget-total">
+        <span class="amount">NT$ 199,000</span>
+        <span class="label">2人預估總預算</span>
+      </div>
+      <div class="budget-bar">
+        <div style="width:35%;background:#3E8FA8;height:100%"></div>
+        <div style="width:25%;background:#C97A6E;height:100%"></div>
+        <div style="width:26%;background:#2A6B88;height:100%"></div>
+        <div style="width:14%;background:#A45448;height:100%"></div>
+      </div>
+      <div class="budget-list">
+        <div class="budget-item"><div class="budget-dot" style="background:#3E8FA8"></div><span class="name">✈️ 機票（台北↔奧克蘭 × 2）</span><span class="price">NT$ 70,000</span></div>
+        <div class="budget-item"><div class="budget-dot" style="background:#C97A6E"></div><span class="name">🏨 住宿（14夜，汽車旅館/民宿）</span><span class="price">NT$ 49,000</span></div>
+        <div class="budget-item"><div class="budget-dot" style="background:#2A6B88"></div><span class="name">🚗 租車（13天）+ 油資</span><span class="price">NT$ 32,000</span></div>
+        <div class="budget-item"><div class="budget-dot" style="background:#2A6B88"></div><span class="name">🏂 活動（峽灣遊船 / 滑雪 / 蹦極）</span><span class="price">NT$ 20,000</span></div>
+        <div class="budget-item"><div class="budget-dot" style="background:#A45448"></div><span class="name">🍽️ 餐飲（外食+超市自炊）</span><span class="price">NT$ 22,000</span></div>
+        <div class="budget-item"><div class="budget-dot" style="background:#A45448"></div><span class="name">📋 NZeTA / IVL / 雜費</span><span class="price">NT$ 6,000</span></div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="corner">交通</div>
+      <div class="transport-item">
+        <div class="transport-icon">✈️</div>
+        <div class="transport-detail">
+          <strong>台北 → 奧克蘭</strong>
+          <span>中華航空 / 長榮 or 紐西蘭航空，約 11–13小時（含轉機），建議提早3個月購票</span>
+        </div>
+      </div>
+      <div class="transport-item">
+        <div class="transport-icon">✈️</div>
+        <div class="transport-detail">
+          <strong>奧克蘭 → 基督城（國內線）</strong>
+          <span>Air New Zealand 國內線，約 1.5小時，建議同時訂購（Jetstar 有時更便宜）</span>
+        </div>
+      </div>
+      <div class="transport-item">
+        <div class="transport-icon">🚢</div>
+        <div class="transport-detail">
+          <strong>威靈頓 → 皮克頓（庫克海峽渡輪）</strong>
+          <span>Interislander 或 Bluebridge，約 3.5小時，需提前訂位（含車）</span>
+        </div>
+      </div>
+      <div class="transport-item">
+        <div class="transport-icon">🚗</div>
+        <div class="transport-detail">
+          <strong>南島全程自駕</strong>
+          <span>基督城取車→皇后鎮還車，約12天。建議 Apex / Jucy 租車，加購單程費用</span>
+        </div>
+      </div>
+      <div class="transport-item">
+        <div class="transport-icon">✈️</div>
+        <div class="transport-detail">
+          <strong>皇后鎮 → 奧克蘭 → 台北</strong>
+          <span>國內線轉接國際線，建議至少預留 3小時轉機時間</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="corner">行程</div>
+
+      <div class="day-header">
+        <span class="day-num">D1</span>
+        <div class="day-title">出發！飛向南半球</div>
+        <span class="day-date">8/16</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">早上</div>
+          <h5>桃園機場出發<span class="item-type move">動</span></h5>
+          <p>建議搭乘夜間航班，隔天早上抵達奧克蘭，減少一晚住宿費</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">機上</div>
+          <h5>飛行約 11–13 小時</h5>
+          <p>備好頸枕、耳塞、眼罩，跨越日期線抵達</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D2</span>
+        <div class="day-title">奧克蘭 · 第一天</div>
+        <span class="day-date">8/17</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">早上</div>
+          <h5>抵達奧克蘭機場・辦理入境<span class="item-type move">動</span></h5>
+          <p>記得申報食物，紐西蘭邊境管制嚴格</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">10:00</div>
+          <h5>Sky Tower 天空塔<span class="item-type">景</span></h5>
+          <p>328m高・市區全景・可選擇高空彈跳（Sky Jump）</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">13:00</div>
+          <h5>Viaduct Harbour 碼頭午餐<span class="item-type food">食</span></h5>
+          <p>海港景觀餐廳・Fish & Chips 或海鮮飯</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">15:00</div>
+          <h5>Auckland War Memorial Museum</h5>
+          <p>毛利文化展覽・免費入場毛利歌舞表演（需預約）</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">晚上</div>
+          <h5>Queen Street 逛街・早點休息<span class="item-type stay">宿</span></h5>
+          <p>調整時差，明天早起前往羅托魯阿</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D3</span>
+        <div class="day-title">奧克蘭 → 羅托魯阿</div>
+        <span class="day-date">8/18</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">08:00</div>
+          <h5>取車出發<span class="item-type move">動</span></h5>
+          <p>奧克蘭→羅托魯阿約 3小時車程（SH1南行）</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">11:00</div>
+          <h5>Wai-O-Tapu 地熱奇景<span class="item-type">景</span></h5>
+          <p>五彩溫泉池・硫磺噴泉・冠軍夫人間歇噴泉（每日10:15噴發）</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">14:00</div>
+          <h5>Rainbow Springs 彩虹溫泉<span class="item-type">景</span></h5>
+          <p>野生奇異鳥（Kiwi）・彩虹鱒魚・紐西蘭本土動物</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">19:00</div>
+          <h5>毛利文化晚宴 Hāngi Dinner<span class="item-type food">食</span></h5>
+          <p>傳統地熱烹煮食物・毛利歌舞表演・建議預訂 Tamaki Maori Village</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D4</span>
+        <div class="day-title">羅托魯阿 · 深度探索</div>
+        <span class="day-date">8/19</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">09:00</div>
+          <h5>Waitomo 螢火蟲洞<span class="item-type">景</span></h5>
+          <p>地下洞穴・萬點螢火蟲・乘船漂流於星光之下（需事先預訂）</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">14:00</div>
+          <h5>Waimangu Volcanic Valley<span class="item-type">景</span></h5>
+          <p>世界最年輕地熱系統・茵非諾湖・Frying Pan Lake 煮飯鍋湖</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">晚上</div>
+          <h5>羅托魯阿溫泉 Polynesian Spa<span class="item-type food">食</span></h5>
+          <p>天然地熱溫泉泡澡・室外泡池俯瞰羅托魯阿湖</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D5</span>
+        <div class="day-title">羅托魯阿 → 陶波</div>
+        <span class="day-date">8/20</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">09:00</div>
+          <h5>出發陶波<span class="item-type move">動</span></h5>
+          <p>車程約 1小時</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">10:30</div>
+          <h5>Huka Falls 胡卡瀑布<span class="item-type">景</span></h5>
+          <p>紐西蘭最壯觀瀑布・湛藍碧水・水量驚人・免費景點</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">13:00</div>
+          <h5>Lake Taupo 陶波湖午後<span class="item-type">景</span></h5>
+          <p>紐西蘭最大湖・地平線遠眺魯阿佩胡火山・Maori Rock Carving 遊船</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">16:00</div>
+          <h5>出發威靈頓<span class="item-type move">動</span></h5>
+          <p>約 4小時車程（SH1南行），抵達後直接入住</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D6</span>
+        <div class="day-title">威靈頓 · 首都一日</div>
+        <span class="day-date">8/21</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">10:00</div>
+          <h5>Te Papa 國家博物館<span class="item-type">景</span></h5>
+          <p>免費入場・毛利文物・紐西蘭自然史・互動展覽</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">13:00</div>
+          <h5>Cuba Street 午餐 + 逛街<span class="item-type food">食</span></h5>
+          <p>波希米亞風格街道・特色咖啡館・創意小店</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">15:00</div>
+          <h5>Mt Victoria 山頂俯瞰<span class="item-type">景</span></h5>
+          <p>威靈頓港・城市全景・《魔戒》拍攝地之一</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">17:00</div>
+          <h5>Zealandia 威靈頓野生動物保護區</h5>
+          <p>可見到野生 Kiwi（夜間導覽）・Tuatara 活化石</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D7</span>
+        <div class="day-title">渡輪過庫克海峽 · 南島！</div>
+        <span class="day-date">8/22</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">08:00</div>
+          <h5>搭渡輪 威靈頓→皮克頓<span class="item-type move">動</span></h5>
+          <p>Interislander / Bluebridge，約 3.5小時，沿途峽灣風景如畫</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">12:30</div>
+          <h5>抵達皮克頓 · Queen Charlotte Sound</h5>
+          <p>峽灣小鎮・短暫午餐・感受南島第一口空氣</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">14:00</div>
+          <h5>馬爾堡葡萄酒產區<span class="item-type food">食</span></h5>
+          <p>白蘇維翁白酒聞名全球・Cloudy Bay 等酒莊試飲</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">晚上</div>
+          <h5>住宿 Blenheim / Kaikoura 途中<span class="item-type stay">宿</span></h5>
+          <p></p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D8</span>
+        <div class="day-title">Kaikoura → 基督城</div>
+        <span class="day-date">8/23</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">09:00</div>
+          <h5>Kaikoura 海豹岩<span class="item-type">景</span></h5>
+          <p>路邊野生海豹群休憩・賞鯨（冬季也有鯨魚可見）</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">13:00</div>
+          <h5>繼續南行 → 基督城<span class="item-type move">動</span></h5>
+          <p>約 2.5小時・沿太平洋海岸線行駛</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">晚上</div>
+          <h5>基督城入住・Riverside Market 晚餐<span class="item-type food">食</span></h5>
+          <p>基督城最熱鬧的美食市集・多元料理選擇</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D9</span>
+        <div class="day-title">基督城 · 花園城市</div>
+        <span class="day-date">8/24</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">10:00</div>
+          <h5>基督城植物園<span class="item-type">景</span></h5>
+          <p>免費入場・冬季玫瑰園・Avon River 河邊小船</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">12:00</div>
+          <h5>紙板大教堂 Cardboard Cathedral<span class="item-type">景</span></h5>
+          <p>2011年地震後重建・96根紙管構成・當代地標</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">14:00</div>
+          <h5>Re:START 貨櫃商場 · Christchurch Art Gallery</h5>
+          <p>地震後重生的文創貨櫃市集・當代藝術館免費入場</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">16:00</div>
+          <h5>New Brighton Beach 新布萊頓海灘<span class="item-type">景</span></h5>
+          <p>冬日海景・百年碼頭・Pier 餐廳咖啡</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D10</span>
+        <div class="day-title">基督城 → 蒂卡波湖</div>
+        <span class="day-date">8/25</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">09:00</div>
+          <h5>出發蒂卡波湖<span class="item-type move">動</span></h5>
+          <p>約 3.5小時車程，沿途坎特伯雷平原</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">13:00</div>
+          <h5>善牧約翰教堂 Church of the Good Shepherd<span class="item-type">景</span></h5>
+          <p>紐西蘭最上鏡建築・湖光山色・冬季結冰景色絕美</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">15:00</div>
+          <h5>Tekapo Springs 溫泉泡澡<span class="item-type food">食</span></h5>
+          <p>室外溫泉・眺望雪山・冬季限定氣氛</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">23:00</div>
+          <h5>⭐ 星空觀測<span class="item-type">景</span></h5>
+          <p>蒂卡波為世界最大無光害保護區之一・Mount John Observatory 觀星導覽</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D11</span>
+        <div class="day-title">普卡基湖 → 庫克山</div>
+        <span class="day-date">8/26</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">09:00</div>
+          <h5>Lake Pukaki 普卡基湖<span class="item-type">景</span></h5>
+          <p>碧藍如夢・庫克山倒影・紐西蘭最美公路風景之一</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">11:00</div>
+          <h5>抵達庫克山國家公園<span class="item-type">景</span></h5>
+          <p>紐西蘭最高峰 Aoraki/Mt Cook（3724m）・冰河地形</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">13:00</div>
+          <h5>Hooker Valley Track 胡克山谷步道<span class="item-type">景</span></h5>
+          <p>來回約 3小時・跨越3座吊橋・終點為胡克冰河湖・冬季積雪夢幻</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">晚上</div>
+          <h5>庫克山住宿・星空再連線<span class="item-type stay">宿</span></h5>
+          <p>建議住 The Hermitage（景觀房可見庫克山）</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D12</span>
+        <div class="day-title">庫克山 → 瓦納卡</div>
+        <span class="day-date">8/27</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">09:00</div>
+          <h5>出發瓦納卡<span class="item-type move">動</span></h5>
+          <p>約 3小時車程・途經 Twizel 小鎮</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">13:00</div>
+          <h5>That Wanaka Tree 孤獨樹<span class="item-type">景</span></h5>
+          <p>全球最多人打卡的孤樹・瓦納卡湖邊・冬季積雪更美</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">15:00</div>
+          <h5>Diamond Lake 步道<span class="item-type">景</span></h5>
+          <p>輕鬆健行・翠綠山湖・俯瞰瓦納卡全景</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">晚上</div>
+          <h5>Wanaka 小鎮晚餐<span class="item-type food">食</span></h5>
+          <p>Ritual Cafe 或 Francesca's Italian Kitchen</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D13</span>
+        <div class="day-title">瓦納卡 → 皇后鎮 · 滑雪！</div>
+        <span class="day-date">8/28</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">09:00</div>
+          <h5>前往皇后鎮<span class="item-type move">動</span></h5>
+          <p>約 1小時車程</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">10:30</div>
+          <h5>🏂 Coronet Peak / The Remarkables 滑雪<span class="item-type">景</span></h5>
+          <p>皇后鎮兩大滑雪場・初學者到進階者皆宜・設備租借含纜車費約 NZD $120-180/人</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">17:00</div>
+          <h5>Skyline Gondola 空中纜車<span class="item-type">景</span></h5>
+          <p>俯瞰皇后鎮全景・瓦卡蒂普湖・黃昏美景絕倫</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">晚上</div>
+          <h5>皇后鎮市區晚餐<span class="item-type food">食</span></h5>
+          <p>Fergburger（排隊必吃漢堡）・The Cow Pizza・或湖邊餐廳</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D14</span>
+        <div class="day-title">米佛峽灣 · 一輩子必去</div>
+        <span class="day-date">8/29</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">06:00</div>
+          <h5>早出發前往米佛峽灣<span class="item-type move">動</span></h5>
+          <p>皇后鎮→蒂阿瑙→米佛峽灣 約 4小時車程，沿途 Homer Tunnel 隧道壯觀</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">11:00</div>
+          <h5>🛥️ Milford Sound 遊船<span class="item-type">景</span></h5>
+          <p>約 2小時遊船・Stirling Falls / Lady Bowen Falls 瀑布・海豚 / 海豹同行・雨天反而更壯觀</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">14:00</div>
+          <h5>返回皇后鎮<span class="item-type move">動</span></h5>
+          <p>約 4小時・途中可在 Chasm 步道短暫停留（壺穴奇景）</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">晚上</div>
+          <h5>皇后鎮最後一夜 🎉<span class="item-type food">食</span></h5>
+          <p>還車前最後道地晚餐，享受南島最後時光</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D15</span>
+        <div class="day-title">返程 · See you NZ</div>
+        <span class="day-date">8/30</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">早上</div>
+          <h5>還車 · 皇后鎮機場<span class="item-type move">動</span></h5>
+          <p>國內線飛奧克蘭（約 1.5小時）</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">下午</div>
+          <h5>奧克蘭機場轉機回台北<span class="item-type move">動</span></h5>
+          <p>飛行約 11小時，抵達桃園約隔天早上</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-box">
+      <div class="corner">必去景點</div>
+      <div class="activity-grid">
+        <div class="activity-card"><div class="activity-emoji">🌋</div><div class="activity-info"><h6>Wai-O-Tapu 地熱奇景</h6><p>五彩溫泉・間歇噴泉・羅托魯阿</p></div><span class="activity-badge">室外</span></div>
+        <div class="activity-card"><div class="activity-emoji">✨</div><div class="activity-info"><h6>Waitomo 螢火蟲洞</h6><p>地下銀河・乘船遊覽・需預訂</p></div><span class="activity-badge">室外</span></div>
+        <div class="activity-card"><div class="activity-emoji">💦</div><div class="activity-info"><h6>Huka Falls 胡卡瀑布</h6><p>紐西蘭最壯觀瀑布・陶波</p></div><span class="activity-badge">室外</span></div>
+        <div class="activity-card"><div class="activity-emoji">⛵</div><div class="activity-info"><h6>庫克海峽渡輪</h6><p>北島→南島・3.5小時壯麗峽灣</p></div><span class="activity-badge">室外</span></div>
+        <div class="activity-card"><div class="activity-emoji">⛪</div><div class="activity-info"><h6>善牧約翰教堂</h6><p>蒂卡波湖畔・紐西蘭最美打卡點</p></div><span class="activity-badge">室外</span></div>
+        <div class="activity-card"><div class="activity-emoji">🏔️</div><div class="activity-info"><h6>胡克山谷步道</h6><p>庫克山冰河湖・來回約3小時</p></div><span class="activity-badge">室外</span></div>
+        <div class="activity-card"><div class="activity-emoji">🌊</div><div class="activity-info"><h6>米佛峽灣遊船</h6><p>世界第八大奇景・瀑布・海豚</p></div><span class="activity-badge">室外</span></div>
+        <div class="activity-card"><div class="activity-emoji">🏂</div><div class="activity-info"><h6>Coronet Peak 滑雪</h6><p>皇后鎮・8月雪況最佳</p></div><span class="activity-badge">室外</span></div>
+        <div class="activity-card"><div class="activity-emoji">🌳</div><div class="activity-info"><h6>That Wanaka Tree</h6><p>瓦納卡湖孤樹・全球最多打卡</p></div><span class="activity-badge">室外</span></div>
+        <div class="activity-card"><div class="activity-emoji">🍷</div><div class="activity-info"><h6>馬爾堡葡萄酒莊</h6><p>Cloudy Bay 試飲・白蘇維翁聖地</p></div><span class="activity-badge indoor">室內</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-note">15 days in the land of long white cloud</div>
+</div>
+</body>
+</html>

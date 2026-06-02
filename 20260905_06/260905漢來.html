@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>台北漢來大飯店 - 旅行手帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Gloock&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pea: #B07D5A;
+    --pea-dark: #8A5C38;
+    --pea-light: #E8D5C0;
+    --cream: #F8F2EA;
+    --cream-dark: #EDE0CC;
+    --paper: #FDFAF4;
+    --rose: #C97A6E;
+    --rose-dark: #A45448;
+    --coffee: #3A2618;
+    --coffee-light: #7A5A42;
+    --tape: rgba(176,125,90,0.3);
+    --tape-green: rgba(201,122,110,0.3);
+    --hand-display: 'Caveat', cursive;
+    --hand-loose: 'Shadows Into Light', cursive;
+    --serif-display: 'Gloock', serif;
+    --body: 'Noto Serif TC', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { overflow-x: hidden; }
+  body { font-family: var(--body); color: var(--coffee); background: var(--cream); min-height: 100vh; line-height: 1.7; font-size: 15px; }
+  .phone-frame { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--paper); position: relative; box-shadow: 0 0 60px rgba(58,38,24,0.15); padding-bottom: 60px; }
+  .phone-frame::before { content: ''; position: absolute; left: 14px; top: 60px; bottom: 60px; width: 1px; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 18px, var(--rose) 18px, var(--rose) 20px); opacity: 0.18; pointer-events: none; }
+  .back-bar { padding: 16px 20px 0; }
+  .back-link { display: inline-flex; align-items: center; gap: 4px; color: var(--coffee); text-decoration: none; font-family: var(--hand-display); font-size: 18px; padding: 4px 10px; background: var(--cream); border-radius: 16px; border: 1.5px solid var(--cream-dark); }
+  .back-link:active { background: var(--pea-light); }
+  .page-content { padding: 16px 24px 30px; }
+  .trip-cover { background: linear-gradient(135deg, var(--pea-light) 0%, var(--cream-dark) 100%); border: 2px solid var(--coffee); border-radius: 6px; padding: 30px 24px; margin-bottom: 20px; position: relative; overflow: hidden; box-shadow: 4px 4px 0 var(--coffee); }
+  .trip-cover::before { content: ''; position: absolute; top: -10px; left: 30px; width: 80px; height: 22px; background: var(--tape); transform: rotate(-5deg); }
+  .trip-cover::after  { content: ''; position: absolute; bottom: -10px; right: 40px; width: 60px; height: 20px; background: var(--tape-green); transform: rotate(8deg); }
+  .trip-cover h1 { font-family: var(--hand-display); font-size: 36px; color: var(--coffee); line-height: 1; margin-bottom: 10px; transform: rotate(-1deg); }
+  .trip-cover .cover-meta { font-family: var(--body); font-size: 13px; color: var(--coffee-light); margin-bottom: 16px; }
+  .cover-stamps { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cover-stamp { background: var(--paper); border: 1.5px solid var(--coffee); padding: 4px 10px; font-family: var(--hand-display); font-size: 14px; color: var(--coffee); border-radius: 4px; transform: rotate(-2deg); }
+  .cover-stamp:nth-child(2) { transform: rotate(1deg); }
+  .cover-stamp:nth-child(3) { transform: rotate(-1deg); }
+  .section-box { background: var(--paper); border: 1.5px solid var(--coffee); border-radius: 4px; padding: 16px; margin-bottom: 18px; position: relative; }
+  .section-box .corner { position: absolute; top: -8px; left: 16px; background: var(--rose); color: var(--paper); padding: 2px 10px; font-family: var(--hand-display); font-size: 14px; border-radius: 2px; transform: rotate(-2deg); letter-spacing: 1px; }
+  .budget-total { text-align: center; padding: 16px 0; border-bottom: 1.5px dashed var(--pea-light); margin-bottom: 14px; }
+  .budget-total .amount { font-family: var(--serif-display); font-size: 42px; color: var(--pea-dark); display: block; line-height: 1; }
+  .budget-total .label { font-family: var(--hand-display); font-size: 14px; color: var(--coffee-light); margin-top: 4px; }
+  .budget-bar { display: flex; height: 24px; border-radius: 4px; overflow: hidden; margin-bottom: 14px; border: 1.5px solid var(--coffee); }
+  .budget-list { display: flex; flex-direction: column; gap: 8px; }
+  .budget-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .budget-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+  .budget-item .name { flex: 1; color: var(--coffee); }
+  .budget-item .price { font-family: var(--serif-display); color: var(--coffee); font-size: 15px; }
+  .transport-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--cream-dark); }
+  .transport-item:last-child { border-bottom: none; }
+  .transport-icon { font-size: 24px; flex-shrink: 0; width: 40px; text-align: center; }
+  .transport-detail { flex: 1; font-size: 13px; }
+  .transport-detail strong { display: block; color: var(--coffee); margin-bottom: 2px; font-family: var(--hand-display); font-size: 17px; font-weight: 600; }
+  .transport-detail span { color: var(--coffee-light); font-size: 12px; }
+  .day-header { display: flex; align-items: baseline; gap: 10px; margin: 24px 0 14px; padding-bottom: 6px; border-bottom: 2px solid var(--rose); }
+  .day-header .day-num { font-family: var(--hand-display); font-size: 36px; color: var(--rose); line-height: 0.8; }
+  .day-header .day-title { font-family: var(--hand-display); font-size: 20px; color: var(--coffee); flex: 1; }
+  .day-header .day-date { font-family: var(--body); font-size: 11px; color: var(--coffee-light); }
+  .timeline { position: relative; padding-left: 18px; }
+  .timeline::before { content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px; background: repeating-linear-gradient(to bottom, var(--pea-dark) 0, var(--pea-dark) 4px, transparent 4px, transparent 8px); }
+  .timeline-item { position: relative; padding-bottom: 16px; padding-left: 12px; }
+  .timeline-item::before { content: ''; position: absolute; left: -16px; top: 6px; width: 10px; height: 10px; background: var(--paper); border: 2px solid var(--pea-dark); border-radius: 50%; }
+  .timeline-item .time { font-family: var(--hand-display); font-size: 18px; color: var(--rose-dark); line-height: 1; margin-bottom: 4px; }
+  .timeline-item h5 { font-family: var(--body); font-size: 14px; font-weight: 600; color: var(--coffee); margin-bottom: 3px; }
+  .timeline-item p { font-size: 12px; color: var(--coffee-light); line-height: 1.5; }
+  .item-type { display: inline-block; margin-left: 6px; font-size: 10px; color: var(--paper); padding: 1px 6px; border-radius: 8px; background: var(--pea-dark); vertical-align: middle; font-family: var(--hand-display); }
+  .item-type.food { background: var(--rose); }
+  .item-type.stay { background: var(--coffee); }
+  .item-type.move { background: var(--coffee-light); }
+  .activity-grid { display: grid; gap: 10px; }
+  .activity-card { background: var(--cream); border: 1.5px solid var(--coffee-light); border-radius: 4px; padding: 10px 12px; display: flex; gap: 10px; align-items: center; }
+  .activity-card:nth-child(odd)  { transform: rotate(-0.3deg); }
+  .activity-card:nth-child(even) { transform: rotate(0.3deg); }
+  .activity-emoji { font-size: 22px; flex-shrink: 0; width: 36px; height: 36px; background: var(--paper); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--coffee-light); }
+  .activity-info { flex: 1; min-width: 0; }
+  .activity-info h6 { font-family: var(--body); font-size: 13px; font-weight: 600; color: var(--coffee); }
+  .activity-info p { font-size: 11px; color: var(--coffee-light); }
+  .activity-badge { font-family: var(--hand-display); font-size: 11px; padding: 1px 6px; border-radius: 8px; background: var(--pea-light); color: var(--pea-dark); flex-shrink: 0; }
+  .activity-badge.indoor { background: var(--cream-dark); color: var(--coffee); }
+  .footer-note { text-align: center; padding: 30px 20px 20px; font-family: var(--hand-loose); font-size: 13px; color: var(--coffee-light); letter-spacing: 1px; }
+  .footer-note::before, .footer-note::after { content: '✦'; color: var(--rose); margin: 0 8px; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="back-bar"><a href="../index.html" class="back-link">‹ 回到手帳</a></div>
+  <div class="page-content">
+
+    <div class="trip-cover">
+      <h1>台北漢來大飯店</h1>
+      <div class="cover-meta">2026年9月5–6日 · 台北南港 · 2人</div>
+      <div class="cover-stamps">
+        <div class="cover-stamp">奢華住宿</div>
+        <div class="cover-stamp">無邊際泳池</div>
+        <div class="cover-stamp">島語自助餐</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="corner">經費</div>
+      <div class="budget-total">
+        <span class="amount">NT$ 16,100</span>
+        <span class="label">2人預估總預算</span>
+      </div>
+      <div class="budget-bar">
+        <div style="width:62%;background:#B07D5A;height:100%"></div>
+        <div style="width:22%;background:#C97A6E;height:100%"></div>
+        <div style="width:16%;background:#8A5C38;height:100%"></div>
+      </div>
+      <div class="budget-list">
+        <div class="budget-item"><div class="budget-dot" style="background:#B07D5A"></div><span class="name">🏨 住宿（豪華客房 1晚）</span><span class="price">NT$ 10,000</span></div>
+        <div class="budget-item"><div class="budget-dot" style="background:#C97A6E"></div><span class="name">🍽️ 島語自助餐晚餐 × 2</span><span class="price">NT$ 3,600</span></div>
+        <div class="budget-item"><div class="budget-dot" style="background:#8A5C38"></div><span class="name">🥂 酒水 / 下午茶 / 雜費</span><span class="price">NT$ 2,500</span></div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="corner">交通</div>
+      <div class="transport-item">
+        <div class="transport-icon">🚇</div>
+        <div class="transport-detail">
+          <strong>捷運板南線 → 南港展覽館站</strong>
+          <span>飯店緊鄰南港展覽館站 1號出口，步行約 3分鐘</span>
+        </div>
+      </div>
+      <div class="transport-item">
+        <div class="transport-icon">🛍️</div>
+        <div class="transport-detail">
+          <strong>LaLaport MITSUI OUTLET PARK 南港</strong>
+          <span>飯店隔壁即是 Lalaport 台北南港，逛街超方便</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="corner">行程</div>
+
+      <div class="day-header">
+        <span class="day-num">D1</span>
+        <div class="day-title">Check in · 泳池 · 豪華晚餐</div>
+        <span class="day-date">9/5</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">15:00</div>
+          <h5>Check in<span class="item-type stay">宿</span></h5>
+          <p>豪華客房 44m²，含大浴缸・落地窗城市景觀・歡迎飲品</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">16:00</div>
+          <h5>溫水泳池 & 健身房<span class="item-type">景</span></h5>
+          <p>室內恆溫泳池・三溫暖・24H 健身房・放空享受</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">18:30</div>
+          <h5>島語自助餐廳晚餐<span class="item-type food">食</span></h5>
+          <p>台灣、日式、西式多元料理・海鮮區・現做甜點・建議提早訂位</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">21:00</div>
+          <h5>大廳酒廊 / 行政酒廊 貴賓軒</h5>
+          <p>25F 行政酒廊俯瞰台北夜景（入住行政樓層或套房可享）</p>
+        </div>
+      </div>
+
+      <div class="day-header">
+        <span class="day-num">D2</span>
+        <div class="day-title">豐盛早餐 · Lalaport 購物</div>
+        <span class="day-date">9/6</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="time">09:00</div>
+          <h5>早餐（含早選項）<span class="item-type food">食</span></h5>
+          <p>飯店豐盛早餐・西式+台式+日式・建議早點去避免人潮</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">11:00</div>
+          <h5>Check out<span class="item-type stay">宿</span></h5>
+          <p>退房・行李可寄放，繼續遊玩</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">11:30</div>
+          <h5>LaLaport 台北南港<span class="item-type">景</span></h5>
+          <p>日本三井打造・超過 200 家品牌・日本進口商品・美食廣場</p>
+        </div>
+        <div class="timeline-item">
+          <div class="time">14:00</div>
+          <h5>日日烘焙坊下午茶<span class="item-type food">食</span></h5>
+          <p>飯店附設麵包甜點店・精緻下午茶・最後享受再回家</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="corner">飯店設施</div>
+      <div class="activity-grid">
+        <div class="activity-card"><div class="activity-emoji">🏊</div><div class="activity-info"><h6>室內恆溫泳池</h6><p>25m 溫水游泳池・全天開放</p></div><span class="activity-badge indoor">室內</span></div>
+        <div class="activity-card"><div class="activity-emoji">🧖</div><div class="activity-info"><h6>三溫暖 SPA</h6><p>三溫暖・蒸氣室・放鬆身心</p></div><span class="activity-badge indoor">室內</span></div>
+        <div class="activity-card"><div class="activity-emoji">🍽️</div><div class="activity-info"><h6>島語自助餐廳</h6><p>多國料理・海鮮・現做甜點</p></div><span class="activity-badge indoor">室內</span></div>
+        <div class="activity-card"><div class="activity-emoji">🥢</div><div class="activity-info"><h6>東方樓頂級粵菜</h6><p>精緻粵式料理・飲茶早午餐</p></div><span class="activity-badge indoor">室內</span></div>
+        <div class="activity-card"><div class="activity-emoji">🍾</div><div class="activity-info"><h6>行政酒廊 貴賓軒</h6><p>25F 全景・Happy Hour・專屬禮遇</p></div><span class="activity-badge indoor">室內</span></div>
+        <div class="activity-card"><div class="activity-emoji">💪</div><div class="activity-info"><h6>24H 健身中心</h6><p>完整器材・不限時間</p></div><span class="activity-badge indoor">室內</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-note">a night of pure indulgence</div>
+</div>
+</body>
+</html>

@@ -1,6 +1,54 @@
 {
   "trips": [
     {
+      "id": "nz-2026",
+      "title": "紐西蘭南北島",
+      "startDate": "2026-08-16",
+      "endDate": "2026-08-30",
+      "destination": "紐西蘭",
+      "people": 2,
+      "status": "planning",
+      "tags": ["自駕", "峽灣", "滑雪", "星空"],
+      "file": "20260816_30/260816紐西蘭.html",
+      "photos": []
+    },
+    {
+      "id": "hilai-2026",
+      "title": "台北漢來大飯店",
+      "startDate": "2026-09-05",
+      "endDate": "2026-09-06",
+      "destination": "台北・南港",
+      "people": 2,
+      "status": "planning",
+      "tags": ["奢華住宿", "無邊際泳池", "自助餐"],
+      "file": "20260905_06/260905漢來.html",
+      "photos": []
+    },
+    {
+      "id": "tainan-2026",
+      "title": "台南行",
+      "startDate": "2026-09-25",
+      "endDate": "2026-09-27",
+      "destination": "台南",
+      "people": 2,
+      "status": "planning",
+      "tags": ["古蹟", "美食", "海線", "文創"],
+      "file": "20260925_27/260925台南.html",
+      "photos": []
+    },
+    {
+      "id": "taichung-2026",
+      "title": "台中行",
+      "startDate": "2026-10-24",
+      "endDate": "2026-10-26",
+      "destination": "台中",
+      "people": 2,
+      "status": "planning",
+      "tags": ["夜市", "文創", "海線", "秋遊"],
+      "file": "20261024_26/261024台中.html",
+      "photos": []
+    },
+    {
       "id": "tianshi-20260520",
       "title": "天使仙境",
       "startDate": "2026-05-20",
