@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天使仙境 · 5/20</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0f0f13;
+    color: #e8e0d5;
+    font-family: 'Helvetica Neue', 'PingFang TC', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── 頂部 ── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    padding: 18px 20px 12px;
+    gap: 12px;
+  }
+  .back-btn {
+    text-decoration: none;
+    color: #a89880;
+    font-size: 22px;
+    line-height: 1;
+    transition: color .2s;
+  }
+  .back-btn:hover { color: #e8e0d5; }
+
+  /* ── 標題區 ── */
+  .hero {
+    text-align: center;
+    padding: 10px 20px 32px;
+  }
+  .hero-date {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: #a89880;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .hero-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #f5ede0;
+  }
+  .hero-sub {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6b6058;
+    letter-spacing: 1px;
+  }
+
+  /* ── 照片格 ── */
+  .photo-grid {
+    padding: 0 12px 40px;
+    columns: 2;
+    column-gap: 8px;
+  }
+  @media (min-width: 600px) { .photo-grid { columns: 3; } }
+  @media (min-width: 900px) { .photo-grid { columns: 4; } }
+
+  .photo-item {
+    break-inside: avoid;
+    margin-bottom: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #1c1a18;
+    position: relative;
+  }
+  .photo-item img {
+    width: 100%;
+    display: block;
+    transition: opacity .2s;
+  }
+  .photo-item:hover img { opacity: .85; }
+  .photo-caption {
+    padding: 6px 8px 8px;
+    font-size: 11px;
+    color: #7a7068;
+    text-align: center;
+  }
+
+  /* ── 空狀態 ── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #4a4540;
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state p { font-size: 14px; line-height: 1.8; }
+
+  /* ── Lightbox ── */
+  #lightbox {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.92);
+    z-index: 999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    cursor: zoom-out;
+  }
+  #lightbox.open { display: flex; }
+  #lightbox img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 4px;
+    object-fit: contain;
+    pointer-events: none;
+  }
+  #lightbox-caption {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #a89880;
+    letter-spacing: 1px;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-btn" href="../index.html">←</a>
+</div>
+
+<div class="hero">
+  <div class="hero-date">2026 · 05 · 20</div>
+  <div class="hero-title">天使仙境</div>
+  <div class="hero-sub">19:00 · 我們的紀念日 💑</div>
+</div>
+
+<div class="photo-grid" id="photo-grid"></div>
+
+<div id="lightbox">
+  <img id="lb-img" src="" alt="">
+  <div id="lightbox-caption"></div>
+</div>
+
+<script>
+const PHOTOS = [
+  // { src: "photo_01.jpg", caption: "..." },
+  // 把照片放進這個陣列，格式同上
+];
+
+const grid = document.getElementById('photo-grid');
+
+if (PHOTOS.length === 0) {
+  grid.innerHTML = `
+    <div class="empty-state" style="column-span:all">
+      <div class="icon">📷</div>
+      <p>照片還沒加進來<br>把照片放到這個資料夾，再更新上面的 PHOTOS 陣列就好</p>
+    </div>`;
+} else {
+  grid.innerHTML = PHOTOS.map((p, i) => `
+    <div class="photo-item" onclick="openLb(${i})">
+      <img src="${p.src}" alt="${p.caption}" loading="lazy">
+      ${p.caption ? `<div class="photo-caption">${p.caption}</div>` : ''}
+    </div>`).join('');
+}
+
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lb-img');
+const lbCap = document.getElementById('lightbox-caption');
+
+function openLb(i) {
+  lbImg.src = PHOTOS[i].src;
+  lbCap.textContent = PHOTOS[i].caption || '';
+  lb.classList.add('open');
+}
+lb.addEventListener('click', () => lb.classList.remove('open'));
+</script>
+</body>
+</html>

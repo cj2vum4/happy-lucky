@@ -1,6 +1,18 @@
 {
   "trips": [
     {
+      "id": "tianshi-20260520",
+      "title": "天使仙境",
+      "startDate": "2026-05-20",
+      "endDate": "2026-05-20",
+      "destination": "天使仙境",
+      "people": 2,
+      "status": "done",
+      "tags": ["紀念日", "晚餐"],
+      "file": "20260520/260520天使仙境.html",
+      "photos": []
+    },
+    {
       "id": "nantou-2026",
       "title": "南投仁愛深山秘境",
       "startDate": "2026-05-22",
