@@ -92,6 +92,8 @@ body {
   width: 36px; height: 36px; border-radius: 50%;
   color: var(--text2); font-size: 20px;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
 }
 .date-nav .nav-arrow:active { background: var(--border); }
 .dlabel {
@@ -262,6 +264,8 @@ body {
   font-family: inherit; color: var(--text3);
   font-size: 10px; font-weight: 600;
   transition: color 0.18s;
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
 }
 .bnav-btn .ni {
   width: 28px; height: 28px; border-radius: 8px;
@@ -284,6 +288,8 @@ body {
   display: flex; align-items: center; justify-content: center;
   transition: transform 0.15s, box-shadow 0.15s;
   z-index: 150;
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
 }
 .fab:active { transform: scale(0.88); box-shadow: 0 3px 12px rgba(255,61,61,0.3); }
 
@@ -334,6 +340,8 @@ body {
   cursor: pointer; transition: all 0.22s;
   font-family: inherit; color: var(--text2);
   letter-spacing: 0.3px;
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
 }
 .type-btn.active.exp { background: var(--red); color: white; box-shadow: 0 4px 14px rgba(255,82,82,0.42); }
 .type-btn.active.inc { background: var(--green-d); color: white; box-shadow: 0 4px 14px rgba(0,160,70,0.38); }
@@ -371,6 +379,8 @@ body {
   border: 2px solid transparent;
   border-radius: 16px; cursor: pointer;
   transition: all 0.16s; font-family: inherit;
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
 }
 .cat-btn:active { transform: scale(0.92); }
 .cat-icon-wrap {
@@ -390,7 +400,7 @@ body {
   margin: 2px 16px 8px;
   padding: 12px 16px;
   background: var(--bg); border: 1.5px solid var(--border);
-  border-radius: 14px; font-size: 14px;
+  border-radius: 14px; font-size: 16px;
   font-family: inherit; color: var(--text);
   width: calc(100% - 32px); outline: none;
   transition: border-color 0.18s;
@@ -412,6 +422,8 @@ body {
   color: var(--text); font-weight: 500;
   transition: background 0.1s;
   line-height: 1;
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
 }
 .nk:active { background: var(--bg); }
 .nk.del { color: var(--text2); font-size: 19px; }
@@ -577,15 +589,16 @@ const INC_CATS = [
   { key:'快樂錢',  emoji:'🎉', bg:'#FFF9C4', accent:'#F9A825' },
 ];
 
-let allEntries = [];
-let viewDate   = new Date();
-let viewMonth  = new Date();
-let curType    = 'expense';
-let selCat     = EXP_CATS[0].key;
-let amtStr     = '0';
-let barChart   = null;
-let pieChart   = null;
-let editingId  = null;
+let allEntries    = [];
+let viewDate      = new Date();
+let viewMonth     = new Date();
+let curType       = 'expense';
+let selCat        = EXP_CATS[0].key;
+let amtStr        = '0';
+let barChart      = null;
+let pieChart      = null;
+let editingId     = null;
+let _sheetPushed  = false;
 
 const DAY_NAMES = ['日','一','二','三','四','五','六'];
 const ymd = d =>
@@ -905,6 +918,10 @@ function openSheet(entry = null) {
   buildCatGrid();
 
   document.getElementById('overlay').classList.add('open');
+  if (!_sheetPushed) {
+    history.pushState({ sheet: true }, '');
+    _sheetPushed = true;
+  }
 }
 
 function editEntry(id) {
@@ -915,7 +932,20 @@ function editEntry(id) {
 function closeSheet() {
   editingId = null;
   document.getElementById('overlay').classList.remove('open');
+  if (_sheetPushed) {
+    _sheetPushed = false;
+    history.back();
+  }
 }
+
+// Back button closes sheet instead of navigating to previous page
+window.addEventListener('popstate', () => {
+  if (document.getElementById('overlay').classList.contains('open')) {
+    _sheetPushed = false;
+    editingId = null;
+    document.getElementById('overlay').classList.remove('open');
+  }
+});
 
 document.getElementById('fab-btn').addEventListener('click', () => openSheet());
 document.getElementById('overlay').addEventListener('click', e => {
