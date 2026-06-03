@@ -137,6 +137,12 @@ body {
   font-size: 15px; font-weight: 700;
   color: var(--text); text-align: center;
 }
+.dlabel.tappable { cursor: pointer; }
+.dlabel.tappable:active { color: var(--accent); }
+.pick-hint {
+  font-size: 11px; color: var(--accent);
+  margin-left: 4px; vertical-align: middle;
+}
 
 /* ─── Summary card (today) ───────────────────────────────────── */
 .summary-card {
@@ -455,9 +461,10 @@ body {
     <div id="tab-today" class="page active">
       <div class="date-nav">
         <button id="prev-day">‹</button>
-        <div class="dlabel" id="today-label">—</div>
+        <div class="dlabel tappable" id="today-label" onclick="document.getElementById('date-picker').showPicker?.() || document.getElementById('date-picker').click()">—<span class="pick-hint">▾</span></div>
         <button id="next-day">›</button>
       </div>
+      <input type="date" id="date-picker" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;" onchange="pickDate(this.value)">
       <div class="summary-card" id="today-summary"></div>
       <div class="entries-wrap" id="today-entries">
         <div class="entries-loading">載入中…</div>
@@ -980,11 +987,20 @@ document.getElementById('save-btn').addEventListener('click', async () => {
 });
 
 // ─── Date/month nav ───────────────────────────────────────────────────────────
+function pickDate(val) {
+  if (!val) return;
+  viewDate = new Date(val + 'T00:00:00');
+  renderToday();
+}
+function syncPicker() {
+  document.getElementById('date-picker').value = ymd(viewDate);
+}
+
 document.getElementById('prev-day').addEventListener('click', () => {
-  viewDate.setDate(viewDate.getDate()-1); renderToday();
+  viewDate.setDate(viewDate.getDate()-1); syncPicker(); renderToday();
 });
 document.getElementById('next-day').addEventListener('click', () => {
-  viewDate.setDate(viewDate.getDate()+1); renderToday();
+  viewDate.setDate(viewDate.getDate()+1); syncPicker(); renderToday();
 });
 document.getElementById('prev-month').addEventListener('click', () => {
   viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth()-1, 1);
@@ -1016,6 +1032,7 @@ async function confirmDel(id) {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 buildCatGrid();
+syncPicker();
 renderToday();
 loadAll().then(() => setupRealtime());
 </script>
