@@ -3,284 +3,686 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>台中行 - 旅行手帳</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>台中行</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Gloock&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --pea: #7A9A5A;
-    --pea-dark: #527A38;
-    --pea-light: #C8E0A8;
-    --cream: #F2F7EC;
-    --cream-dark: #DFF0C8;
-    --paper: #F8FCF2;
-    --rose: #C97A6E;
-    --rose-dark: #A45448;
-    --coffee: #2A3A18;
-    --coffee-light: #5A7A40;
-    --tape: rgba(122,154,90,0.3);
-    --tape-green: rgba(201,122,110,0.3);
-    --hand-display: 'Caveat', cursive;
-    --hand-loose: 'Shadows Into Light', cursive;
-    --serif-display: 'Gloock', serif;
-    --body: 'Noto Serif TC', serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { overflow-x: hidden; }
-  body { font-family: var(--body); color: var(--coffee); background: var(--cream); min-height: 100vh; line-height: 1.7; font-size: 15px; }
-  .phone-frame { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--paper); position: relative; box-shadow: 0 0 60px rgba(42,58,24,0.15); padding-bottom: 60px; }
-  .phone-frame::before { content: ''; position: absolute; left: 14px; top: 60px; bottom: 60px; width: 1px; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 18px, var(--rose) 18px, var(--rose) 20px); opacity: 0.18; pointer-events: none; }
-  .back-bar { padding: 16px 20px 0; }
-  .back-link { display: inline-flex; align-items: center; gap: 4px; color: var(--coffee); text-decoration: none; font-family: var(--hand-display); font-size: 18px; padding: 4px 10px; background: var(--cream); border-radius: 16px; border: 1.5px solid var(--cream-dark); }
-  .back-link:active { background: var(--pea-light); }
-  .page-content { padding: 16px 24px 30px; }
-  .trip-cover { background: linear-gradient(135deg, var(--pea-light) 0%, var(--cream-dark) 100%); border: 2px solid var(--coffee); border-radius: 6px; padding: 30px 24px; margin-bottom: 20px; position: relative; overflow: hidden; box-shadow: 4px 4px 0 var(--coffee); }
-  .trip-cover::before { content: ''; position: absolute; top: -10px; left: 30px; width: 80px; height: 22px; background: var(--tape); transform: rotate(-5deg); }
-  .trip-cover::after  { content: ''; position: absolute; bottom: -10px; right: 40px; width: 60px; height: 20px; background: var(--tape-green); transform: rotate(8deg); }
-  .trip-cover h1 { font-family: var(--hand-display); font-size: 38px; color: var(--coffee); line-height: 1; margin-bottom: 10px; transform: rotate(-1deg); }
-  .trip-cover .cover-meta { font-family: var(--body); font-size: 13px; color: var(--coffee-light); margin-bottom: 16px; }
-  .cover-stamps { display: flex; gap: 8px; flex-wrap: wrap; }
-  .cover-stamp { background: var(--paper); border: 1.5px solid var(--coffee); padding: 4px 10px; font-family: var(--hand-display); font-size: 14px; color: var(--coffee); border-radius: 4px; transform: rotate(-2deg); }
-  .cover-stamp:nth-child(2) { transform: rotate(1deg); }
-  .cover-stamp:nth-child(3) { transform: rotate(-1deg); }
-  .cover-stamp:nth-child(4) { transform: rotate(2deg); }
-  .section-box { background: var(--paper); border: 1.5px solid var(--coffee); border-radius: 4px; padding: 16px; margin-bottom: 18px; position: relative; }
-  .section-box .corner { position: absolute; top: -8px; left: 16px; background: var(--rose); color: var(--paper); padding: 2px 10px; font-family: var(--hand-display); font-size: 14px; border-radius: 2px; transform: rotate(-2deg); letter-spacing: 1px; }
-  .budget-total { text-align: center; padding: 16px 0; border-bottom: 1.5px dashed var(--pea-light); margin-bottom: 14px; }
-  .budget-total .amount { font-family: var(--serif-display); font-size: 42px; color: var(--pea-dark); display: block; line-height: 1; }
-  .budget-total .label { font-family: var(--hand-display); font-size: 14px; color: var(--coffee-light); margin-top: 4px; }
-  .budget-bar { display: flex; height: 24px; border-radius: 4px; overflow: hidden; margin-bottom: 14px; border: 1.5px solid var(--coffee); }
-  .budget-list { display: flex; flex-direction: column; gap: 8px; }
-  .budget-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-  .budget-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
-  .budget-item .name { flex: 1; color: var(--coffee); }
-  .budget-item .price { font-family: var(--serif-display); color: var(--coffee); font-size: 15px; }
-  .transport-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--cream-dark); }
-  .transport-item:last-child { border-bottom: none; }
-  .transport-icon { font-size: 24px; flex-shrink: 0; width: 40px; text-align: center; }
-  .transport-detail { flex: 1; font-size: 13px; }
-  .transport-detail strong { display: block; color: var(--coffee); margin-bottom: 2px; font-family: var(--hand-display); font-size: 17px; font-weight: 600; }
-  .transport-detail span { color: var(--coffee-light); font-size: 12px; }
-  .day-header { display: flex; align-items: baseline; gap: 10px; margin: 24px 0 14px; padding-bottom: 6px; border-bottom: 2px solid var(--rose); }
-  .day-header .day-num { font-family: var(--hand-display); font-size: 36px; color: var(--rose); line-height: 0.8; }
-  .day-header .day-title { font-family: var(--hand-display); font-size: 20px; color: var(--coffee); flex: 1; }
-  .day-header .day-date { font-family: var(--body); font-size: 11px; color: var(--coffee-light); }
-  .timeline { position: relative; padding-left: 18px; }
-  .timeline::before { content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px; background: repeating-linear-gradient(to bottom, var(--pea-dark) 0, var(--pea-dark) 4px, transparent 4px, transparent 8px); }
-  .timeline-item { position: relative; padding-bottom: 16px; padding-left: 12px; }
-  .timeline-item::before { content: ''; position: absolute; left: -16px; top: 6px; width: 10px; height: 10px; background: var(--paper); border: 2px solid var(--pea-dark); border-radius: 50%; }
-  .timeline-item .time { font-family: var(--hand-display); font-size: 18px; color: var(--rose-dark); line-height: 1; margin-bottom: 4px; }
-  .timeline-item h5 { font-family: var(--body); font-size: 14px; font-weight: 600; color: var(--coffee); margin-bottom: 3px; }
-  .timeline-item p { font-size: 12px; color: var(--coffee-light); line-height: 1.5; }
-  .item-type { display: inline-block; margin-left: 6px; font-size: 10px; color: var(--paper); padding: 1px 6px; border-radius: 8px; background: var(--pea-dark); vertical-align: middle; font-family: var(--hand-display); }
-  .item-type.food { background: var(--rose); }
-  .item-type.stay { background: var(--coffee); }
-  .item-type.move { background: var(--coffee-light); }
-  .activity-grid { display: grid; gap: 10px; }
-  .activity-card { background: var(--cream); border: 1.5px solid var(--coffee-light); border-radius: 4px; padding: 10px 12px; display: flex; gap: 10px; align-items: center; }
-  .activity-card:nth-child(odd)  { transform: rotate(-0.3deg); }
-  .activity-card:nth-child(even) { transform: rotate(0.3deg); }
-  .activity-emoji { font-size: 22px; flex-shrink: 0; width: 36px; height: 36px; background: var(--paper); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--coffee-light); }
-  .activity-info { flex: 1; min-width: 0; }
-  .activity-info h6 { font-family: var(--body); font-size: 13px; font-weight: 600; color: var(--coffee); }
-  .activity-info p { font-size: 11px; color: var(--coffee-light); }
-  .activity-badge { font-family: var(--hand-display); font-size: 11px; padding: 1px 6px; border-radius: 8px; background: var(--pea-light); color: var(--pea-dark); flex-shrink: 0; }
-  .activity-badge.indoor { background: var(--cream-dark); color: var(--coffee); }
-  .footer-note { text-align: center; padding: 30px 20px 20px; font-family: var(--hand-loose); font-size: 13px; color: var(--coffee-light); letter-spacing: 1px; }
-  .footer-note::before, .footer-note::after { content: '✦'; color: var(--rose); margin: 0 8px; }
+:root {
+  --pea: #6A9A5A;
+  --pea-dark: #477A34;
+  --pea-light: #C0DCA8;
+  --pea-bg: #EEF6E8;
+  --cream: #F2F7EC;
+  --cream-dark: #DCF0C8;
+  --paper: #F8FCF2;
+  --rose: #C97A6E;
+  --rose-dark: #A45448;
+  --rose-bg: #FAF0EE;
+  --coffee: #2A3A18;
+  --coffee-mid: #4A6A30;
+  --coffee-light: #6A8A50;
+  --coffee-faint: #A0B888;
+  --amber: #D4883C;
+  --amber-bg: #FDF3E7;
+  --ink: #1A1208;
+  --hand: 'Caveat', cursive;
+  --body: 'Noto Serif TC', serif;
+  --tab-h: 72px;
+  --header-h: 60px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; }
+body { font-family: var(--body); color: var(--coffee); background: var(--cream); height: 100%; overflow: hidden; -webkit-font-smoothing: antialiased; font-size: 15px; line-height: 1.6; }
+
+.app { max-width: 430px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; background: var(--paper); position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.12); overflow: hidden; }
+
+.app-header { height: var(--header-h); background: var(--paper); border-bottom: 1px solid var(--cream-dark); display: flex; align-items: center; padding: 0 20px; flex-shrink: 0; position: relative; z-index: 10; }
+.back-btn { font-family: var(--hand); font-size: 26px; color: var(--coffee-light); text-decoration: none; margin-right: 10px; line-height: 1; }
+.header-title { font-family: var(--hand); font-size: 26px; font-weight: 700; color: var(--coffee); flex: 1; line-height: 1; }
+.header-meta { font-size: 11px; color: var(--coffee-light); font-family: var(--body); text-align: right; line-height: 1.4; }
+
+.pages { flex: 1; overflow: hidden; position: relative; }
+.page { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 20px 16px calc(20px + var(--safe-bottom)); opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity 0.22s ease, transform 0.22s ease; }
+.page.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+.tab-bar { height: calc(var(--tab-h) + var(--safe-bottom)); padding-bottom: var(--safe-bottom); background: rgba(248,252,242,0.97); border-top: 1px solid var(--cream-dark); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: stretch; flex-shrink: 0; z-index: 20; }
+.tab-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: none; background: transparent; color: var(--coffee-faint); font-family: var(--body); font-size: 10px; cursor: pointer; touch-action: manipulation; transition: color 0.15s; padding: 8px 4px 6px; position: relative; }
+.tab-btn.active { color: var(--pea-dark); }
+.tab-icon { font-size: 22px; line-height: 1; transition: transform 0.15s; }
+.tab-btn.active .tab-icon { transform: scale(1.1); }
+.tab-label { font-size: 10px; font-weight: 500; letter-spacing: 0.02em; }
+.tab-btn.active::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 28px; height: 2.5px; background: var(--pea-dark); border-radius: 0 0 3px 3px; }
+.tab-btn:active .tab-icon { transform: scale(0.92); }
+
+.cover-card { background: linear-gradient(145deg, var(--pea-light) 0%, #D8EAB8 50%, var(--cream-dark) 100%); border-radius: 16px; padding: 28px 22px 22px; margin-bottom: 16px; position: relative; overflow: hidden; }
+.cover-card::before { content: '🍂'; position: absolute; right: 16px; top: 16px; font-size: 48px; opacity: 0.25; transform: rotate(10deg); }
+.cover-card h1 { font-family: var(--hand); font-size: 32px; font-weight: 700; color: var(--coffee); line-height: 1.1; margin-bottom: 8px; }
+.cover-card .dates { font-size: 13px; color: var(--coffee-mid); margin-bottom: 16px; }
+.cover-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.cover-tag { background: rgba(255,255,255,0.65); border: 1px solid rgba(71,122,52,0.25); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--pea-dark); font-weight: 500; }
+
+.budget-hero { background: var(--pea-bg); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 16px; border: 1px solid rgba(71,122,52,0.15); }
+.budget-amount { font-family: var(--hand); font-size: 52px; font-weight: 700; color: var(--pea-dark); line-height: 1; display: block; }
+.budget-label { font-size: 12px; color: var(--coffee-light); margin-top: 4px; }
+.budget-row { display: flex; align-items: center; padding: 14px 16px; background: var(--cream); border-radius: 12px; margin-bottom: 8px; gap: 12px; }
+.budget-row-icon { font-size: 22px; width: 36px; text-align: center; flex-shrink: 0; }
+.budget-row-name { flex: 1; font-size: 14px; color: var(--coffee); }
+.budget-row-price { font-family: var(--hand); font-size: 20px; color: var(--coffee); font-weight: 600; }
+
+.transport-card { background: var(--cream); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px; }
+.transport-icon-wrap { width: 44px; height: 44px; background: var(--paper); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; border: 1px solid var(--cream-dark); }
+.transport-body { flex: 1; min-width: 0; }
+.transport-title { font-size: 14px; font-weight: 600; color: var(--coffee); margin-bottom: 3px; }
+.transport-sub { font-size: 12px; color: var(--coffee-light); }
+
+.day-tabs { display: flex; gap: 6px; margin-bottom: 18px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.day-tabs::-webkit-scrollbar { display: none; }
+.day-tab-btn { flex-shrink: 0; border: 1.5px solid var(--cream-dark); background: var(--paper); border-radius: 22px; padding: 6px 16px; font-family: var(--body); font-size: 13px; color: var(--coffee-mid); cursor: pointer; touch-action: manipulation; white-space: nowrap; transition: all 0.15s; }
+.day-tab-btn.active { background: var(--pea-dark); border-color: var(--pea-dark); color: white; }
+.day-tab-btn:active { transform: scale(0.95); }
+.day-panel { display: none; }
+.day-panel.active { display: block; }
+
+.day-banner { background: linear-gradient(120deg, var(--pea-dark) 0%, #305820 100%); border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
+.day-banner-num { font-family: var(--hand); font-size: 42px; font-weight: 700; color: rgba(255,255,255,0.9); line-height: 1; flex-shrink: 0; }
+.day-banner-info { flex: 1; }
+.day-banner-title { font-family: var(--hand); font-size: 17px; color: white; font-weight: 600; margin-bottom: 2px; }
+.day-banner-date { font-size: 11px; color: rgba(255,255,255,0.65); }
+
+.itinerary-list { display: flex; flex-direction: column; gap: 0; }
+.itinerary-item { display: flex; gap: 0; position: relative; }
+.itinerary-time-col { width: 52px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding-top: 14px; }
+.itinerary-time { font-family: var(--hand); font-size: 15px; color: var(--rose-dark); font-weight: 600; line-height: 1; text-align: center; }
+.itinerary-line { width: 2px; flex: 1; background: var(--pea-light); margin-top: 6px; min-height: 20px; }
+.itinerary-item:last-child .itinerary-line { display: none; }
+.itinerary-dot { position: absolute; left: 44px; top: 17px; width: 10px; height: 10px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--pea-dark); z-index: 1; }
+.itinerary-card { flex: 1; background: var(--cream); border-radius: 12px; padding: 12px 14px; margin: 8px 0 8px 12px; }
+.itinerary-card-top { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+.itinerary-name { font-size: 14px; font-weight: 600; color: var(--coffee); flex: 1; line-height: 1.3; }
+.itype { font-size: 10px; padding: 2px 7px; border-radius: 10px; flex-shrink: 0; font-weight: 600; letter-spacing: 0.02em; margin-top: 1px; }
+.itype-食 { background: var(--rose-bg); color: var(--rose-dark); }
+.itype-動 { background: var(--amber-bg); color: #8C5A1A; }
+.itype-宿 { background: #EEF0F8; color: #4A4F8C; }
+.itinerary-desc { font-size: 12px; color: var(--coffee-light); line-height: 1.5; margin-bottom: 8px; }
+.nav-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--pea-dark); text-decoration: none; background: white; border: 1px solid var(--pea-light); border-radius: 20px; padding: 5px 12px; font-weight: 500; touch-action: manipulation; transition: background 0.12s; }
+.nav-btn:active { background: var(--pea-bg); transform: scale(0.97); }
+
+.spot-card { background: var(--cream); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; transition: transform 0.12s; }
+.spot-card:active { transform: scale(0.98); }
+.spot-emoji-wrap { width: 50px; height: 50px; background: var(--paper); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; border: 1px solid var(--cream-dark); }
+.spot-info { flex: 1; min-width: 0; }
+.spot-name { font-size: 14px; font-weight: 600; color: var(--coffee); margin-bottom: 2px; }
+.spot-desc { font-size: 12px; color: var(--coffee-light); }
+.spot-badge { font-size: 11px; padding: 3px 9px; border-radius: 10px; flex-shrink: 0; font-weight: 500; }
+.badge-out { background: var(--pea-bg); color: var(--pea-dark); }
+.badge-in { background: var(--amber-bg); color: #7A4E1A; }
+
+#page-photos { padding: 0 !important; overflow: hidden !important; }
+.photo-wall { position: relative; width: 100%; height: 100%; background: #c9a87c; background-image: radial-gradient(ellipse 80% 60% at 18% 25%, rgba(210,170,110,0.5) 0%, transparent 55%), radial-gradient(ellipse 60% 70% at 80% 75%, rgba(155,105,55,0.35) 0%, transparent 50%), repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px); display: flex; align-items: center; justify-content: center; }
+.photo-empty { text-align: center; color: rgba(255,255,255,0.75); font-family: var(--hand); font-size: 22px; line-height: 1.6; padding: 20px; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.polaroid { position: absolute; background: #fefcf8; padding: 8px 8px 30px; box-shadow: 1px 2px 4px rgba(0,0,0,0.1), 2px 8px 20px rgba(0,0,0,0.22); cursor: pointer; user-select: none; touch-action: manipulation; will-change: transform, opacity; }
+.polaroid img { display: block; width: 160px; height: 160px; object-fit: cover; background: var(--cream-dark); }
+#photoOverlay { position: fixed; inset: 0; z-index: 50; pointer-events: none; display: none; }
+#photoOverlay.active { display: block; }
+#photoRefreshBtn { position: fixed; bottom: calc(var(--tab-h) + var(--safe-bottom) + 14px); right: 18px; z-index: 55; width: 46px; height: 46px; border-radius: 50%; background: rgba(248,252,242,0.94); border: 1.5px solid var(--cream-dark); font-size: 22px; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,0.2); display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); touch-action: manipulation; transition: opacity 0.15s; }
+#photoRefreshBtn.visible { display: flex; }
+#photoRefreshBtn:active { opacity: 0.65; }
+.polaroid-caption { font-family: var(--hand); font-size: 13px; color: #777; text-align: center; padding-top: 5px; line-height: 1.2; height: 18px; overflow: hidden; }
+@keyframes placePhoto { 0% { opacity: 0; transform: scale(0.45) rotate(var(--r)) translateY(-60px); } 60% { opacity: 1; transform: scale(1.07) rotate(var(--r)) translateY(6px); } 80% { transform: scale(0.97) rotate(var(--r)) translateY(-2px); } 100% { opacity: 1; transform: scale(1) rotate(var(--r)); } }
+@keyframes removePhoto { 0% { opacity: 1; transform: scale(1) rotate(var(--r)); } 20% { transform: scale(1.1) rotate(calc(var(--r) + 6deg)); } 100% { opacity: 0; transform: scale(0.15) rotate(calc(var(--r) + 30deg)) translateY(80px); } }
+.polaroid.placing { animation: placePhoto 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.polaroid.removing { animation: removePhoto 0.38s ease-in forwards; pointer-events: none; }
+.lightbox { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.88); align-items: center; justify-content: center; }
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 90vh; border-radius: 8px; object-fit: contain; }
+.lightbox-close { position: absolute; top: 16px; right: 20px; font-size: 28px; color: white; background: none; border: none; cursor: pointer; }
+
+.page-section-title { font-family: var(--hand); font-size: 20px; font-weight: 700; color: var(--coffee); margin-bottom: 14px; padding-left: 4px; }
+
+.rate-btn { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; background: var(--amber-bg); border: 1px solid rgba(212,136,60,0.25); border-radius: 16px; padding: 4px 9px; color: #8C5A1A; cursor: pointer; font-family: var(--body); font-weight: 500; touch-action: manipulation; transition: background 0.12s; flex-shrink: 0; line-height: 1; }
+.rate-btn:active { background: #F0DFC8; transform: scale(0.95); }
+.rate-btn.has-rating { border-color: rgba(212,136,60,0.5); }
+
+.rate-sheet-bg { display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.45); }
+.rate-sheet-bg.open { display: block; }
+.rate-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(430px, 100%); background: var(--paper); border-radius: 20px 20px 0 0; padding: 8px 20px calc(28px + env(safe-area-inset-bottom, 0px)); z-index: 301; box-shadow: 0 -4px 24px rgba(0,0,0,0.15); }
+.rate-sheet-handle { width: 36px; height: 4px; background: var(--cream-dark); border-radius: 2px; margin: 0 auto 14px; }
+.rate-sheet-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+.rate-sheet-name { font-family: var(--hand); font-size: 20px; font-weight: 700; color: var(--coffee); flex: 1; line-height: 1.2; }
+.rate-sheet-close-btn { background: none; border: none; font-size: 22px; color: var(--coffee-light); cursor: pointer; padding: 0 0 0 10px; line-height: 1; }
+.rate-sheet-count { font-size: 12px; color: var(--coffee-light); margin-bottom: 10px; }
+.rate-sheet-revs { max-height: 100px; overflow-y: auto; margin-bottom: 12px; }
+.sheet-review-item { display: flex; align-items: baseline; gap: 6px; padding: 5px 0; border-bottom: 1px solid var(--cream-dark); font-size: 12px; }
+.sheet-review-item:last-child { border-bottom: none; }
+.sheet-review-text { color: var(--coffee); line-height: 1.4; }
+.star-row { display: flex; gap: 8px; font-size: 30px; margin-bottom: 12px; justify-content: flex-start; }
+.star { cursor: pointer; opacity: 0.22; transition: opacity 0.12s, transform 0.12s; touch-action: manipulation; }
+.star.lit { opacity: 1; }
+.review-textarea { width: 100%; border: 1.5px solid var(--cream-dark); border-radius: 12px; padding: 12px; font-family: var(--body); font-size: 14px; color: var(--coffee); background: var(--paper); resize: none; height: 72px; outline: none; margin-bottom: 10px; display: block; }
+.review-textarea:focus { border-color: var(--pea-dark); }
+.submit-btn { width: 100%; padding: 14px; background: var(--pea-dark); color: white; border: none; border-radius: 12px; font-family: var(--body); font-size: 15px; font-weight: 600; cursor: pointer; touch-action: manipulation; transition: opacity 0.15s; }
+.submit-btn:active { opacity: 0.75; }
+.submit-btn:disabled { background: var(--coffee-faint); cursor: not-allowed; }
 </style>
 </head>
 <body>
-<div class="phone-frame">
-  <div class="back-bar"><a href="../index.html" class="back-link">‹ 回到手帳</a></div>
-  <div class="page-content">
 
-    <div class="trip-cover">
-      <h1>台中行</h1>
-      <div class="cover-meta">2026年10月24–26日 · 台中 · 2人</div>
-      <div class="cover-stamps">
-        <div class="cover-stamp">夜市</div>
-        <div class="cover-stamp">文創</div>
-        <div class="cover-stamp">海線</div>
-        <div class="cover-stamp">秋遊</div>
+<div class="app">
+
+  <header class="app-header">
+    <a href="../index.html" class="back-btn">‹</a>
+    <div class="header-title">台中行</div>
+    <div class="header-meta">10/24–26<br>3天2夜</div>
+  </header>
+
+  <div class="pages">
+
+    <!-- PAGE: 總覽 -->
+    <div class="page active" id="page-home">
+      <div class="cover-card">
+        <h1>夜市・文創・風車・秋遊</h1>
+        <div class="dates">2026年10月24日（六）— 10月26日（一）・2人同遊</div>
+        <div class="cover-tags">
+          <span class="cover-tag">夜市</span>
+          <span class="cover-tag">文創</span>
+          <span class="cover-tag">高美濕地</span>
+          <span class="cover-tag">秋遊</span>
+        </div>
+      </div>
+
+      <div class="page-section-title">💰 預算概覽</div>
+      <div class="budget-hero">
+        <span class="budget-amount">NT$ 15,000</span>
+        <div class="budget-label">2人預估總預算</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-row-icon">🚄</div>
+        <div class="budget-row-name">高鐵往返 × 2（台北↔台中）</div>
+        <div class="budget-row-price">$2,200</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-row-icon">🏨</div>
+        <div class="budget-row-name">住宿 2晚</div>
+        <div class="budget-row-price">$7,000</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-row-icon">🍽️</div>
+        <div class="budget-row-name">餐飲（含逢甲夜市掃攤）</div>
+        <div class="budget-row-price">$4,500</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-row-icon">🎟️</div>
+        <div class="budget-row-name">門票 / 市區交通 / 雜費</div>
+        <div class="budget-row-price">$1,300</div>
       </div>
     </div>
 
-    <div class="section-box">
-      <div class="corner">經費</div>
-      <div class="budget-total">
-        <span class="amount">NT$ 15,000</span>
-        <span class="label">2人預估總預算</span>
-      </div>
-      <div class="budget-bar">
-        <div style="width:15%;background:#7A9A5A;height:100%"></div>
-        <div style="width:46%;background:#C97A6E;height:100%"></div>
-        <div style="width:30%;background:#527A38;height:100%"></div>
-        <div style="width:9%;background:#A45448;height:100%"></div>
-      </div>
-      <div class="budget-list">
-        <div class="budget-item"><div class="budget-dot" style="background:#7A9A5A"></div><span class="name">🚄 高鐵往返 × 2（台北↔台中）</span><span class="price">NT$ 2,200</span></div>
-        <div class="budget-item"><div class="budget-dot" style="background:#C97A6E"></div><span class="name">🏨 住宿 2晚</span><span class="price">NT$ 7,000</span></div>
-        <div class="budget-item"><div class="budget-dot" style="background:#527A38"></div><span class="name">🍽️ 餐飲（含逢甲夜市掃攤）</span><span class="price">NT$ 4,500</span></div>
-        <div class="budget-item"><div class="budget-dot" style="background:#A45448"></div><span class="name">🎟️ 門票 / 市區交通 / 雜費</span><span class="price">NT$ 1,300</span></div>
-      </div>
-    </div>
-
-    <div class="section-box">
-      <div class="corner">交通</div>
-      <div class="transport-item">
-        <div class="transport-icon">🚄</div>
-        <div class="transport-detail">
-          <strong>台北→台中 高鐵</strong>
-          <span>約 40分鐘・自由座 NT$700/人・建議搭早班車，下午先逛</span>
+    <!-- PAGE: 交通 -->
+    <div class="page" id="page-traffic">
+      <div class="page-section-title">🚄 高鐵</div>
+      <div class="transport-card">
+        <div class="transport-icon-wrap">🚄</div>
+        <div class="transport-body">
+          <div class="transport-title">台北→台中（去程）</div>
+          <div class="transport-sub">約 40分鐘・自由座 NT$700/人・建議搭早班車先逛</div>
         </div>
       </div>
-      <div class="transport-item">
-        <div class="transport-icon">🚇</div>
-        <div class="transport-detail">
-          <strong>台中捷運綠線</strong>
-          <span>高鐵站↔市區・科博館站・一中街・逢甲商圈站沿線皆可搭</span>
+      <div class="transport-card">
+        <div class="transport-icon-wrap">🚄</div>
+        <div class="transport-body">
+          <div class="transport-title">台中→台北（返程）</div>
+          <div class="transport-sub">10/26 傍晚班次・彈性搭乘</div>
         </div>
       </div>
-      <div class="transport-item">
-        <div class="transport-icon">🚗</div>
-        <div class="transport-detail">
-          <strong>海線景點（高美濕地）建議租車</strong>
-          <span>搭台中客運也可，班次不密，租機車更彈性</span>
+      <div class="page-section-title" style="margin-top:20px">🚇 市區交通</div>
+      <div class="transport-card">
+        <div class="transport-icon-wrap">🚇</div>
+        <div class="transport-body">
+          <div class="transport-title">台中捷運綠線</div>
+          <div class="transport-sub">高鐵站↔市區・科博館站・一中街・逢甲商圈站沿線暢遊</div>
         </div>
       </div>
-    </div>
-
-    <div class="section-box">
-      <div class="corner">行程</div>
-
-      <div class="day-header">
-        <span class="day-num">D1</span>
-        <div class="day-title">文創漫步 · 宮原眼科 · 逢甲夜市</div>
-        <span class="day-date">10/24</span>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="time">10:00</div>
-          <h5>高鐵出發台中<span class="item-type move">動</span></h5>
-          <p>台北→台中約 40分鐘，入住後出發</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">12:00</div>
-          <h5>第二市場 + 周記肉燥飯午餐<span class="item-type food">食</span></h5>
-          <p>台中最古老市場・老字號台式小吃・紅燒肉・魯肉飯・肉圓</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">14:00</div>
-          <h5>宮原眼科<span class="item-type">景</span></h5>
-          <p>日出商行打造・網美冰淇淋拍照點・台中必買伴手禮・不吃也要進去拍</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">15:30</div>
-          <h5>審計新村<span class="item-type">景</span></h5>
-          <p>眷村改造文創基地・假日市集・咖啡廳・設計小物・免費逛</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">17:00</div>
-          <h5>台中國家歌劇院外觀打卡<span class="item-type">景</span></h5>
-          <p>建築大師伊東豊雄設計・曲面白色建築・勤美誠品商圈</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">18:30</div>
-          <h5>逢甲夜市<span class="item-type food">食</span></h5>
-          <p>台中最大夜市・大麻花・懶人蝦・烤玉米・雞排・撐到走不動才回去</p>
-        </div>
-      </div>
-
-      <div class="day-header">
-        <span class="day-num">D2</span>
-        <div class="day-title">彩虹眷村 · 東海大學 · 一中街</div>
-        <span class="day-date">10/25</span>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="time">09:00</div>
-          <h5>台中早餐（在地早點）<span class="item-type food">食</span></h5>
-          <p>逢甲周邊茶飲店・或麵包坊隨性吃</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">10:00</div>
-          <h5>彩虹眷村<span class="item-type">景</span></h5>
-          <p>黃爺爺手繪彩色壁畫・奇異畫風・免費入場・拍照很有趣</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">11:30</div>
-          <h5>東海大學 + 路思義教堂<span class="item-type">景</span></h5>
-          <p>台灣最美大學校園・雙曲面白色教堂・銀杏大道（10月落葉季！）</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">13:00</div>
-          <h5>東海商圈午餐<span class="item-type food">食</span></h5>
-          <p>東海豆腐・義大利麵・巷弄咖啡廳下午茶</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">15:00</div>
-          <h5>自然科學博物館<span class="item-type">景</span></h5>
-          <p>恐龍模型・熱帶雨林溫室・台中科博館（可選 IMAX 穹頂劇場）</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">18:00</div>
-          <h5>一中街夜市 / 忠孝夜市<span class="item-type food">食</span></h5>
-          <p>台中學生夜市・鐵板燒・旱溪夜市（如住東區）</p>
-        </div>
-      </div>
-
-      <div class="day-header">
-        <span class="day-num">D3</span>
-        <div class="day-title">高美濕地 · 三井 Outlet · 返程</div>
-        <span class="day-date">10/26</span>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="time">07:30</div>
-          <h5>高美濕地（日出 / 早潮）<span class="item-type">景</span></h5>
-          <p>10月秋高氣爽・風車群・夕陽退潮最美・早起人少更好拍</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">10:00</div>
-          <h5>清水休息站 / 海線景觀<span class="item-type">景</span></h5>
-          <p>台灣最美休息站之一・海景咖啡・小農市集</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">12:00</div>
-          <h5>三井 Outlet Park 台中港午餐<span class="item-type food">食</span></h5>
-          <p>海線大型 Outlet・美食廣場・日系品牌・順便購物</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">15:00</div>
-          <h5>帶伴手禮回家<span class="item-type food">食</span></h5>
-          <p>宮原眼科鳳梨酥・太陽餅・一心豆干・台中日出千層派</p>
-        </div>
-        <div class="timeline-item">
-          <div class="time">17:00</div>
-          <h5>高鐵返台北<span class="item-type move">動</span></h5>
-          <p>台中高鐵站→台北，約 40分鐘</p>
+      <div class="transport-card">
+        <div class="transport-icon-wrap">🚗</div>
+        <div class="transport-body">
+          <div class="transport-title">海線景點（高美濕地）租車</div>
+          <div class="transport-sub">台中客運班次不密，租機車更彈性，D3 清晨出發</div>
         </div>
       </div>
     </div>
 
-    <div class="section-box">
-      <div class="corner">必訪景點</div>
-      <div class="activity-grid">
-        <div class="activity-card"><div class="activity-emoji">🍦</div><div class="activity-info"><h6>宮原眼科</h6><p>冰淇淋打卡・伴手禮・最台中</p></div><span class="activity-badge indoor">室內</span></div>
-        <div class="activity-card"><div class="activity-emoji">🌈</div><div class="activity-info"><h6>彩虹眷村</h6><p>黃爺爺手繪彩色壁畫・免費</p></div><span class="activity-badge">室外</span></div>
-        <div class="activity-card"><div class="activity-emoji">⛵</div><div class="activity-info"><h6>高美濕地</h6><p>風車・夕陽・退潮走在水面上</p></div><span class="activity-badge">室外</span></div>
-        <div class="activity-card"><div class="activity-emoji">🏫</div><div class="activity-info"><h6>東海大學・路思義教堂</h6><p>最美大學・10月銀杏季</p></div><span class="activity-badge">室外</span></div>
-        <div class="activity-card"><div class="activity-emoji">🎭</div><div class="activity-info"><h6>台中國家歌劇院</h6><p>伊東豊雄建築・勤美誠品商圈</p></div><span class="activity-badge">室外</span></div>
-        <div class="activity-card"><div class="activity-emoji">🌙</div><div class="activity-info"><h6>逢甲夜市</h6><p>台中最大夜市・必吃大麻花</p></div><span class="activity-badge">室外</span></div>
-        <div class="activity-card"><div class="activity-emoji">🏬</div><div class="activity-info"><h6>審計新村</h6><p>眷村文創・假日市集</p></div><span class="activity-badge">室外</span></div>
-        <div class="activity-card"><div class="activity-emoji">🦕</div><div class="activity-info"><h6>自然科學博物館</h6><p>恐龍・熱帶雨林・科博館</p></div><span class="activity-badge indoor">室內</span></div>
+    <!-- PAGE: 行程 -->
+    <div class="page" id="page-itinerary">
+      <div class="day-tabs" id="dayTabs">
+        <button class="day-tab-btn active" data-day="d1">D1 10/24</button>
+        <button class="day-tab-btn" data-day="d2">D2 10/25</button>
+        <button class="day-tab-btn" data-day="d3">D3 10/26</button>
+      </div>
+
+      <!-- D1 -->
+      <div class="day-panel active" id="day-d1">
+        <div class="day-banner">
+          <div class="day-banner-num">D1</div>
+          <div class="day-banner-info">
+            <div class="day-banner-title">文創漫步 · 宮原眼科 · 逢甲夜市</div>
+            <div class="day-banner-date">10月24日（六）</div>
+          </div>
+        </div>
+        <div class="itinerary-list">
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">10:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">高鐵出發台中</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">台北→台中約 40分鐘，入住 check-in 後出發</div>
+              <a class="nav-btn" href="https://www.thsrc.com.tw" target="_blank" rel="noopener">🚄 高鐵訂票</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">12:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">第二市場 + 周記肉燥飯</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">台中最古老市場・老字號台式小吃・紅燒肉・魯肉飯・肉圓</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E5%8F%B0%E4%B8%AD%E7%AC%AC%E4%BA%8C%E5%B8%82%E5%A0%B4" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">14:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">宮原眼科</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">日出商行打造・冰淇淋拍照打卡點・台中必買伴手禮</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E5%AE%AE%E5%8E%9F%E7%9C%BC%E7%A7%91+%E5%8F%B0%E4%B8%AD" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">15:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">審計新村</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">眷村改造文創基地・假日市集・咖啡廳・設計小物・免費逛</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E5%AF%A9%E8%A8%88%E6%96%B0%E6%9D%91+%E5%8F%B0%E4%B8%AD" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">17:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">台中國家歌劇院</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">建築大師伊東豊雄設計・曲面白色建築・勤美誠品商圈</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E5%8F%B0%E4%B8%AD%E5%9C%8B%E5%AE%B6%E6%AD%8C%E5%8A%87%E9%99%A2" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">18:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">逢甲夜市</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">台中最大夜市・大麻花・懶人蝦・烤玉米・雞排・撐到走不動</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E9%80%A2%E7%94%B2%E5%A4%9C%E5%B8%82" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- D2 -->
+      <div class="day-panel" id="day-d2">
+        <div class="day-banner">
+          <div class="day-banner-num">D2</div>
+          <div class="day-banner-info">
+            <div class="day-banner-title">彩虹眷村 · 東海大學 · 科博館</div>
+            <div class="day-banner-date">10月25日（日）</div>
+          </div>
+        </div>
+        <div class="itinerary-list">
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">09:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">台中早餐（在地早點）</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">逢甲周邊茶飲店・或麵包坊隨性吃</div>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">10:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">彩虹眷村</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">黃爺爺手繪彩色壁畫・奇異畫風・免費入場・拍照很有趣</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E5%BD%A9%E8%99%B9%E7%9C%B7%E6%9D%91+%E5%8F%B0%E4%B8%AD" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">11:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">東海大學 + 路思義教堂</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">台灣最美大學・雙曲面白色教堂・銀杏大道（10月落葉季！）</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E8%B7%AF%E6%80%9D%E7%BE%A9%E6%95%99%E5%A0%82+%E5%8F%B0%E4%B8%AD" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">13:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">東海商圈午餐</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">東海豆腐・義大利麵・巷弄咖啡廳下午茶</div>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">15:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">自然科學博物館</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">恐龍模型・熱帶雨林溫室・台中科博館（可選 IMAX 穹頂劇場）</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E8%87%AA%E7%84%B6%E7%A7%91%E5%AD%B8%E5%8D%9A%E7%89%A9%E9%A4%A8+%E5%8F%B0%E4%B8%AD" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">18:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">一中街夜市 / 忠孝夜市</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">台中學生夜市・鐵板燒・各式台式小吃</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E4%B8%80%E4%B8%AD%E8%A1%97%E5%95%86%E5%9C%88+%E5%8F%B0%E4%B8%AD" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- D3 -->
+      <div class="day-panel" id="day-d3">
+        <div class="day-banner">
+          <div class="day-banner-num">D3</div>
+          <div class="day-banner-info">
+            <div class="day-banner-title">高美濕地 · 三井 Outlet · 返程</div>
+            <div class="day-banner-date">10月26日（一）</div>
+          </div>
+        </div>
+        <div class="itinerary-list">
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">07:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">高美濕地（日出 / 早潮）</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">10月秋高氣爽・風車群・早起人少更好拍・退潮走在水面上</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E7%BE%8E%E6%BF%95%E5%9C%B0" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">10:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">清水休息站 / 海線景觀</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">台灣最美休息站之一・海景咖啡・小農市集</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E6%B8%85%E6%B0%B4%E6%9C%8D%E5%8B%99%E5%8D%80" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">12:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">三井 Outlet Park 台中港</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">海線大型 Outlet・美食廣場・日系品牌・順便購物</div>
+              <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E4%B8%89%E4%BA%95Outlet+%E5%8F%B0%E4%B8%AD%E6%B8%AF" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">14:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">買伴手禮回家</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">宮原眼科鳳梨酥・太陽餅・一心豆干・日出千層派</div>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">17:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">高鐵返台北</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">台中高鐵站→台北，約 40分鐘・旅程圓滿 🎉</div>
+              <a class="nav-btn" href="https://www.thsrc.com.tw" target="_blank" rel="noopener">🚄 高鐵訂票</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-  </div>
-  <div class="footer-note">台中秋遊，風車與夕陽</div>
+    <!-- PAGE: 景點 -->
+    <div class="page" id="page-spots">
+      <div class="page-section-title">📍 必訪景點</div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🍦</div>
+        <div class="spot-info"><div class="spot-name">宮原眼科</div><div class="spot-desc">冰淇淋打卡・伴手禮・最台中</div></div>
+        <span class="spot-badge badge-in">室內</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🌈</div>
+        <div class="spot-info"><div class="spot-name">彩虹眷村</div><div class="spot-desc">黃爺爺手繪彩色壁畫・免費</div></div>
+        <span class="spot-badge badge-out">室外</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">⛵</div>
+        <div class="spot-info"><div class="spot-name">高美濕地</div><div class="spot-desc">風車・夕陽・退潮走在水面上</div></div>
+        <span class="spot-badge badge-out">室外</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🏫</div>
+        <div class="spot-info"><div class="spot-name">東海大學・路思義教堂</div><div class="spot-desc">最美大學・10月銀杏季</div></div>
+        <span class="spot-badge badge-out">室外</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🎭</div>
+        <div class="spot-info"><div class="spot-name">台中國家歌劇院</div><div class="spot-desc">伊東豊雄建築・勤美誠品商圈</div></div>
+        <span class="spot-badge badge-out">室外</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🌙</div>
+        <div class="spot-info"><div class="spot-name">逢甲夜市</div><div class="spot-desc">台中最大夜市・必吃大麻花</div></div>
+        <span class="spot-badge badge-out">室外</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🏬</div>
+        <div class="spot-info"><div class="spot-name">審計新村</div><div class="spot-desc">眷村文創・假日市集</div></div>
+        <span class="spot-badge badge-out">室外</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🦕</div>
+        <div class="spot-info"><div class="spot-name">自然科學博物館</div><div class="spot-desc">恐龍・熱帶雨林・科博館</div></div>
+        <span class="spot-badge badge-in">室內</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🛍️</div>
+        <div class="spot-info"><div class="spot-name">三井 Outlet Park 台中港</div><div class="spot-desc">海線大型 Outlet・日系品牌</div></div>
+        <span class="spot-badge badge-in">室內</span>
+      </div>
+    </div>
+
+    <!-- PAGE: 照片 -->
+    <div class="page" id="page-photos">
+      <div class="photo-wall" id="photoWall">
+        <div class="photo-empty">📷<br>照片規劃中<br><span style="font-size:16px;opacity:0.8">旅行後再來補上♡</span></div>
+      </div>
+    </div>
+
+    <!-- 評分底部彈窗 -->
+    <div class="rate-sheet-bg" id="rateSheetBg">
+      <div class="rate-sheet">
+        <div class="rate-sheet-handle"></div>
+        <div class="rate-sheet-header">
+          <div class="rate-sheet-name" id="rateSheetName"></div>
+          <button class="rate-sheet-close-btn" id="rateSheetClose">✕</button>
+        </div>
+        <div class="rate-sheet-count" id="rateSheetCount"></div>
+        <div class="rate-sheet-revs" id="rateSheetRevs"></div>
+        <div class="star-row" id="rateSheetStars">
+          <span class="star sheet-star" data-v="1">⭐</span>
+          <span class="star sheet-star" data-v="2">⭐</span>
+          <span class="star sheet-star" data-v="3">⭐</span>
+          <span class="star sheet-star" data-v="4">⭐</span>
+          <span class="star sheet-star" data-v="5">⭐</span>
+        </div>
+        <textarea class="review-textarea" id="rateSheetText" placeholder="寫下感想（選填）…"></textarea>
+        <button class="submit-btn" id="rateSheetBtn" disabled>請先選擇星數</button>
+      </div>
+    </div>
+
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lightboxClose">✕</button>
+      <img id="lightboxImg" src="" alt="">
+    </div>
+
+  </div><!-- /pages -->
+
+  <nav class="tab-bar" aria-label="主選單">
+    <button class="tab-btn active" data-page="page-home" type="button"><span class="tab-icon">🏠</span><span class="tab-label">總覽</span></button>
+    <button class="tab-btn" data-page="page-traffic" type="button"><span class="tab-icon">🚄</span><span class="tab-label">交通</span></button>
+    <button class="tab-btn" data-page="page-itinerary" type="button"><span class="tab-icon">📅</span><span class="tab-label">行程</span></button>
+    <button class="tab-btn" data-page="page-spots" type="button"><span class="tab-icon">📍</span><span class="tab-label">景點</span></button>
+    <button class="tab-btn" data-page="page-photos" type="button"><span class="tab-icon">📷</span><span class="tab-label">照片</span></button>
+  </nav>
+
 </div>
+
+<div id="photoOverlay"></div>
+<button id="photoRefreshBtn" onclick="resetPhotoWall()">↺</button>
+
+<script>
+const tabBtns = document.querySelectorAll('.tab-btn');
+const pages = document.querySelectorAll('.page');
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.page;
+    tabBtns.forEach(b => b.classList.remove('active'));
+    pages.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(target).classList.add('active');
+    const overlay = document.getElementById('photoOverlay');
+    const refreshBtn = document.getElementById('photoRefreshBtn');
+    if (target === 'page-photos') { overlay.classList.add('active'); refreshBtn.classList.add('visible'); }
+    else { overlay.classList.remove('active'); refreshBtn.classList.remove('visible'); }
+  });
+});
+
+const photoData = [];
+function initPhotoWall() {}
+function resetPhotoWall() {}
+
+document.getElementById('lightboxClose').addEventListener('click', () => document.getElementById('lightbox').classList.remove('open'));
+document.getElementById('lightbox').addEventListener('click', e => { if (e.target === document.getElementById('lightbox')) document.getElementById('lightbox').classList.remove('open'); });
+
+const dayTabBtns = document.querySelectorAll('.day-tab-btn');
+const dayPanels = document.querySelectorAll('.day-panel');
+dayTabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const day = btn.dataset.day;
+    dayTabBtns.forEach(b => b.classList.remove('active'));
+    dayPanels.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('day-' + day).classList.add('active');
+  });
+});
+
+const SB_URL = 'https://cmwtceczabbszhdgvwcj.supabase.co';
+const SB_KEY = 'sb_publishable_hDrADaLoZfAGDJH1i_JeHw_OSv_oqAu';
+const ITEM_PREFIX = 'taichung2026__';
+let itemReviews = {};
+
+async function loadItemReviews() {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.${ITEM_PREFIX}*&order=created_at.desc`, { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } });
+    const data = await res.json();
+    if (!Array.isArray(data)) return;
+    itemReviews = {};
+    data.forEach(r => { if (!itemReviews[r.trip_id]) itemReviews[r.trip_id] = []; itemReviews[r.trip_id].push(r); });
+    refreshRateBtns();
+  } catch(e) { console.warn('評分載入失敗', e); }
+}
+
+function refreshRateBtns() {
+  document.querySelectorAll('[data-item-id]').forEach(card => {
+    const revs = itemReviews[card.dataset.itemId] || [];
+    const btn = card.querySelector('.rate-btn'); if (!btn) return;
+    const ratings = revs.filter(r => r.rating).map(r => r.rating);
+    if (ratings.length > 0) { const avg = (ratings.reduce((a,b) => a+b,0)/ratings.length).toFixed(1); btn.innerHTML = `⭐ ${avg}`; btn.classList.add('has-rating'); }
+    else { btn.innerHTML = '⭐ 評分'; btn.classList.remove('has-rating'); }
+  });
+}
+
+function injectRateButtons() {
+  document.querySelectorAll('.itinerary-card').forEach(card => {
+    const nameEl = card.querySelector('.itinerary-name'); if (!nameEl) return;
+    const name = nameEl.textContent.trim(); const itemId = ITEM_PREFIX + name; card.dataset.itemId = itemId;
+    const wrap = document.createElement('div'); wrap.style.cssText = 'display:flex;justify-content:flex-end;margin-top:8px';
+    const btn = document.createElement('button'); btn.className = 'rate-btn'; btn.innerHTML = '⭐ 評分'; btn.type = 'button';
+    btn.addEventListener('click', e => { e.stopPropagation(); openRateSheet(itemId, name); });
+    wrap.appendChild(btn); card.appendChild(wrap);
+  });
+  document.querySelectorAll('.spot-card').forEach(card => {
+    const nameEl = card.querySelector('.spot-name'); if (!nameEl) return;
+    const name = nameEl.textContent.trim(); const itemId = ITEM_PREFIX + name; card.dataset.itemId = itemId;
+    const btn = document.createElement('button'); btn.className = 'rate-btn'; btn.innerHTML = '⭐ 評分'; btn.type = 'button';
+    btn.style.marginLeft = '8px';
+    btn.addEventListener('click', e => { e.stopPropagation(); openRateSheet(itemId, name); });
+    card.appendChild(btn);
+  });
+  loadItemReviews();
+}
+
+let sheetItemId = '', sheetRating = 0;
+const rateSheetBg = document.getElementById('rateSheetBg');
+const rateSheetName = document.getElementById('rateSheetName');
+const rateSheetCount = document.getElementById('rateSheetCount');
+const rateSheetRevs = document.getElementById('rateSheetRevs');
+const rateSheetStars = document.getElementById('rateSheetStars');
+const rateSheetText = document.getElementById('rateSheetText');
+const rateSheetBtn = document.getElementById('rateSheetBtn');
+
+function openRateSheet(itemId, name) {
+  sheetItemId = itemId; sheetRating = 0; rateSheetName.textContent = name; rateSheetText.value = '';
+  rateSheetBtn.disabled = true; rateSheetBtn.textContent = '請先選擇星數';
+  rateSheetStars.querySelectorAll('.sheet-star').forEach(s => s.classList.remove('lit'));
+  const revs = itemReviews[itemId] || [];
+  if (revs.length > 0) {
+    const ratings = revs.filter(r => r.rating).map(r => r.rating);
+    const avg = ratings.length ? (ratings.reduce((a,b) => a+b,0)/ratings.length).toFixed(1) : '–';
+    rateSheetCount.textContent = `平均 ${avg} 分・共 ${revs.length} 則`;
+    rateSheetRevs.innerHTML = revs.slice(0,3).map(r => `<div class="sheet-review-item">${r.rating?`<span>${'⭐'.repeat(r.rating)}</span>`:''}${r.comment?`<span class="sheet-review-text">${escHtml(r.comment)}</span>`:''}</div>`).join('');
+  } else { rateSheetCount.textContent = '還沒有評分，成為第一個吧！'; rateSheetRevs.innerHTML = ''; }
+  rateSheetBg.classList.add('open');
+}
+rateSheetBg.addEventListener('click', e => { if (e.target === rateSheetBg) rateSheetBg.classList.remove('open'); });
+document.getElementById('rateSheetClose').addEventListener('click', () => rateSheetBg.classList.remove('open'));
+rateSheetStars.querySelectorAll('.sheet-star').forEach(star => {
+  star.addEventListener('click', () => {
+    sheetRating = parseInt(star.dataset.v);
+    rateSheetStars.querySelectorAll('.sheet-star').forEach(s => s.classList.toggle('lit', parseInt(s.dataset.v) <= sheetRating));
+    rateSheetBtn.disabled = false; rateSheetBtn.textContent = '送出評分';
+  });
+});
+rateSheetBtn.addEventListener('click', async () => {
+  if (!sheetRating) return;
+  rateSheetBtn.disabled = true; rateSheetBtn.textContent = '送出中…';
+  const comment = rateSheetText.value.trim() || null;
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/trip_reviews`, { method: 'POST', headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify({ trip_id: sheetItemId, rating: sheetRating, comment }) });
+    if (res.ok || res.status === 201) {
+      if (!itemReviews[sheetItemId]) itemReviews[sheetItemId] = [];
+      itemReviews[sheetItemId].unshift({ trip_id: sheetItemId, rating: sheetRating, comment, created_at: new Date().toISOString() });
+      refreshRateBtns(); rateSheetBtn.textContent = '謝謝你的評分 ✓';
+      setTimeout(() => rateSheetBg.classList.remove('open'), 1200);
+    } else { rateSheetBtn.textContent = '送出失敗，請重試'; rateSheetBtn.disabled = false; }
+  } catch { rateSheetBtn.textContent = '送出失敗，請重試'; rateSheetBtn.disabled = false; }
+});
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+injectRateButtons();
+</script>
+
 </body>
 </html>
