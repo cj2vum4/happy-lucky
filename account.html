@@ -905,7 +905,7 @@ function closeSheet() {
   document.getElementById('overlay').classList.remove('open');
 }
 
-document.getElementById('fab-btn').addEventListener('click', openSheet);
+document.getElementById('fab-btn').addEventListener('click', () => openSheet());
 document.getElementById('overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('overlay')) closeSheet();
 });
