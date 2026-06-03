@@ -197,6 +197,16 @@ body {
   align-items: center; justify-content: center;
 }
 .ent-del:active { background: #FFE5E5; color: var(--accent); }
+.entry-item { cursor: pointer; }
+
+/* Sheet mode label */
+.sheet-mode {
+  text-align: center;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--text2);
+  padding: 2px 0 4px;
+}
+.sheet-mode.editing { color: var(--accent); }
 
 /* ─── Month summary card ─────────────────────────────────────── */
 .month-card {
@@ -494,6 +504,7 @@ body {
 <div class="overlay" id="overlay">
   <div class="sheet" id="sheet">
     <div class="sheet-handle"></div>
+    <div class="sheet-mode" id="sheet-mode">新增記錄</div>
     <div class="type-toggle">
       <button class="type-btn active exp" data-type="expense">💸 支出</button>
       <button class="type-btn inc" data-type="income">💰 收入</button>
@@ -552,6 +563,7 @@ let selCat     = EXP_CATS[0].key;
 let amtStr     = '0';
 let barChart   = null;
 let pieChart   = null;
+let editingId  = null;   // null = add mode, string = edit mode
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
 const DAY_NAMES = ['日','一','二','三','四','五','六'];
@@ -574,7 +586,7 @@ async function sbReq(method, path, body) {
     headers: {
       apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
       'Content-Type': 'application/json',
-      ...(method === 'POST' ? { Prefer: 'return=representation' } : {}),
+      ...(['POST','PATCH'].includes(method) ? { Prefer: 'return=representation' } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -601,6 +613,13 @@ async function saveEntry(entry) {
 async function deleteEntry(id) {
   await sbReq('DELETE', `${TABLE}?id=eq.${id}`);
   allEntries = allEntries.filter(e => e.id !== id);
+  renderAll();
+}
+
+async function updateEntry(id, data) {
+  const [updated] = await sbReq('PATCH', `${TABLE}?id=eq.${id}`, data);
+  const idx = allEntries.findIndex(e => e.id === id);
+  if (idx !== -1) allEntries[idx] = updated;
   renderAll();
 }
 
@@ -822,27 +841,60 @@ function renderEntry(e) {
   const sign  = e.type==='expense' ? '-' : '+';
   const cls   = e.type==='expense' ? 'exp' : 'inc';
   return `
-    <div class="entry-item">
+    <div class="entry-item" onclick="editEntry('${e.id}')">
       <div class="ent-icon" style="background:${info.bg}">${info.emoji}</div>
       <div class="ent-body">
         <div class="ent-cat">${e.category}</div>
-        ${e.note ? `<div class="ent-note">${e.note}</div>` : ''}
+        ${e.note ? `<div class="ent-note">${e.note}</div>` : '<div class="ent-note" style="color:var(--text3)">點擊編輯</div>'}
       </div>
       <div class="ent-right">
         <div class="ent-amt ${cls}">${sign}$${fmtAmt(e.amount)}</div>
-        <button class="ent-del" onclick="confirmDel('${e.id}')">✕</button>
+        <button class="ent-del" onclick="event.stopPropagation();confirmDel('${e.id}')">✕</button>
       </div>
     </div>`;
 }
 
 // ─── Sheet logic ──────────────────────────────────────────────────────────────
-function openSheet() {
-  amtStr = '0';
-  document.getElementById('note-inp').value = '';
-  document.getElementById('amt-display').textContent = '0';
+function openSheet(entry = null) {
+  editingId = entry ? entry.id : null;
+
+  // Set mode label
+  const modeEl = document.getElementById('sheet-mode');
+  modeEl.textContent = entry ? '編輯記錄' : '新增記錄';
+  modeEl.className = entry ? 'sheet-mode editing' : 'sheet-mode';
+
+  // Set type
+  curType = entry ? entry.type : 'expense';
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  const typeBtn = document.querySelector(`.type-btn[data-type="${curType}"]`);
+  typeBtn.classList.add('active');
+  const cls = curType === 'expense' ? 'exp' : 'inc';
+  document.getElementById('amt-display').className = `amt-display ${cls}`;
+  document.getElementById('save-btn').className    = `nk save ${cls}`;
+  document.getElementById('save-btn').textContent  = entry ? '更新' : '確認';
+
+  // Set amount
+  amtStr = entry ? String(entry.amount) : '0';
+  document.getElementById('amt-display').textContent = amtStr;
+
+  // Set note
+  document.getElementById('note-inp').value = entry ? (entry.note || '') : '';
+
+  // Build category grid pre-selecting the right one
+  const cats = curType === 'expense' ? EXP_CATS : INC_CATS;
+  selCat = entry ? entry.category : cats[0].key;
+  buildCatGrid();
+
   document.getElementById('overlay').classList.add('open');
 }
+
+function editEntry(id) {
+  const entry = allEntries.find(e => e.id === id);
+  if (entry) openSheet(entry);
+}
+
 function closeSheet() {
+  editingId = null;
   document.getElementById('overlay').classList.remove('open');
 }
 
@@ -855,6 +907,7 @@ document.getElementById('overlay').addEventListener('click', e => {
 document.querySelectorAll('.type-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     curType = btn.dataset.type;
+    selCat = null;   // force reset so buildCatGrid picks the first valid cat
     document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const cls = curType === 'expense' ? 'exp' : 'inc';
@@ -866,7 +919,8 @@ document.querySelectorAll('.type-btn').forEach(btn => {
 
 function buildCatGrid() {
   const cats = curType === 'expense' ? EXP_CATS : INC_CATS;
-  selCat = cats[0].key;
+  // Only reset selCat if the current value isn't valid for this type
+  if (!cats.find(c => c.key === selCat)) selCat = cats[0].key;
   const cls = curType === 'expense' ? 'exp' : 'inc';
   document.getElementById('cat-grid').innerHTML = cats.map(c => `
     <button class="cat-btn${c.key===selCat?' sel '+cls:''}" data-cat="${c.key}">
@@ -904,19 +958,24 @@ document.getElementById('save-btn').addEventListener('click', async () => {
   const amt = parseFloat(amtStr);
   if (!amt || amt <= 0) { alert('請輸入金額'); return; }
   const btn = document.getElementById('save-btn');
+  const origLabel = btn.textContent;
   btn.textContent = '…'; btn.disabled = true;
+  const data = {
+    type: curType, amount: amt,
+    category: selCat,
+    note: document.getElementById('note-inp').value.trim(),
+  };
   try {
-    await saveEntry({
-      type: curType, amount: amt,
-      category: selCat,
-      note: document.getElementById('note-inp').value.trim(),
-      date: ymd(viewDate),
-    });
+    if (editingId) {
+      await updateEntry(editingId, data);
+    } else {
+      await saveEntry({ ...data, date: ymd(viewDate) });
+    }
     closeSheet();
   } catch(e) {
     alert('儲存失敗：' + e.message);
   } finally {
-    btn.textContent = '確認'; btn.disabled = false;
+    btn.textContent = origLabel; btn.disabled = false;
   }
 });
 
