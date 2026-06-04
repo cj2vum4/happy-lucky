@@ -759,6 +759,7 @@
   .spot-cat-badge.食物    { background: #FDF3E7; color: #8C5A1A; border-color: rgba(212,136,60,0.35); }
   .spot-cat-badge.室內景點 { background: #EEF0F8; color: #4A4F8C; border-color: rgba(74,79,140,0.3); }
   .spot-cat-badge.室外景點 { background: #EEF4E3; color: #5E7338; border-color: rgba(94,115,56,0.3); }
+  .spot-cat-badge.住宿    { background: #FDF0FB; color: #7B3FA0; border-color: rgba(123,63,160,0.3); }
 
   /* ── Spot rating modal ─────────────────────────────────── */
   .spot-result-card { cursor: pointer; }
@@ -820,17 +821,27 @@
     display: flex; gap: 10px;
   }
   .smd-btn-go {
-    flex: 1; padding: 13px;
+    flex: 1; padding: 13px 10px;
     background: var(--pea, #7B9E6B); color: white;
     border: none; border-radius: 14px;
     font-size: 14px; font-weight: 700; font-family: inherit;
     cursor: pointer; text-align: center; text-decoration: none;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
+    display: flex; align-items: center; justify-content: center;
     touch-action: manipulation;
   }
   .smd-btn-go:active { opacity: 0.85; }
+  .smd-btn-map {
+    flex: 1; padding: 13px 10px;
+    background: #E8F0FE; color: #1A73E8;
+    border: none; border-radius: 14px;
+    font-size: 14px; font-weight: 700; font-family: inherit;
+    cursor: pointer; text-align: center; text-decoration: none;
+    display: flex; align-items: center; justify-content: center;
+    touch-action: manipulation;
+  }
+  .smd-btn-map:active { opacity: 0.85; }
   .smd-btn-close {
-    padding: 13px 16px; background: #F0EAE0;
+    padding: 13px 14px; background: #F0EAE0;
     border: none; border-radius: 14px;
     font-size: 14px; color: #8C7660; font-family: inherit;
     cursor: pointer; touch-action: manipulation;
@@ -914,6 +925,7 @@
         <button class="chip" data-cat="食物">🍜 食物</button>
         <button class="chip" data-cat="室內景點">🏛️ 室內景點</button>
         <button class="chip" data-cat="室外景點">🌿 室外景點</button>
+        <button class="chip" data-cat="住宿">🏨 住宿</button>
       </div>
     </div>
 
@@ -940,7 +952,8 @@
     </div>
     <div class="spot-modal-foot">
       <button class="smd-btn-close" id="spot-modal-close">關閉</button>
-      <a class="smd-btn-go" id="spot-modal-go" href="">前往行程頁 →</a>
+      <a class="smd-btn-map" id="spot-modal-map" href="" target="_blank" rel="noopener">🗺 導航</a>
+      <a class="smd-btn-go" id="spot-modal-go" href="">行程頁 →</a>
     </div>
   </div>
 </div>
@@ -1382,7 +1395,9 @@ async function openSpotModal(i) {
         : `<span class="smd-unrated">尚未評分</span>`}
     </div>`;
 
-  document.getElementById('spot-modal-go').href = spot.tripFile;
+  document.getElementById('spot-modal-go').href  = spot.tripFile;
+  document.getElementById('spot-modal-map').href  =
+    spot.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(spot.name + ' ' + spot.region)}`;
   document.getElementById('spot-modal-reviews').innerHTML =
     '<div class="smd-loading">載入中…</div>';
   document.getElementById('spot-modal-bg').classList.add('open');
