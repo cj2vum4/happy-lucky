@@ -759,6 +759,83 @@
   .spot-cat-badge.食物    { background: #FDF3E7; color: #8C5A1A; border-color: rgba(212,136,60,0.35); }
   .spot-cat-badge.室內景點 { background: #EEF0F8; color: #4A4F8C; border-color: rgba(74,79,140,0.3); }
   .spot-cat-badge.室外景點 { background: #EEF4E3; color: #5E7338; border-color: rgba(94,115,56,0.3); }
+
+  /* ── Spot rating modal ─────────────────────────────────── */
+  .spot-result-card { cursor: pointer; }
+  .spot-modal-bg {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    background: rgba(30,20,10,0.52);
+  }
+  .spot-modal-bg.open { display: block; }
+  .spot-modal {
+    position: fixed; bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    background: #FDFAF5;
+    border-radius: 24px 24px 0 0;
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
+    animation: modalUp 0.32s cubic-bezier(0.32,0.72,0,1);
+    max-height: 82vh; display: flex; flex-direction: column;
+  }
+  @keyframes modalUp {
+    from { transform: translateX(-50%) translateY(100%); }
+    to   { transform: translateX(-50%) translateY(0); }
+  }
+  .spot-modal-handle {
+    text-align: center; padding: 12px 0 4px; flex-shrink: 0;
+  }
+  .spot-modal-handle::before {
+    content: ''; display: inline-block;
+    width: 36px; height: 4px;
+    background: #D4C8B0; border-radius: 2px;
+  }
+  .spot-modal-head { padding: 8px 20px 14px; flex-shrink: 0; border-bottom: 1px solid #EDE4CC; }
+  .smd-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .smd-emoji { font-size: 42px; flex-shrink: 0; line-height: 1; }
+  .smd-name { font-size: 18px; font-weight: 700; color: #3E2A1A; margin-bottom: 5px; }
+  .smd-trip { font-size: 12px; color: #8C7660; margin-bottom: 4px; }
+  .smd-avg {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; background: #FDF3E7;
+    border-radius: 12px;
+  }
+  .smd-avg-stars { font-size: 18px; letter-spacing: 1px; }
+  .smd-avg-num { font-size: 22px; font-weight: 800; color: #8C5A1A; }
+  .smd-avg-count { font-size: 12px; color: #B07840; }
+  .smd-unrated { font-size: 13px; color: #B0A090; }
+  .spot-modal-body { flex: 1; overflow-y: auto; padding: 14px 20px 8px; }
+  .smd-revs-title { font-size: 11px; font-weight: 700; color: #8C7660; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 10px; }
+  .smd-review {
+    padding: 10px 0; border-bottom: 1px solid #EDE4CC;
+  }
+  .smd-review:last-child { border-bottom: none; }
+  .smd-rev-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .smd-rev-stars { font-size: 16px; letter-spacing: 1px; }
+  .smd-rev-date { font-size: 11px; color: #B0A090; }
+  .smd-rev-comment { font-size: 13px; color: #5A3E28; line-height: 1.5; }
+  .smd-loading, .smd-empty, .smd-error { text-align: center; padding: 24px 0; font-size: 13px; color: #B0A090; }
+  .spot-modal-foot {
+    flex-shrink: 0; padding: 12px 20px 4px;
+    border-top: 1px solid #EDE4CC;
+    display: flex; gap: 10px;
+  }
+  .smd-btn-go {
+    flex: 1; padding: 13px;
+    background: var(--pea, #7B9E6B); color: white;
+    border: none; border-radius: 14px;
+    font-size: 14px; font-weight: 700; font-family: inherit;
+    cursor: pointer; text-align: center; text-decoration: none;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    touch-action: manipulation;
+  }
+  .smd-btn-go:active { opacity: 0.85; }
+  .smd-btn-close {
+    padding: 13px 16px; background: #F0EAE0;
+    border: none; border-radius: 14px;
+    font-size: 14px; color: #8C7660; font-family: inherit;
+    cursor: pointer; touch-action: manipulation;
+  }
+  .smd-btn-close:active { background: #E4DAC8; }
 </style>
 </head>
 <body>
@@ -850,6 +927,22 @@
   </div>
 
   <div class="footer-note">made with care</div>
+</div>
+
+<!-- Spot rating modal -->
+<div id="spot-modal-bg" class="spot-modal-bg">
+  <div class="spot-modal">
+    <div class="spot-modal-handle"></div>
+    <div class="spot-modal-head" id="spot-modal-head"></div>
+    <div class="spot-modal-body">
+      <div class="smd-revs-title">評分紀錄</div>
+      <div id="spot-modal-reviews"></div>
+    </div>
+    <div class="spot-modal-foot">
+      <button class="smd-btn-close" id="spot-modal-close">關閉</button>
+      <a class="smd-btn-go" id="spot-modal-go" href="">前往行程頁 →</a>
+    </div>
+  </div>
 </div>
 
 <!-- lightbox -->
@@ -1148,7 +1241,8 @@ document.getElementById('next-month').onclick = () => {
 // ============ 查詢 ============
 const SB_URL = 'https://cmwtceczabbszhdgvwcj.supabase.co';
 const SB_KEY = 'sb_publishable_hDrADaLoZfAGDJH1i_JeHw_OSv_oqAu';
-let ratingsMap = {};      // { "nantou2026__馬累了吧": { avg: "4.5", count: 2 } }
+let ratingsMap   = {};
+let currentSpots = [];
 let activeCategory = 'all';
 let activeRegion    = 'all';
 const REGION_EMOJI  = { '埔里': '🏘️', '日月潭': '💧', '仁愛山區': '🏔️' };
@@ -1233,13 +1327,14 @@ function renderSearch() {
     return;
   }
 
-  container.innerHTML = filtered.map(spot => {
+  currentSpots = filtered;
+  container.innerHTML = filtered.map((spot, i) => {
     const ratingData = ratingsMap[spot.prefix + spot.name];
     const ratingHTML = ratingData
       ? `<span class="spot-rating">⭐ ${ratingData.avg} <span class="rating-count">(${ratingData.count}則)</span></span>`
       : `<span class="spot-rating unrated">尚未評分</span>`;
     return `
-    <a class="spot-result-card" href="${spot.tripFile}">
+    <div class="spot-result-card" onclick="openSpotModal(${i})">
       <div class="spot-result-emoji">${spot.emoji}</div>
       <div class="spot-result-body">
         <div class="spot-result-name">${spot.name}</div>
@@ -1250,8 +1345,76 @@ function renderSearch() {
         </div>
       </div>
       <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
-    </a>`;
+    </div>`;
   }).join('');
+}
+
+// ── Spot rating modal ──────────────────────────────────────────────────────
+function closeSpotModal() {
+  document.getElementById('spot-modal-bg').classList.remove('open');
+}
+document.getElementById('spot-modal-close').addEventListener('click', closeSpotModal);
+document.getElementById('spot-modal-bg').addEventListener('click', e => {
+  if (e.target === document.getElementById('spot-modal-bg')) closeSpotModal();
+});
+
+async function openSpotModal(i) {
+  const spot = currentSpots[i];
+  const key  = spot.prefix + spot.name;
+  const rd   = ratingsMap[key];
+
+  const starsHtml = n => '⭐'.repeat(Math.min(5, Math.round(n)));
+
+  document.getElementById('spot-modal-head').innerHTML = `
+    <div class="smd-top">
+      <div class="smd-emoji">${spot.emoji}</div>
+      <div>
+        <div class="smd-name">${spot.name}</div>
+        <div class="smd-trip">📍 ${spot.region}</div>
+        <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
+      </div>
+    </div>
+    <div class="smd-avg">
+      ${rd
+        ? `<span class="smd-avg-stars">${starsHtml(rd.avg)}</span>
+           <span class="smd-avg-num">${rd.avg}</span>
+           <span class="smd-avg-count">(${rd.count} 則評分)</span>`
+        : `<span class="smd-unrated">尚未評分</span>`}
+    </div>`;
+
+  document.getElementById('spot-modal-go').href = spot.tripFile;
+  document.getElementById('spot-modal-reviews').innerHTML =
+    '<div class="smd-loading">載入中…</div>';
+  document.getElementById('spot-modal-bg').classList.add('open');
+
+  try {
+    const res = await fetch(
+      `${SB_URL}/rest/v1/trip_reviews?trip_id=eq.${encodeURIComponent(key)}&order=created_at.desc`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+    );
+    const reviews = await res.json();
+    if (!Array.isArray(reviews) || reviews.length === 0) {
+      document.getElementById('spot-modal-reviews').innerHTML =
+        '<div class="smd-empty">還沒有評分紀錄</div>';
+      return;
+    }
+    document.getElementById('spot-modal-reviews').innerHTML = reviews.map(r => {
+      const date = r.created_at
+        ? new Date(r.created_at).toLocaleDateString('zh-TW', { month:'numeric', day:'numeric' })
+        : '';
+      return `
+        <div class="smd-review">
+          <div class="smd-rev-top">
+            <span class="smd-rev-stars">${starsHtml(r.rating)}</span>
+            <span class="smd-rev-date">${date}</span>
+          </div>
+          ${r.comment ? `<div class="smd-rev-comment">${r.comment}</div>` : ''}
+        </div>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('spot-modal-reviews').innerHTML =
+      '<div class="smd-error">⚠️ 載入失敗</div>';
+  }
 }
 
 // 類別 chips
