@@ -779,8 +779,9 @@ function renderToday() {
   const bal     = inc - exp;
   const balCls  = bal > 0 ? 'pos' : bal < 0 ? 'neg' : 'zero';
 
-  // Monthly surplus for the same month as viewDate
+  // Monthly surplus — month of viewDate
   const prefix   = ymd(viewDate).slice(0, 7);
+  const mMonth   = viewDate.getMonth() + 1;
   const mEntries = allEntries.filter(e => e.date.startsWith(prefix));
   const mExp     = mEntries.filter(e => e.type==='expense').reduce((s,e)=>s+ +e.amount, 0);
   const mInc     = mEntries.filter(e => e.type==='income' ).reduce((s,e)=>s+ +e.amount, 0);
@@ -803,7 +804,7 @@ function renderToday() {
       <div class="sh-item">
         <div class="sh-icon" style="background:#F3E5F5">📈</div>
         <div class="sh-body">
-          <div class="sh-type">本月盈餘</div>
+          <div class="sh-type">${mMonth}月盈餘</div>
           <div class="sh-num ${mBalCls}">$${fmtAmt(mBal)}</div>
         </div>
       </div>
