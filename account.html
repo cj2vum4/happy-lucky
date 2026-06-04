@@ -1169,7 +1169,8 @@ const ANNIV_STARTED = new Date('2023-05-20T00:00:00'); // ← 改成你們的交
 
 function checkAnniversary() {
   const now = new Date();
-  if (now.getMonth() !== 4 || now.getDate() !== 20) return; // not 5/20
+  const isPreview = new URLSearchParams(location.search).has('preview');
+  if (!isPreview && (now.getMonth() !== 4 || now.getDate() !== 20)) return;
 
   document.body.classList.add('is-anniversary');
 
