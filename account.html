@@ -439,6 +439,97 @@ body {
   background: #FFF0F0; border-radius: 14px;
   font-size: 13px; color: #C62828; line-height: 1.6;
 }
+
+/* ── Anniversary 5/20 ─────────────────────────────────────── */
+body.is-anniversary {
+  --red:   #E91E63;
+  --red-d: #C2185B;
+}
+
+/* Splash overlay */
+.anniv-splash {
+  position: fixed; inset: 0; z-index: 9999;
+  background: linear-gradient(160deg, #1a0815 0%, #2e0f22 50%, #1a0815 100%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.45s ease;
+}
+.anniv-splash.dismissing { opacity: 0; pointer-events: none; }
+
+.splash-hearts { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.splash-heart {
+  position: absolute; bottom: -60px;
+  font-size: var(--hs, 22px);
+  animation: heartFloat var(--dur, 4s) ease-in var(--del, 0s) infinite;
+  opacity: 0;
+}
+@keyframes heartFloat {
+  0%   { transform: translateY(0) rotate(var(--r, 0deg)) scale(0.4); opacity: 0; }
+  12%  { opacity: 1; }
+  80%  { opacity: 0.6; }
+  100% { transform: translateY(-110vh) rotate(var(--rot, 20deg)) scale(1); opacity: 0; }
+}
+
+.splash-center {
+  position: relative; z-index: 1;
+  text-align: center; color: white;
+  animation: popIn 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.4s both;
+}
+@keyframes popIn {
+  from { transform: scale(0.4) translateY(30px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+.splash-emoji { font-size: 88px; display: block; margin-bottom: 18px; filter: drop-shadow(0 0 28px rgba(233,30,99,0.9)); }
+.splash-title {
+  font-size: 26px; font-weight: 800; letter-spacing: 3px;
+  color: #FFB3D1; margin-bottom: 20px;
+  text-shadow: 0 0 30px rgba(233,30,99,0.6);
+}
+.splash-stat {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,179,209,0.25);
+  border-radius: 20px; padding: 16px 36px; margin-bottom: 6px;
+  backdrop-filter: blur(10px);
+}
+.splash-num { font-size: 52px; font-weight: 800; color: #FF6B9D; letter-spacing: -2px; line-height: 1; }
+.splash-unit { font-size: 16px; font-weight: 600; color: rgba(255,179,209,0.8); margin-top: 4px; }
+.splash-days { font-size: 14px; color: rgba(255,179,209,0.6); margin-top: 10px; letter-spacing: 0.5px; }
+.splash-hint {
+  position: absolute; bottom: 44px; left: 0; right: 0;
+  text-align: center; font-size: 12px;
+  color: rgba(255,255,255,0.3); letter-spacing: 1.5px;
+  animation: blink 1.8s ease infinite;
+}
+@keyframes blink { 0%,100% { opacity: 0.3; } 50% { opacity: 0.7; } }
+
+/* Anniversary card */
+.anniv-card {
+  margin: 12px 16px 0;
+  background: linear-gradient(135deg, #FCE4EC 0%, #F48FB1 40%, #FCE4EC 100%);
+  border-radius: 20px; padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 6px 24px rgba(233,30,99,0.2);
+  position: relative; overflow: hidden;
+}
+.anniv-card::before {
+  content: ''; position: absolute;
+  top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  background: rgba(233,30,99,0.1);
+  border-radius: 50%;
+}
+.anniv-card::after {
+  content: ''; position: absolute;
+  bottom: -20px; left: -20px;
+  width: 80px; height: 80px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+}
+.ac-icon { font-size: 46px; flex-shrink: 0; position: relative; z-index: 1; line-height: 1; }
+.ac-body { flex: 1; position: relative; z-index: 1; }
+.ac-title { font-size: 16px; font-weight: 800; color: #880E4F; margin-bottom: 4px; }
+.ac-sub { font-size: 12px; color: #AD1457; line-height: 1.8; }
+.ac-days { font-size: 30px; font-weight: 800; color: #E91E63; letter-spacing: -1px; display: inline; }
 </style>
 </head>
 <body>
@@ -1064,9 +1155,81 @@ async function confirmDel(id) {
   catch(e) { alert('刪除失敗：' + e.message); }
 }
 
+// ─── Anniversary (5/20) ──────────────────────────────────────────────────────
+const ANNIV_STARTED = new Date('2023-05-20T00:00:00'); // ← 改成你們的交往開始日期
+
+function checkAnniversary() {
+  const now = new Date();
+  if (now.getMonth() !== 4 || now.getDate() !== 20) return; // not 5/20
+
+  document.body.classList.add('is-anniversary');
+
+  const years    = now.getFullYear() - ANNIV_STARTED.getFullYear();
+  const totalDays = Math.floor((now - ANNIV_STARTED) / 86400000) + 1;
+
+  insertAnniversaryCard(years, totalDays);
+  showAnniversarySplash(years, totalDays);
+}
+
+function insertAnniversaryCard(years, days) {
+  const card = document.createElement('div');
+  card.className = 'anniv-card';
+  card.innerHTML = `
+    <div class="ac-icon">🥂</div>
+    <div class="ac-body">
+      <div class="ac-title">🎉 第 ${years} 年紀念日快樂</div>
+      <div class="ac-sub">
+        在一起 <span class="ac-days">${days.toLocaleString()}</span> 天<br>
+        每一天有你都是幸福 ❤️
+      </div>
+    </div>`;
+  const page    = document.getElementById('tab-today');
+  const dateNav = page.querySelector('.date-nav');
+  page.insertBefore(card, dateNav.nextSibling);
+}
+
+function showAnniversarySplash(years, days) {
+  const EMOJIS = ['❤️','💕','🌸','💝','🌹','💗','🌺','💖','🎀','✨'];
+  const hearts = Array.from({ length: 22 }, (_, i) => {
+    const e   = EMOJIS[i % EMOJIS.length];
+    const hs  = (Math.random() * 22 + 14).toFixed(0) + 'px';
+    const dur = (Math.random() * 3 + 3).toFixed(1) + 's';
+    const del = (Math.random() * 5).toFixed(1) + 's';
+    const r   = (Math.random() * 40 - 20).toFixed(0) + 'deg';
+    const rot = (Math.random() * 30 - 15).toFixed(0) + 'deg';
+    const lft = (Math.random() * 95).toFixed(1) + '%';
+    return `<span class="splash-heart" style="left:${lft};--hs:${hs};--dur:${dur};--del:${del};--r:${r};--rot:${rot}">${e}</span>`;
+  }).join('');
+
+  const el = document.createElement('div');
+  el.className = 'anniv-splash';
+  el.id = 'anniv-splash';
+  el.innerHTML = `
+    <div class="splash-hearts">${hearts}</div>
+    <div class="splash-center">
+      <span class="splash-emoji">💝</span>
+      <div class="splash-title">交往紀念日快樂</div>
+      <div class="splash-stat">
+        <div class="splash-num">${years}</div>
+        <div class="splash-unit">週年</div>
+      </div>
+      <div class="splash-days">在一起的第 ${days.toLocaleString()} 天 ✨</div>
+    </div>
+    <div class="splash-hint">點擊任意處繼續 →</div>`;
+  document.body.appendChild(el);
+
+  function dismiss() {
+    el.classList.add('dismissing');
+    setTimeout(() => el.remove(), 450);
+  }
+  el.addEventListener('click', dismiss, { once: true });
+  setTimeout(dismiss, 4500);
+}
+
 buildCatGrid();
 syncPicker();
 renderToday();
+checkAnniversary();
 loadAll().then(() => setupRealtime());
 </script>
 </body>
