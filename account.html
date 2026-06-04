@@ -1165,7 +1165,7 @@ async function confirmDel(id) {
 }
 
 // ─── Anniversary (5/20) ──────────────────────────────────────────────────────
-const ANNIV_STARTED = new Date('2023-05-20T00:00:00'); // ← 改成你們的交往開始日期
+const ANNIV_STARTED = new Date('2026-05-20T00:00:00');
 
 function checkAnniversary() {
   const now = new Date();
@@ -1184,10 +1184,11 @@ function checkAnniversary() {
 function insertAnniversaryCard(years, days) {
   const card = document.createElement('div');
   card.className = 'anniv-card';
+  const titleTxt = years > 0 ? `🎉 第 ${years} 年紀念日快樂` : '🎉 交往紀念日快樂';
   card.innerHTML = `
     <div class="ac-icon">🥂</div>
     <div class="ac-body">
-      <div class="ac-title">🎉 第 ${years} 年紀念日快樂</div>
+      <div class="ac-title">${titleTxt}</div>
       <div class="ac-sub">
         在一起 <span class="ac-days">${days.toLocaleString()}</span> 天<br>
         每一天有你都是幸福 ❤️
@@ -1219,11 +1220,12 @@ function showAnniversarySplash(years, days) {
     <div class="splash-center">
       <span class="splash-emoji">💝</span>
       <div class="splash-title">交往紀念日快樂</div>
-      <div class="splash-stat">
-        <div class="splash-num">${years}</div>
-        <div class="splash-unit">週年</div>
-      </div>
-      <div class="splash-days">在一起的第 ${days.toLocaleString()} 天 ✨</div>
+      ${years > 0
+        ? `<div class="splash-stat"><div class="splash-num">${years}</div><div class="splash-unit">週年</div></div>
+           <div class="splash-days">在一起的第 ${days.toLocaleString()} 天 ✨</div>`
+        : `<div class="splash-stat"><div class="splash-num">${days}</div><div class="splash-unit">天</div></div>
+           <div class="splash-days">我們的故事從今天開始 ❤️</div>`
+      }
     </div>
     <div class="splash-hint">點擊任意處繼續 →</div>`;
   document.body.appendChild(el);
