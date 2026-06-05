@@ -407,6 +407,40 @@ body {
 }
 .note-inp:focus { border-color: var(--red); background: white; }
 
+/* Spot toggle */
+.spot-toggle-row {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 16px 10px;
+  padding: 10px 14px;
+  background: #fff8f0;
+  border: 1.5px solid #f5c87a;
+  border-radius: 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.spot-toggle-row.visible { display: flex; }
+.spot-toggle-label { font-size: 13px; color: #a0622a; font-weight: 500; }
+.spot-toggle-wrap { position: relative; flex-shrink: 0; }
+.spot-toggle-inp { position: absolute; opacity: 0; width: 0; height: 0; }
+.spot-toggle-track {
+  width: 44px; height: 26px;
+  background: #ddd; border-radius: 13px;
+  transition: background 0.2s;
+  position: relative;
+}
+.spot-toggle-inp:checked + .spot-toggle-track { background: #f5a623; }
+.spot-toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+}
+.spot-toggle-inp:checked + .spot-toggle-track .spot-toggle-thumb {
+  transform: translateX(18px);
+}
+
 /* Numpad */
 .numpad {
   display: grid; grid-template-columns: repeat(3, 1fr);
@@ -656,6 +690,13 @@ body.is-anniversary {
     <div class="cat-section-lbl">分類</div>
     <div class="cat-grid" id="cat-grid"></div>
     <input class="note-inp" id="note-inp" placeholder="✏️ 備註（選填）" maxlength="50" autocomplete="off">
+    <label class="spot-toggle-row" id="spot-toggle-row">
+      <span class="spot-toggle-label">📍 加入景點（可在查詢頁評分）</span>
+      <div class="spot-toggle-wrap">
+        <input type="checkbox" id="spot-toggle" class="spot-toggle-inp">
+        <div class="spot-toggle-track"><div class="spot-toggle-thumb"></div></div>
+      </div>
+    </label>
     <div class="numpad">
       <button class="nk" data-k="7">7</button>
       <button class="nk" data-k="8">8</button>
@@ -999,7 +1040,7 @@ function renderEntry(e) {
       <div class="ent-icon" style="background:${info.bg}">${info.emoji}</div>
       <div class="ent-body">
         <div class="ent-cat">${e.category}</div>
-        <div class="ent-note">${e.note || '<span style="color:var(--text3)">點擊編輯</span>'}</div>
+        <div class="ent-note">${e.note ? (e.note.endsWith('#spot') ? '📍 ' + e.note.slice(0,-5) : e.note) : '<span style="color:var(--text3)">點擊編輯</span>'}</div>
       </div>
       <div class="ent-right">
         <div class="ent-amt ${cls}">${sign}$${fmtAmt(e.amount)}</div>
@@ -1024,7 +1065,10 @@ function openSheet(entry = null) {
 
   amtStr = entry ? String(entry.amount) : '0';
   document.getElementById('amt-display').textContent = amtStr;
-  document.getElementById('note-inp').value = entry ? (entry.note || '') : '';
+  const rawNote = entry ? (entry.note || '') : '';
+  const isSpot  = rawNote.endsWith('#spot');
+  document.getElementById('note-inp').value = isSpot ? rawNote.slice(0, -5) : rawNote;
+  document.getElementById('spot-toggle').checked = isSpot;
 
   const cats = curType === 'expense' ? EXP_CATS : INC_CATS;
   selCat = entry ? entry.category : cats[0].key;
@@ -1075,8 +1119,19 @@ document.querySelectorAll('.type-btn').forEach(btn => {
     document.getElementById('amt-display').className = `amt-display ${cls}`;
     document.getElementById('save-btn').className    = `nk save ${cls}`;
     buildCatGrid();
+    syncSpotToggle();
   });
 });
+
+function syncSpotToggle() {
+  const row = document.getElementById('spot-toggle-row');
+  if (curType === 'expense' && selCat === '食') {
+    row.classList.add('visible');
+  } else {
+    row.classList.remove('visible');
+    document.getElementById('spot-toggle').checked = false;
+  }
+}
 
 function buildCatGrid() {
   const cats = curType === 'expense' ? EXP_CATS : INC_CATS;
@@ -1093,8 +1148,10 @@ function buildCatGrid() {
       const c2 = curType==='expense'?'exp':'inc';
       document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('sel','exp','inc'));
       btn.classList.add('sel', c2);
+      syncSpotToggle();
     });
   });
+  syncSpotToggle();
 }
 
 document.querySelectorAll('.nk').forEach(btn => {
@@ -1119,19 +1176,20 @@ document.getElementById('save-btn').addEventListener('click', async () => {
   const btn = document.getElementById('save-btn');
   const origLabel = btn.textContent;
   btn.textContent = '…'; btn.disabled = true;
+  const noteRaw  = document.getElementById('note-inp').value.trim();
+  const isSpot   = document.getElementById('spot-toggle').checked;
+  const noteVal  = (isSpot && noteRaw) ? noteRaw + '#spot' : noteRaw;
   const data = {
     type: curType, amount: amt,
     category: selCat,
-    note: document.getElementById('note-inp').value.trim(),
+    note: noteVal,
   };
   try {
     if (editingId) {
       await updateEntry(editingId, data);
     } else {
       await saveEntry({ ...data, date: ymd(viewDate) });
-      if (data.type === 'expense' && data.category === '食' && data.note) {
-        showToast('🍽️ 已記錄為可查詢景點');
-      }
+      if (isSpot && noteRaw) showToast('📍 已加入景點，可在查詢頁評分');
     }
     closeSheet();
   } catch(e) {

@@ -1347,7 +1347,7 @@ async function loadAllRatings() {
 async function loadUserFoodSpots() {
   try {
     const res = await fetch(
-      `${SB_URL}/rest/v1/ledger_entries?type=eq.expense&category=eq.食&note=not.is.null&select=note,date,amount&order=date.desc`,
+      `${SB_URL}/rest/v1/ledger_entries?type=eq.expense&category=eq.食&note=like.*%23spot&select=note,date,amount&order=date.desc`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
     );
     const entries = await res.json();
@@ -1358,7 +1358,9 @@ async function loadUserFoodSpots() {
     userFoodSpots = [];
 
     for (const e of entries) {
-      const name = e.note?.trim();
+      const raw  = e.note?.trim();
+      if (!raw) continue;
+      const name = raw.endsWith('#spot') ? raw.slice(0, -5) : raw;
       if (!name || seen.has(name) || existingNames.has(name)) continue;
       seen.add(name);
       const trip   = TRIPS.find(t => t.startDate && t.endDate && e.date >= t.startDate && e.date <= t.endDate);
