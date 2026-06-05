@@ -439,6 +439,18 @@ body {
   background: #FFF0F0; border-radius: 14px;
   font-size: 13px; color: #C62828; line-height: 1.6;
 }
+/* Toast */
+.toast {
+  position: fixed; bottom: calc(env(safe-area-inset-bottom,0px) + 140px);
+  left: 50%; transform: translateX(-50%) translateY(20px);
+  background: rgba(30,30,40,0.88); color: white;
+  padding: 10px 20px; border-radius: 24px;
+  font-size: 13px; font-weight: 600; white-space: nowrap;
+  pointer-events: none; opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 600; backdrop-filter: blur(8px);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* ── Anniversary 5/20 ─────────────────────────────────────── */
 body.is-anniversary {
@@ -626,6 +638,7 @@ body.is-anniversary {
 </div><!-- .app -->
 
 <button class="fab" id="fab-btn">＋</button>
+<div class="toast" id="toast"></div>
 
 <!-- Bottom sheet -->
 <div class="overlay" id="overlay">
@@ -1116,6 +1129,9 @@ document.getElementById('save-btn').addEventListener('click', async () => {
       await updateEntry(editingId, data);
     } else {
       await saveEntry({ ...data, date: ymd(viewDate) });
+      if (data.type === 'expense' && data.category === '食' && data.note) {
+        showToast('🍽️ 已記錄為可查詢景點');
+      }
     }
     closeSheet();
   } catch(e) {
@@ -1236,6 +1252,15 @@ function showAnniversarySplash(years, days) {
   }
   el.addEventListener('click', dismiss, { once: true });
   setTimeout(dismiss, 4500);
+}
+
+let _toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
 }
 
 buildCatGrid();

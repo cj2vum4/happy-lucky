@@ -988,6 +988,7 @@ async function bootstrap() {
     buildRegionChips();
     renderSearch();
     loadAllRatings();
+    loadUserFoodSpots();
 
     // 跳到第一個有旅行的月份（如果有的話）
     if (TRIPS.length > 0) {
@@ -1254,41 +1255,77 @@ document.getElementById('next-month').onclick = () => {
 // ============ 查詢 ============
 const SB_URL = 'https://cmwtceczabbszhdgvwcj.supabase.co';
 const SB_KEY = 'sb_publishable_hDrADaLoZfAGDJH1i_JeHw_OSv_oqAu';
-let ratingsMap   = {};
-let currentSpots = [];
+let ratingsMap    = {};
+let currentSpots  = [];
+let userFoodSpots = [];
 let activeCategory = 'all';
 let activeRegion    = 'all';
 const REGION_EMOJI  = { '埔里': '🏘️', '日月潭': '💧', '仁愛山區': '🏔️' };
 
+function accumulateRatings(data) {
+  if (!Array.isArray(data)) return;
+  const acc = {};
+  data.forEach(r => {
+    if (!r.rating) return;
+    if (!acc[r.trip_id]) acc[r.trip_id] = { sum: 0, count: 0 };
+    acc[r.trip_id].sum   += r.rating;
+    acc[r.trip_id].count += 1;
+  });
+  Object.entries(acc).forEach(([key, { sum, count }]) => {
+    ratingsMap[key] = { avg: (sum / count).toFixed(1), count };
+  });
+}
+
 async function loadAllRatings() {
-  for (const trip of TRIPS) {
-    if (!trip.itemPrefix) continue;
-    try {
-      const res = await fetch(
-        `${SB_URL}/rest/v1/trip_reviews?trip_id=like.${trip.itemPrefix}*&order=created_at.desc`,
-        { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
-      );
-      const data = await res.json();
-      if (!Array.isArray(data)) continue;
-      const acc = {};
-      data.forEach(r => {
-        if (!r.rating) return;
-        if (!acc[r.trip_id]) acc[r.trip_id] = { sum: 0, count: 0 };
-        acc[r.trip_id].sum   += r.rating;
-        acc[r.trip_id].count += 1;
-      });
-      Object.entries(acc).forEach(([key, { sum, count }]) => {
-        ratingsMap[key] = { avg: (sum / count).toFixed(1), count };
-      });
-    } catch (e) { console.warn('評分載入失敗', e); }
-  }
+  const fetches = TRIPS.filter(t => t.itemPrefix).map(trip =>
+    fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.${trip.itemPrefix}*&order=created_at.desc`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
+      .then(r => r.json()).then(accumulateRatings).catch(()=>{})
+  );
+  // Also load ratings for daily food spots
+  fetches.push(
+    fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.food__*&order=created_at.desc`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
+      .then(r => r.json()).then(accumulateRatings).catch(()=>{})
+  );
+  await Promise.all(fetches);
   renderSearch();
 }
 
+async function loadUserFoodSpots() {
+  try {
+    const res = await fetch(
+      `${SB_URL}/rest/v1/ledger_entries?type=eq.expense&category=eq.食&note=not.is.null&select=note,date,amount&order=date.desc`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+    );
+    const entries = await res.json();
+    if (!Array.isArray(entries)) return;
+
+    const existingNames = new Set(TRIPS.flatMap(t => (t.spots || []).map(s => s.name)));
+    const seen = new Set();
+    userFoodSpots = [];
+
+    for (const e of entries) {
+      const name = e.note?.trim();
+      if (!name || seen.has(name) || existingNames.has(name)) continue;
+      seen.add(name);
+      const trip   = TRIPS.find(t => t.startDate && t.endDate && e.date >= t.startDate && e.date <= t.endDate);
+      const region = trip ? trip.destination : `${e.date.slice(0,4)}/${+e.date.slice(5,7)}`;
+      userFoodSpots.push({
+        name, category: '食物', region, emoji: '🍽️',
+        desc: '日常記錄',
+        prefix: 'food__', tripFile: 'account.html', mapUrl: null,
+      });
+    }
+    renderSearch();
+  } catch(e) { console.warn('食物景點載入失敗', e); }
+}
+
 function buildRegionChips() {
-  const regions = [...new Set(
-    TRIPS.flatMap(t => (t.spots || []).map(s => s.region)).filter(Boolean)
-  )];
+  const regions = [...new Set([
+    ...TRIPS.flatMap(t => (t.spots || []).map(s => s.region)),
+    ...userFoodSpots.map(s => s.region),
+  ].filter(Boolean))];
   const container = document.getElementById('region-chips');
   container.innerHTML =
     `<button class="chip active" data-region="all">全部</button>` +
@@ -1308,9 +1345,10 @@ function renderSearch() {
   const allSpots = [];
   TRIPS.forEach(trip => {
     (trip.spots || []).forEach(spot => {
-      allSpots.push({ ...spot, tripTitle: trip.title, tripFile: trip.file, prefix: trip.itemPrefix || '' });
+      allSpots.push({ ...spot, tripFile: trip.file, prefix: trip.itemPrefix || '' });
     });
   });
+  allSpots.push(...userFoodSpots);
 
   let filtered = allSpots;
   if (activeCategory !== 'all') filtered = filtered.filter(s => s.category === activeCategory);
