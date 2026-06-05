@@ -815,6 +815,43 @@
   .smd-rev-date { font-size: 11px; color: #B0A090; }
   .smd-rev-comment { font-size: 13px; color: #5A3E28; line-height: 1.5; }
   .smd-loading, .smd-empty, .smd-error { text-align: center; padding: 24px 0; font-size: 13px; color: #B0A090; }
+
+  /* Rating input */
+  .smd-rate-section {
+    padding: 12px 20px 14px; flex-shrink: 0;
+    border-bottom: 1px solid #EDE4CC;
+    background: #FDFAF5;
+  }
+  .smd-rate-title {
+    font-size: 11px; font-weight: 700; color: #8C7660;
+    letter-spacing: 0.7px; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .smd-stars-row { display: flex; gap: 4px; margin-bottom: 10px; }
+  .smd-star {
+    font-size: 32px; line-height: 1; cursor: pointer;
+    background: none; border: none; padding: 0 2px;
+    transition: transform 0.12s; touch-action: manipulation;
+    -webkit-user-select: none; user-select: none;
+  }
+  .smd-star:active { transform: scale(0.85); }
+  .smd-comment {
+    width: 100%; padding: 10px 13px;
+    background: #F5F0E8; border: 1.5px solid #D4C8B0;
+    border-radius: 12px; font-size: 15px; font-family: inherit;
+    color: #3E2A1A; outline: none; resize: none;
+    transition: border-color 0.15s; display: block;
+  }
+  .smd-comment:focus { border-color: #8C7660; background: white; }
+  .smd-submit {
+    margin-top: 9px; width: 100%; padding: 12px;
+    background: #7B9E6B; color: white;
+    border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 700; font-family: inherit;
+    cursor: pointer; touch-action: manipulation;
+    transition: opacity 0.15s;
+  }
+  .smd-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+  .smd-submit:not(:disabled):active { opacity: 0.82; }
   .spot-modal-foot {
     flex-shrink: 0; padding: 12px 20px 4px;
     border-top: 1px solid #EDE4CC;
@@ -946,6 +983,21 @@
   <div class="spot-modal">
     <div class="spot-modal-handle"></div>
     <div class="spot-modal-head" id="spot-modal-head"></div>
+
+    <!-- 評分輸入 -->
+    <div class="smd-rate-section">
+      <div class="smd-rate-title">我要評分</div>
+      <div class="smd-stars-row" id="smd-stars-row">
+        <button class="smd-star" data-s="1">☆</button>
+        <button class="smd-star" data-s="2">☆</button>
+        <button class="smd-star" data-s="3">☆</button>
+        <button class="smd-star" data-s="4">☆</button>
+        <button class="smd-star" data-s="5">☆</button>
+      </div>
+      <textarea class="smd-comment" id="smd-comment-inp" rows="2" placeholder="留下你的想法（選填）"></textarea>
+      <button class="smd-submit" id="smd-submit-btn">送出評分</button>
+    </div>
+
     <div class="spot-modal-body">
       <div class="smd-revs-title">評分紀錄</div>
       <div id="spot-modal-reviews"></div>
@@ -1401,45 +1453,71 @@ function renderSearch() {
 }
 
 // ── Spot rating modal ──────────────────────────────────────────────────────
+let modalSpotKey     = '';
+let modalStarPick    = 0;
+
 function closeSpotModal() {
   document.getElementById('spot-modal-bg').classList.remove('open');
+  modalStarPick = 0;
+  paintStars(0);
+  document.getElementById('smd-comment-inp').value = '';
+  document.getElementById('smd-submit-btn').textContent = '送出評分';
+  document.getElementById('smd-submit-btn').disabled = false;
 }
 document.getElementById('spot-modal-close').addEventListener('click', closeSpotModal);
 document.getElementById('spot-modal-bg').addEventListener('click', e => {
   if (e.target === document.getElementById('spot-modal-bg')) closeSpotModal();
 });
 
-async function openSpotModal(i) {
-  const spot = currentSpots[i];
-  const key  = spot.prefix + spot.name;
-  const rd   = ratingsMap[key];
+function paintStars(n) {
+  document.querySelectorAll('.smd-star').forEach((btn, i) => {
+    btn.textContent = i < n ? '⭐' : '☆';
+  });
+}
+document.getElementById('smd-stars-row').addEventListener('click', e => {
+  const btn = e.target.closest('.smd-star');
+  if (!btn) return;
+  modalStarPick = +btn.dataset.s;
+  paintStars(modalStarPick);
+});
 
-  const starsHtml = n => '⭐'.repeat(Math.min(5, Math.round(n)));
+document.getElementById('smd-submit-btn').addEventListener('click', async () => {
+  if (!modalStarPick) { alert('請先點選星星評分'); return; }
+  const submitBtn = document.getElementById('smd-submit-btn');
+  const comment   = document.getElementById('smd-comment-inp').value.trim() || null;
+  submitBtn.textContent = '送出中…';
+  submitBtn.disabled = true;
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/trip_reviews`, {
+      method: 'POST',
+      headers: {
+        apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
+        'Content-Type': 'application/json', Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({ trip_id: modalSpotKey, rating: modalStarPick, comment }),
+    });
+    if (!res.ok && res.status !== 201) throw new Error(await res.text());
 
-  document.getElementById('spot-modal-head').innerHTML = `
-    <div class="smd-top">
-      <div class="smd-emoji">${spot.emoji}</div>
-      <div>
-        <div class="smd-name">${spot.name}</div>
-        <div class="smd-trip">📍 ${spot.region}</div>
-        <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
-      </div>
-    </div>
-    <div class="smd-avg">
-      ${rd
-        ? `<span class="smd-avg-stars">${starsHtml(rd.avg)}</span>
-           <span class="smd-avg-num">${rd.avg}</span>
-           <span class="smd-avg-count">(${rd.count} 則評分)</span>`
-        : `<span class="smd-unrated">尚未評分</span>`}
-    </div>`;
+    submitBtn.textContent = '謝謝你的評分 ✓';
+    modalStarPick = 0;
+    paintStars(0);
+    document.getElementById('smd-comment-inp').value = '';
 
-  document.getElementById('spot-modal-go').href  = spot.tripFile;
-  document.getElementById('spot-modal-map').href  =
-    spot.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(spot.name + ' ' + spot.region)}`;
+    // Refresh this spot's review list + update ratingsMap
+    await loadModalReviews(modalSpotKey);
+    loadAllRatings(); // async, update search list in background
+  } catch(e) {
+    alert('評分失敗：' + e.message);
+    submitBtn.textContent = '送出評分';
+    submitBtn.disabled = false;
+  }
+});
+
+const starsHtml = n => '⭐'.repeat(Math.min(5, Math.round(n)));
+
+async function loadModalReviews(key) {
   document.getElementById('spot-modal-reviews').innerHTML =
     '<div class="smd-loading">載入中…</div>';
-  document.getElementById('spot-modal-bg').classList.add('open');
-
   try {
     const res = await fetch(
       `${SB_URL}/rest/v1/trip_reviews?trip_id=eq.${encodeURIComponent(key)}&order=created_at.desc`,
@@ -1468,6 +1546,41 @@ async function openSpotModal(i) {
     document.getElementById('spot-modal-reviews').innerHTML =
       '<div class="smd-error">⚠️ 載入失敗</div>';
   }
+}
+
+async function openSpotModal(i) {
+  const spot = currentSpots[i];
+  const key  = spot.prefix + spot.name;
+  modalSpotKey = key;
+  modalStarPick = 0;
+  paintStars(0);
+  document.getElementById('smd-comment-inp').value = '';
+  document.getElementById('smd-submit-btn').textContent = '送出評分';
+  document.getElementById('smd-submit-btn').disabled = false;
+
+  const rd = ratingsMap[key];
+  document.getElementById('spot-modal-head').innerHTML = `
+    <div class="smd-top">
+      <div class="smd-emoji">${spot.emoji}</div>
+      <div>
+        <div class="smd-name">${spot.name}</div>
+        <div class="smd-trip">📍 ${spot.region}</div>
+        <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
+      </div>
+    </div>
+    <div class="smd-avg">
+      ${rd
+        ? `<span class="smd-avg-stars">${starsHtml(rd.avg)}</span>
+           <span class="smd-avg-num">${rd.avg}</span>
+           <span class="smd-avg-count">(${rd.count} 則評分)</span>`
+        : `<span class="smd-unrated">尚未評分</span>`}
+    </div>`;
+
+  document.getElementById('spot-modal-go').href = spot.tripFile;
+  document.getElementById('spot-modal-map').href =
+    spot.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(spot.name + ' ' + spot.region)}`;
+  document.getElementById('spot-modal-bg').classList.add('open');
+  await loadModalReviews(key);
 }
 
 // 類別 chips
