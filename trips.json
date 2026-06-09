@@ -46,6 +46,9 @@
       "status": "done",
       "tags": ["紀念日", "晚餐"],
       "file": "20260520/260520天使仙境.html",
+      "spots": [
+        { "name": "天使仙境", "category": "食物", "region": "台北", "emoji": "💑", "desc": "浪漫西式餐廳・紀念日晚餐", "mapUrl": "https://maps.google.com/?q=天使仙境+餐廳+台北" }
+      ],
       "photos": [
         { "src": "https://i.postimg.cc/0yj22qTw/2125899.jpg",   "caption": "" },
         { "src": "https://i.postimg.cc/HLfLhPvR/2126525-0.jpg", "caption": "" },
@@ -85,11 +88,14 @@
         { "src": "20260522_24/photo_11.jpg", "caption": "啊嘿" }
       ],
       "spots": [
-        { "name": "Cona's 尼那巧克力夢想城堡", "category": "室內景點", "region": "埔里",   "emoji": "🏰", "desc": "歐風莊園・手工巧克力體驗・打卡超美建築", "mapUrl": "https://maps.google.com/?q=Cona's+尼那巧克力夢想城堡+埔里" },
-        { "name": "娜娜泰式料理",              "category": "食物",   "region": "埔里",   "emoji": "🍜", "desc": "紅咖哩・月亮蝦餅・泰式米線",               "mapUrl": "https://maps.google.com/?q=娜娜泰式料理+埔里" },
-        { "name": "18度C 巧克力工坊",          "category": "食物",   "region": "埔里",   "emoji": "🍫", "desc": "生吐司・義式冰淇淋・伴手禮",               "mapUrl": "https://maps.google.com/?q=18度C+巧克力工坊+埔里" },
-        { "name": "日月潭遊湖",                "category": "室外景點","region": "日月潭", "emoji": "⛵", "desc": "早晨薄霧・水社→玄光寺→伊達邵環湖",         "mapUrl": "https://maps.google.com/?q=日月潭水社碼頭" },
-        { "name": "馬累了吧",                  "category": "住宿",   "region": "仁愛山區","emoji": "⛺", "desc": "海拔1300m・無光害觀星",                     "mapUrl": "https://maps.google.com/?q=馬累了吧+仁愛" }
+        { "name": "Cona's 尼那巧克力夢想城堡", "category": "室內景點", "region": "埔里",    "emoji": "🏰", "desc": "歐風莊園・手工巧克力體驗・打卡超美建築", "mapUrl": "https://maps.google.com/?q=Cona's+尼那巧克力夢想城堡+埔里" },
+        { "name": "鹿篙咖啡莊園",              "category": "食物",    "region": "埔里",    "emoji": "☕", "desc": "午餐+下午茶・茶園環繞・得獎紅茶",         "mapUrl": "https://maps.google.com/?q=鹿篙咖啡莊園+埔里" },
+        { "name": "埔里故事館",                "category": "住宿",    "region": "埔里",    "emoji": "🏡", "desc": "D1住宿・老闆自建特色民宿",                 "mapUrl": "https://maps.google.com/?q=埔里故事館" },
+        { "name": "娜娜泰式料理",              "category": "食物",    "region": "埔里",    "emoji": "🍜", "desc": "紅咖哩・月亮蝦餅・泰式米線",               "mapUrl": "https://maps.google.com/?q=娜娜泰式料理+埔里" },
+        { "name": "18度C 巧克力工坊",          "category": "食物",    "region": "埔里",    "emoji": "🍫", "desc": "生吐司・義式冰淇淋・伴手禮",               "mapUrl": "https://maps.google.com/?q=18度C+巧克力工坊+埔里" },
+        { "name": "日月潭遊湖",                "category": "室外景點", "region": "日月潭", "emoji": "⛵", "desc": "早晨薄霧・水社→玄光寺→伊達邵環湖",         "mapUrl": "https://maps.google.com/?q=日月潭水社碼頭" },
+        { "name": "發祥國小",                  "category": "室外景點", "region": "仁愛山區","emoji": "🏫", "desc": "部落小學・操場視野極佳",                   "mapUrl": "https://maps.google.com/?q=發祥國小+仁愛" },
+        { "name": "馬累了吧",                  "category": "住宿",    "region": "仁愛山區","emoji": "⛺", "desc": "海拔1300m・無光害觀星",                     "mapUrl": "https://maps.google.com/?q=馬累了吧+仁愛" }
       ]
     }
   ]
