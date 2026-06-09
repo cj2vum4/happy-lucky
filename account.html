@@ -1125,7 +1125,7 @@ document.querySelectorAll('.type-btn').forEach(btn => {
 
 function syncSpotToggle() {
   const row = document.getElementById('spot-toggle-row');
-  if (curType === 'expense' && selCat === '食') {
+  if (curType === 'expense') {
     row.classList.add('visible');
   } else {
     row.classList.remove('visible');
@@ -1189,7 +1189,7 @@ document.getElementById('save-btn').addEventListener('click', async () => {
       await updateEntry(editingId, data);
     } else {
       await saveEntry({ ...data, date: ymd(viewDate) });
-      if (isSpot && noteRaw) showToast('📍 已加入景點，可在查詢頁評分');
+      if (isSpot && noteRaw) showToast('📍 已加入景點，可在查詢頁評分 ✓');
     }
     closeSheet();
   } catch(e) {
