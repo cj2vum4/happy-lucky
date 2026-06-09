@@ -86,18 +86,10 @@
       ],
       "spots": [
         { "name": "Cona's 尼那巧克力夢想城堡", "category": "食物",   "region": "埔里",   "emoji": "🏰", "desc": "歐風莊園・手工巧克力體驗・打卡超美建築", "mapUrl": "https://maps.google.com/?q=Cona's+尼那巧克力夢想城堡+埔里" },
-        { "name": "鹿篙咖啡莊園",             "category": "食物",   "region": "埔里",   "emoji": "☕", "desc": "午餐+下午茶・茶園環繞・得獎紅茶",         "mapUrl": "https://maps.google.com/?q=鹿篙咖啡莊園+埔里" },
-        { "name": "18度C 巧克力工坊",          "category": "食物",   "region": "埔里",   "emoji": "🍫", "desc": "生吐司・義式冰淇淋・伴手禮",               "mapUrl": "https://maps.google.com/?q=18度C+巧克力工坊+埔里" },
         { "name": "娜娜泰式料理",              "category": "食物",   "region": "埔里",   "emoji": "🍜", "desc": "紅咖哩・月亮蝦餅・泰式米線",               "mapUrl": "https://maps.google.com/?q=娜娜泰式料理+埔里" },
-        { "name": "紙教堂 Paper Dome",         "category": "室內景點","region": "埔里",   "emoji": "⛪", "desc": "桃米生態村・日本移建・紙管建築",             "mapUrl": "https://maps.google.com/?q=紙教堂+Paper+Dome+埔里" },
-        { "name": "享日咖啡",                  "category": "食物",   "region": "日月潭", "emoji": "🐹", "desc": "早午餐+與水豚互動・桃米生態村",             "mapUrl": "https://maps.google.com/?q=享日咖啡+日月潭" },
-        { "name": "塔洛灣景觀餐廳",            "category": "食物",   "region": "日月潭", "emoji": "🍱", "desc": "碧湖view・原民料理",                       "mapUrl": "https://maps.google.com/?q=塔洛灣景觀餐廳+日月潭" },
+        { "name": "18度C 巧克力工坊",          "category": "食物",   "region": "埔里",   "emoji": "🍫", "desc": "生吐司・義式冰淇淋・伴手禮",               "mapUrl": "https://maps.google.com/?q=18度C+巧克力工坊+埔里" },
         { "name": "日月潭遊湖",                "category": "室外景點","region": "日月潭", "emoji": "⛵", "desc": "早晨薄霧・水社→玄光寺→伊達邵環湖",         "mapUrl": "https://maps.google.com/?q=日月潭水社碼頭" },
-        { "name": "發祥國小",                  "category": "室外景點","region": "仁愛山區","emoji": "🏫", "desc": "部落小學・操場視野極佳",                   "mapUrl": "https://maps.google.com/?q=發祥國小+仁愛" },
-        { "name": "紅香溫泉",                  "category": "室外景點","region": "仁愛山區","emoji": "♨️", "desc": "免費野溪溫泉公共浴池",                     "mapUrl": "https://maps.google.com/?q=紅香溫泉+仁愛" },
-        { "name": "馬累了吧",                  "category": "住宿",   "region": "仁愛山區","emoji": "⛺", "desc": "海拔1300m・無光害觀星",                     "mapUrl": "https://maps.google.com/?q=馬累了吧+仁愛" },
-        { "name": "帖比倫步道",                "category": "室外景點","region": "仁愛山區","emoji": "🥾", "desc": "拉繩陡坡・來回30分鐘",                     "mapUrl": "https://maps.google.com/?q=帖比倫步道+仁愛" },
-        { "name": "帖比倫峽谷瀑布",            "category": "室外景點","region": "仁愛山區","emoji": "🌊", "desc": "五彩岩壁・深潭秘境・勿下水",               "mapUrl": "https://maps.google.com/?q=帖比倫峽谷瀑布+仁愛" }
+        { "name": "馬累了吧",                  "category": "住宿",   "region": "仁愛山區","emoji": "⛺", "desc": "海拔1300m・無光害觀星",                     "mapUrl": "https://maps.google.com/?q=馬累了吧+仁愛" }
       ]
     }
   ]
