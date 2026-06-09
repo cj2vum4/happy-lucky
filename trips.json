@@ -1,18 +1,6 @@
 {
   "trips": [
     {
-      "id": "nz-2026",
-      "title": "紐西蘭南北島",
-      "startDate": "2026-08-16",
-      "endDate": "2026-08-30",
-      "destination": "紐西蘭",
-      "people": 2,
-      "status": "planning",
-      "tags": ["自駕", "峽灣", "滑雪", "星空"],
-      "file": "20260816_30/260816紐西蘭.html",
-      "photos": []
-    },
-    {
       "id": "hilai-2026",
       "title": "台北漢來大飯店",
       "startDate": "2026-09-05",
