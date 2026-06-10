@@ -1,6 +1,25 @@
 {
   "trips": [
     {
+      "id": "hsinchu-2026",
+      "title": "新竹週末小旅",
+      "startDate": "2026-06-12",
+      "endDate": "2026-06-13",
+      "destination": "新竹",
+      "people": 2,
+      "status": "planning",
+      "tags": ["劇本殺", "溫泉", "甜點", "週末小旅"],
+      "file": "20260612_13/260612新竹.html",
+      "itemPrefix": "hsinchu2026__",
+      "photos": [],
+      "spots": [
+        { "name": "100種味道",        "category": "食物",    "region": "新竹市", "emoji": "🎂", "desc": "新竹知名甜點・蛋糕快搶",         "mapUrl": "https://maps.google.com/?q=100種味道+新竹" },
+        { "name": "國立陽明交通大學", "category": "室內景點","region": "新竹市", "emoji": "🎭", "desc": "11:00–17:00 主持劇本殺",          "mapUrl": "https://maps.google.com/?q=國立陽明交通大學+新竹" },
+        { "name": "福湯溫泉",         "category": "室外景點","region": "新竹",   "emoji": "♨️", "desc": "泡湯放鬆・需帶泳衣泳帽",         "mapUrl": "https://maps.google.com/?q=福湯溫泉+新竹" },
+        { "name": "週五住宿",         "category": "住宿",    "region": "新竹",   "emoji": "🏠", "desc": "D1住宿",                         "mapUrl": "https://maps.google.com/?q=24.778611,121.022500" }
+      ]
+    },
+    {
       "id": "hilai-2026",
       "title": "台北漢來大飯店",
       "startDate": "2026-09-05",
