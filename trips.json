@@ -8,14 +8,16 @@
       "destination": "新竹",
       "people": 2,
       "status": "planning",
-      "tags": ["劇本殺", "溫泉", "甜點", "週末小旅"],
+      "tags": ["劇本殺", "岩盤浴", "甜點", "週末小旅"],
       "file": "20260612_13/260612新竹.html",
       "itemPrefix": "hsinchu2026__",
       "photos": [],
       "spots": [
-        { "name": "100種味道",        "category": "食物",    "region": "新竹市", "emoji": "🎂", "desc": "新竹知名甜點・蛋糕快搶",         "mapUrl": "https://maps.google.com/?q=100種味道+新竹" },
+        { "name": "阿婆早餐麵店",     "category": "食物",    "region": "新竹市", "emoji": "🍜", "desc": "新竹在地早餐",                    "mapUrl": "https://maps.google.com/?q=阿婆早餐麵店+新竹" },
         { "name": "國立陽明交通大學", "category": "室內景點","region": "新竹市", "emoji": "🎭", "desc": "11:00–17:00 主持劇本殺",          "mapUrl": "https://maps.google.com/?q=國立陽明交通大學+新竹" },
-        { "name": "福湯溫泉",         "category": "室外景點","region": "新竹",   "emoji": "♨️", "desc": "泡湯放鬆・需帶泳衣泳帽",         "mapUrl": "https://maps.google.com/?q=福湯溫泉+新竹" },
+        { "name": "100種味道",        "category": "食物",    "region": "新竹市", "emoji": "🎂", "desc": "12:00–18:30・新竹知名水果塔",     "mapUrl": "https://maps.google.com/?q=100種味道+新竹" },
+        { "name": "福湯岩盤浴",       "category": "室內景點","region": "新竹市", "emoji": "♨️", "desc": "日式乾式岩盤浴・浴衣館方提供・24hr", "mapUrl": "https://maps.google.com/?q=福湯岩盤浴+新竹" },
+        { "name": "格林小鎮新2.0",    "category": "食物",    "region": "新竹市", "emoji": "🍽️", "desc": "週六晚餐",                        "mapUrl": "https://maps.google.com/?q=格林小鎮+新竹" },
         { "name": "週五住宿",         "category": "住宿",    "region": "新竹",   "emoji": "🏠", "desc": "D1住宿",                         "mapUrl": "https://maps.google.com/?q=24.778611,121.022500" }
       ]
     },
