@@ -15,7 +15,7 @@
       "spots": [
         { "name": "阿婆早餐麵店",     "category": "食物",    "region": "新竹市", "emoji": "🍜", "desc": "新竹在地早餐",                    "mapUrl": "https://maps.google.com/?q=阿婆早餐麵店+新竹" },
         { "name": "國立陽明交通大學", "category": "室內景點","region": "新竹市", "emoji": "🎭", "desc": "11:00–17:00 主持劇本殺",          "mapUrl": "https://maps.google.com/?q=國立陽明交通大學+新竹" },
-        { "name": "福湯岩盤浴",       "category": "室內景點","region": "新竹市", "emoji": "♨️", "desc": "日式乾式岩盤浴・浴衣館方提供・24hr", "mapUrl": "https://maps.google.com/?q=福湯岩盤浴+新竹" },
+
         { "name": "格林小鎮新2.0",    "category": "食物",    "region": "新竹市", "emoji": "🍽️", "desc": "週六晚餐",                        "mapUrl": "https://maps.google.com/?q=格林小鎮+新竹" },
         { "name": "週五住宿",         "category": "住宿",    "region": "新竹",   "emoji": "🏠", "desc": "D1住宿",                         "mapUrl": "https://maps.google.com/?q=24.778611,121.022500" }
       ]
