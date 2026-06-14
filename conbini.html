@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>便利商店美食</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pea:        #3DAA6E;
+    --pea-dark:   #2D8A56;
+    --pea-light:  #A8D9BC;
+    --pea-bg:     #EAF6EF;
+    --cream:      #F5EFE0;
+    --cream-dark: #EDE4CC;
+    --paper:      #FBF7EC;
+    --coffee:     #3D2E1F;
+    --coffee-light:#6B5640;
+    --body:       'Noto Serif TC', serif;
+    --hand:       'Caveat', cursive;
+    --hand-loose: 'Shadows Into Light', cursive;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; }
+  body { font-family: var(--body); color: var(--coffee); background: #d6e8da; }
+
+  .app {
+    max-width: 430px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    box-shadow: 0 0 40px rgba(0,0,0,0.18);
+    overflow: hidden;
+  }
+
+  /* ─── Header ─── */
+  .app-header {
+    flex-shrink: 0;
+    height: 60px;
+    background: var(--pea-dark);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+  }
+  .app-header a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 26px;
+    line-height: 1;
+    font-family: var(--hand);
+    flex-shrink: 0;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .app-header a:active { background: rgba(255,255,255,0.18); }
+  .header-center { flex: 1; text-align: center; }
+  .header-title {
+    font-family: var(--hand);
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .header-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.72);
+    font-family: var(--body);
+    letter-spacing: 0.5px;
+  }
+  .header-icon { font-size: 26px; flex-shrink: 0; }
+
+  /* ─── Scrollable body ─── */
+  .page-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 18px 40px;
+  }
+
+  /* ─── Section label ─── */
+  .store-section { margin-bottom: 28px; }
+  .store-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .store-badge {
+    font-family: var(--hand);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 13px;
+    border-radius: 20px;
+    border: 2px solid;
+  }
+  .store-badge.seven  { background: #E8F4FD; color: #0071CE; border-color: #0071CE; }
+  .store-badge.family { background: #EDF6E8; color: #217A3A; border-color: #217A3A; }
+  .store-badge.hilife { background: #FDF3E0; color: #C9520B; border-color: #C9520B; }
+  .store-badge.ok     { background: #F0EEF8; color: #4E3FA0; border-color: #4E3FA0; }
+  .store-badge.other  { background: var(--cream); color: var(--coffee-light); border-color: var(--coffee-light); }
+  .store-divider { flex: 1; height: 1.5px; background: repeating-linear-gradient(to right, var(--coffee-light) 0, var(--coffee-light) 3px, transparent 3px, transparent 7px); opacity: 0.3; }
+
+  /* ─── Food card ─── */
+  .food-card {
+    background: #fff;
+    border: 1.5px solid var(--coffee);
+    border-radius: 6px;
+    padding: 13px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 2px 2px 0 var(--coffee-light);
+    position: relative;
+  }
+  .food-emoji {
+    font-size: 30px;
+    width: 46px; height: 46px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--pea-bg);
+    border: 1px solid var(--pea-light);
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .food-body { flex: 1; min-width: 0; }
+  .food-name {
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--coffee);
+    margin-bottom: 3px;
+  }
+  .food-desc {
+    font-size: 12px;
+    color: var(--coffee-light);
+    line-height: 1.5;
+    margin-bottom: 5px;
+  }
+  .food-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .food-price {
+    font-family: var(--hand);
+    font-size: 14px;
+    color: var(--pea-dark);
+    font-weight: 700;
+  }
+  .food-rating {
+    font-size: 13px;
+  }
+  .food-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--pea-light);
+    background: var(--pea-bg);
+    color: var(--pea-dark);
+    font-family: var(--hand);
+  }
+  .food-date {
+    position: absolute;
+    top: 8px; right: 10px;
+    font-size: 11px;
+    color: var(--coffee-light);
+    font-family: var(--body);
+    opacity: 0.7;
+  }
+
+  /* ─── Empty state ─── */
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    border: 2px dashed var(--pea-light);
+    border-radius: 10px;
+    background: var(--pea-bg);
+    margin-top: 8px;
+  }
+  .empty-icon { font-size: 52px; margin-bottom: 12px; }
+  .empty-title {
+    font-family: var(--hand);
+    font-size: 22px;
+    color: var(--pea-dark);
+    margin-bottom: 8px;
+  }
+  .empty-hint {
+    font-size: 13px;
+    color: var(--coffee-light);
+    line-height: 1.7;
+  }
+
+  /* ─── Intro card ─── */
+  .intro-card {
+    background: var(--pea-bg);
+    border: 1.5px solid var(--pea-light);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 22px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .intro-card .intro-icon { font-size: 28px; flex-shrink: 0; }
+  .intro-card .intro-text { font-size: 13px; color: var(--coffee-light); line-height: 1.7; }
+  .intro-card .intro-text strong { color: var(--pea-dark); font-family: var(--hand); font-size: 15px; display: block; margin-bottom: 3px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="app-header">
+    <a href="index.html">‹</a>
+    <div class="header-center">
+      <div class="header-title">便利商店美食</div>
+      <div class="header-sub">happy &amp; lucky 愛吃榜</div>
+    </div>
+    <div class="header-icon">🏪</div>
+  </header>
+
+  <div class="page-body">
+
+    <div class="intro-card">
+      <div class="intro-icon">📝</div>
+      <div class="intro-text">
+        <strong>我們的便利商店愛吃清單</strong>
+        記錄兩人在便利商店吃過的好吃東西，持續更新中！
+      </div>
+    </div>
+
+    <!-- 7-ELEVEN -->
+    <div class="store-section">
+      <div class="store-label">
+        <span class="store-badge seven">7-ELEVEN</span>
+        <div class="store-divider"></div>
+      </div>
+
+      <div class="empty-state">
+        <div class="empty-icon">🧃</div>
+        <div class="empty-title">紀錄準備中</div>
+        <div class="empty-hint">快去 7-11 試吃新品，<br>回來告訴我好不好吃！</div>
+      </div>
+    </div>
+
+    <!-- FamilyMart -->
+    <div class="store-section">
+      <div class="store-label">
+        <span class="store-badge family">全家</span>
+        <div class="store-divider"></div>
+      </div>
+
+      <div class="empty-state">
+        <div class="empty-icon">🍞</div>
+        <div class="empty-title">紀錄準備中</div>
+        <div class="empty-hint">全家現烤麵包好香，<br>等你來告訴我哪個最棒！</div>
+      </div>
+    </div>
+
+    <!-- Hi-Life -->
+    <div class="store-section">
+      <div class="store-label">
+        <span class="store-badge hilife">萊爾富</span>
+        <div class="store-divider"></div>
+      </div>
+
+      <div class="empty-state">
+        <div class="empty-icon">🍡</div>
+        <div class="empty-title">紀錄準備中</div>
+        <div class="empty-hint">有什麼好吃的都可以記上來～</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
