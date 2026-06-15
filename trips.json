@@ -11,7 +11,14 @@
       "tags": ["劇本殺", "甜點", "週末小旅"],
       "file": "20260612_13/260612新竹.html",
       "itemPrefix": "hsinchu2026__",
-      "photos": [],
+      "photos": [
+        { "src": "20260612_13/photo_01.jpg", "caption": "阿婆早餐麵店 🥚" },
+        { "src": "20260612_13/photo_02.jpg", "caption": "劇本殺前的我" },
+        { "src": "20260612_13/photo_03.jpg", "caption": "哈哈哈哈哈" },
+        { "src": "20260612_13/photo_04.jpg", "caption": "甜點的天堂 🎂" },
+        { "src": "20260612_13/photo_05.jpg", "caption": "選哪個好呢 🍰" },
+        { "src": "20260612_13/photo_06.jpg", "caption": "甜點時光 ✨" }
+      ],
       "spots": [
         { "name": "阿婆早餐麵店",     "category": "食物",    "region": "新竹市", "emoji": "🍜", "desc": "新竹在地早餐",                    "mapUrl": "https://maps.google.com/?q=阿婆早餐麵店+新竹" },
         { "name": "國立陽明交通大學", "category": "室內景點","region": "新竹市", "emoji": "🎭", "desc": "11:00–17:00 主持劇本殺",          "mapUrl": "https://maps.google.com/?q=國立陽明交通大學+新竹" },

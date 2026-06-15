@@ -483,56 +483,90 @@ body {
 .badge-in  { background: var(--amber-bg); color: #7A4E1A; }
 .badge-stay { background: #EEF0F8; color: #4A4F8C; }
 
-/* ===== 照片牆佔位 ===== */
+/* ===== 照片牆 polaroid ===== */
 #page-photos { padding: 0 !important; overflow: hidden !important; }
-.photo-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+#cork-board {
+  width: 100%; height: 100%;
   background: #c9a87c;
   background-image:
     radial-gradient(ellipse 80% 60% at 18% 25%, rgba(210,170,110,0.5) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 70% at 80% 75%, rgba(155,105,55,0.35) 0%, transparent 50%);
+    radial-gradient(ellipse 60% 70% at 80% 75%, rgba(155,105,55,0.35) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E");
+  position: relative;
+  overflow: hidden;
 }
-.photo-placeholder-emoji { font-size: 52px; opacity: 0.6; }
-.photo-placeholder-text {
+.polaroid {
+  position: absolute;
+  background: #fff;
+  padding: 7px 7px 28px;
+  box-shadow: 2px 4px 14px rgba(0,0,0,0.28), 0 0 0 0.5px rgba(0,0,0,0.07);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transform-origin: center center;
+}
+.polaroid img {
+  display: block;
+  width: 130px; height: 130px;
+  object-fit: cover;
+  background: #ddd;
+  pointer-events: none;
+}
+.polaroid-cap {
   font-family: var(--hand);
-  font-size: 22px;
-  color: rgba(255,255,255,0.85);
-  font-weight: 600;
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+  padding-top: 6px;
+  height: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 130px;
+  pointer-events: none;
 }
-.photo-placeholder-sub { font-size: 13px; color: rgba(255,255,255,0.55); }
+@keyframes floatIn {
+  from { opacity: 0; transform: var(--r) translateY(30px) scale(0.7); }
+  to   { opacity: 1; transform: var(--r); }
+}
+@keyframes flyAway {
+  to { opacity: 0; transform: var(--r) translateY(-120vh) scale(0.6) rotate(40deg); }
+}
+
+/* lightbox */
+#lbOverlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.88);
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 14px;
+}
+#lbOverlay.open { display: flex; }
+#lbImg { max-width: 92%; max-height: 78vh; border-radius: 4px; object-fit: contain; }
+#lbCap { font-family: var(--hand); font-size: 20px; color: rgba(255,255,255,0.75); }
+#lbClose {
+  position: absolute; top: 16px; right: 20px;
+  font-size: 28px; color: white; background: none; border: none; cursor: pointer;
+}
 
 #photoOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  pointer-events: none;
-  display: none;
+  position: fixed; inset: 0; z-index: 50;
+  pointer-events: none; display: none;
 }
 #photoOverlay.active { display: block; }
 #photoRefreshBtn {
   position: fixed;
   bottom: calc(var(--tab-h) + var(--safe-bottom) + 14px);
-  right: 18px;
-  z-index: 55;
+  right: 18px; z-index: 55;
   width: 46px; height: 46px;
   border-radius: 50%;
   background: rgba(253,250,243,0.94);
   border: 1.5px solid var(--cream-dark);
-  font-size: 22px;
-  cursor: pointer;
+  font-size: 22px; cursor: pointer;
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-  display: none;
-  align-items: center; justify-content: center;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  touch-action: manipulation;
-  transition: opacity 0.15s;
+  display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  touch-action: manipulation; transition: opacity 0.15s;
 }
 #photoRefreshBtn.visible { display: flex; }
 
@@ -941,11 +975,7 @@ body {
 
     <!-- PAGE: 照片 -->
     <div class="page" id="page-photos">
-      <div class="photo-placeholder">
-        <div class="photo-placeholder-emoji">📷</div>
-        <div class="photo-placeholder-text">照片規劃中</div>
-        <div class="photo-placeholder-sub">旅行結束後上傳</div>
-      </div>
+      <div id="cork-board"></div>
     </div>
 
     <!-- 評分底部彈窗 -->
@@ -999,7 +1029,14 @@ body {
 </div>
 
 <div id="photoOverlay"></div>
-<button id="photoRefreshBtn" onclick="">↺</button>
+<button id="photoRefreshBtn">↺</button>
+
+<!-- lightbox -->
+<div id="lbOverlay">
+  <button id="lbClose">✕</button>
+  <img id="lbImg" src="" alt="">
+  <div id="lbCap"></div>
+</div>
 
 <script>
 // Tab 切換
@@ -1197,6 +1234,96 @@ function escHtml(s) {
 }
 
 injectRateButtons();
+
+// ── 照片牆 polaroid ──────────────────────────────────────────
+const PHOTOS = [
+  { src: 'photo_01.jpg', cap: '阿婆早餐麵店 🥚' },
+  { src: 'photo_02.jpg', cap: '劇本殺前的我' },
+  { src: 'photo_03.jpg', cap: '哈哈哈哈哈' },
+  { src: 'photo_04.jpg', cap: '甜點的天堂 🎂' },
+  { src: 'photo_05.jpg', cap: '選哪個好呢 🍰' },
+  { src: 'photo_06.jpg', cap: '甜點時光 ✨' },
+];
+
+const ROTATIONS = [-6, 4, -3, 7, -5, 3, -8, 5, -2, 6];
+
+function scatterPhotos() {
+  const board = document.getElementById('cork-board');
+  board.innerHTML = '';
+  const W = board.clientWidth  || 390;
+  const H = board.clientHeight || 600;
+  const pw = 144, ph = 173;
+
+  PHOTOS.forEach((p, i) => {
+    const rot  = ROTATIONS[i % ROTATIONS.length];
+    const maxX = Math.max(0, W - pw - 20);
+    const maxY = Math.max(0, H - ph - 20);
+    const x = 12 + Math.floor(Math.random() * maxX);
+    const y = 12 + Math.floor(Math.random() * maxY);
+
+    const el = document.createElement('div');
+    el.className = 'polaroid';
+    el.style.cssText = `left:${x}px;top:${y}px;--r:rotate(${rot}deg);
+      animation:floatIn 0.45s ${i * 0.07}s cubic-bezier(0.22,0.61,0.36,1) both`;
+
+    const img = document.createElement('img');
+    img.src = p.src;
+    img.alt = p.cap;
+    img.loading = 'lazy';
+
+    const cap = document.createElement('div');
+    cap.className = 'polaroid-cap';
+    cap.textContent = p.cap;
+
+    el.appendChild(img);
+    el.appendChild(cap);
+    board.appendChild(el);
+
+    // click → fly away
+    el.addEventListener('click', () => {
+      el.style.animation = `flyAway 0.5s cubic-bezier(0.55,0,1,0.45) forwards`;
+      el.addEventListener('animationend', () => el.remove(), { once: true });
+    });
+
+    // long press → lightbox
+    let pressTimer;
+    el.addEventListener('pointerdown', () => {
+      pressTimer = setTimeout(() => openLightbox(p.src, p.cap), 500);
+    });
+    el.addEventListener('pointerup',   () => clearTimeout(pressTimer));
+    el.addEventListener('pointerleave',() => clearTimeout(pressTimer));
+  });
+}
+
+function openLightbox(src, cap) {
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lbCap').textContent = cap;
+  document.getElementById('lbOverlay').classList.add('open');
+}
+document.getElementById('lbClose').addEventListener('click', () => {
+  document.getElementById('lbOverlay').classList.remove('open');
+});
+document.getElementById('lbOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('lbOverlay'))
+    document.getElementById('lbOverlay').classList.remove('open');
+});
+
+// ↺ 重新散落
+document.getElementById('photoRefreshBtn').addEventListener('click', scatterPhotos);
+
+// 切到照片頁時才散落 + 顯示 ↺
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const isPhoto = btn.dataset.page === 'page-photos';
+    const refreshBtn = document.getElementById('photoRefreshBtn');
+    if (isPhoto) {
+      scatterPhotos();
+      refreshBtn.classList.add('visible');
+    } else {
+      refreshBtn.classList.remove('visible');
+    }
+  });
+});
 </script>
 
 </body>
