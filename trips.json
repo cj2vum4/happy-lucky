@@ -21,6 +21,20 @@
       ]
     },
     {
+      "id": "penghu-2026",
+      "title": "澎湖五天四夜",
+      "startDate": "2026-07-09",
+      "endDate": "2026-07-13",
+      "destination": "澎湖",
+      "people": 2,
+      "status": "planning",
+      "tags": ["海島", "花火節", "海鮮", "機車環島"],
+      "file": "20260709_13/260709澎湖.html",
+      "itemPrefix": "penghu2026__",
+      "photos": [],
+      "spots": []
+    },
+    {
       "id": "hilai-2026",
       "title": "台北漢來大飯店",
       "startDate": "2026-09-05",
