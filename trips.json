@@ -85,9 +85,21 @@
       "destination": "台中",
       "people": 2,
       "status": "planning",
-      "tags": ["夜市", "文創", "海線", "秋遊"],
+      "tags": ["喜鵲方舟", "夜市", "文創", "海線", "秋遊"],
       "file": "20261024_26/261024台中.html",
-      "photos": []
+      "itemPrefix": "taichung2026__",
+      "photos": [],
+      "spots": [
+        { "name": "喜鵲方舟 FairyLand", "category": "室外景點", "region": "后里區", "emoji": "🧚", "desc": "天空之鏡・透明獨木舟・梅花鹿・浣熊・水豚・假日 $350/人", "mapUrl": "https://maps.google.com/?q=喜鵲方舟+后里+台中" },
+        { "name": "宮原眼科",           "category": "室內景點", "region": "中區",   "emoji": "🍦", "desc": "冰淇淋打卡・伴手禮・最台中",                             "mapUrl": "https://maps.google.com/?q=宮原眼科+台中" },
+        { "name": "彩虹眷村",           "category": "室外景點", "region": "南屯區", "emoji": "🌈", "desc": "黃爺爺手繪彩色壁畫・免費",                               "mapUrl": "https://maps.google.com/?q=彩虹眷村+台中" },
+        { "name": "高美濕地",           "category": "室外景點", "region": "清水區", "emoji": "⛵", "desc": "風車・夕陽・退潮走在水面上",                             "mapUrl": "https://maps.google.com/?q=高美濕地" },
+        { "name": "東海大學・路思義教堂","category": "室外景點", "region": "西屯區", "emoji": "🏫", "desc": "最美大學・10月銀杏季",                                   "mapUrl": "https://maps.google.com/?q=路思義教堂+台中" },
+        { "name": "台中國家歌劇院",     "category": "室外景點", "region": "西屯區", "emoji": "🎭", "desc": "伊東豊雄建築・勤美誠品商圈",                             "mapUrl": "https://maps.google.com/?q=台中國家歌劇院" },
+        { "name": "逢甲夜市",           "category": "食物",    "region": "西屯區", "emoji": "🌙", "desc": "台中最大夜市・必吃大麻花",                               "mapUrl": "https://maps.google.com/?q=逢甲夜市" },
+        { "name": "審計新村",           "category": "室外景點", "region": "西區",   "emoji": "🏬", "desc": "眷村文創・假日市集",                                     "mapUrl": "https://maps.google.com/?q=審計新村+台中" },
+        { "name": "三井 Outlet Park 台中港", "category": "室內景點", "region": "梧棲區", "emoji": "🛍️", "desc": "海線大型 Outlet・日系品牌",                        "mapUrl": "https://maps.google.com/?q=三井Outlet+台中港" }
+      ]
     },
     {
       "id": "tianshi-20260520",
