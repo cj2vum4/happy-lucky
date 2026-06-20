@@ -1058,6 +1058,14 @@
       <div id="region-selector"></div>
     </div>
 
+    <div class="filter-row" style="margin-bottom:6px">
+      <div class="filter-label">排序</div>
+      <div class="search-chips" id="sort-chips">
+        <button class="chip active" data-sort="newest">🕐 最新</button>
+        <button class="chip" data-sort="rating">⭐ 評分高低</button>
+      </div>
+    </div>
+
     <div class="search-count" id="search-count"></div>
     <div id="search-results"></div>
   </div>
@@ -1404,6 +1412,7 @@ let activeCategory = 'all';
 let activeRegion    = 'all';
 let searchText      = '';
 let openCityKey     = null;
+let sortMode        = 'newest';
 
 const REGION_HIERARCHY = [
   { key: '台北市', label: '台北', emoji: '🏙️', regions: ['台北','台北・南港','信義區','大安區','中正區','松山區','中山區','內湖區','士林區','文山區','北投區','南港區','萬華區','大同區'] },
@@ -1487,6 +1496,7 @@ async function loadUserFoodSpots() {
         name, category, region, emoji,
         desc: '日常記錄',
         prefix: 'food__', tripFile: 'account.html', mapUrl: null,
+        date: e.date, sortDate: e.date,
       });
     }
     renderRegionSelector();
@@ -1550,7 +1560,7 @@ function renderSearch() {
   const allSpots = [];
   TRIPS.forEach(trip => {
     (trip.spots || []).forEach(spot => {
-      allSpots.push({ ...spot, tripFile: trip.file, prefix: trip.itemPrefix || '' });
+      allSpots.push({ ...spot, tripFile: trip.file, prefix: trip.itemPrefix || '', sortDate: trip.startDate || '' });
     });
   });
   allSpots.push(...userFoodSpots);
@@ -1575,15 +1585,18 @@ function renderSearch() {
     );
   }
 
-  // 按評分排序（有評分的高到低，無評分的最後）
-  filtered = [...filtered].sort((a, b) => {
-    const ra = ratingsMap[a.prefix + a.name];
-    const rb = ratingsMap[b.prefix + b.name];
-    if (ra && rb)  return parseFloat(rb.avg) - parseFloat(ra.avg);
-    if (ra && !rb) return -1;
-    if (!ra && rb) return 1;
-    return 0;
-  });
+  if (sortMode === 'newest') {
+    filtered = [...filtered].sort((a, b) => (b.sortDate || '').localeCompare(a.sortDate || ''));
+  } else {
+    filtered = [...filtered].sort((a, b) => {
+      const ra = ratingsMap[a.prefix + a.name];
+      const rb = ratingsMap[b.prefix + b.name];
+      if (ra && rb)  return parseFloat(rb.avg) - parseFloat(ra.avg);
+      if (ra && !rb) return -1;
+      if (!ra && rb) return 1;
+      return 0;
+    });
+  }
 
   const countEl = document.getElementById('search-count');
   const parts = [];
@@ -1753,7 +1766,7 @@ async function openSpotModal(i) {
         : `<span class="smd-unrated">尚未評分</span>`}
     </div>`;
 
-  document.getElementById('spot-modal-go').href = spot.tripFile;
+  document.getElementById('spot-modal-go').href = spot.date ? `${spot.tripFile}?date=${spot.date}` : spot.tripFile;
   document.getElementById('spot-modal-map').href =
     spot.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(spot.name + ' ' + spot.region)}`;
   document.getElementById('spot-modal-bg').classList.add('open');
@@ -1781,6 +1794,16 @@ document.getElementById('search-clear-btn').addEventListener('click', function()
   document.getElementById('search-text').value = '';
   this.style.display = 'none';
   renderSearch();
+});
+
+// 排序 chips
+document.getElementById('sort-chips').querySelectorAll('.chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('sort-chips').querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    sortMode = btn.dataset.sort;
+    renderSearch();
+  });
 });
 
 // 啟動

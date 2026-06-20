@@ -1445,6 +1445,9 @@ function showToast(msg) {
 }
 
 buildCatGrid();
+// 讀 ?date= URL 參數，讓從查詢頁跳過來時能直接停在對應日期
+const _urlDate = new URLSearchParams(location.search).get('date');
+if (_urlDate) { viewDate = new Date(_urlDate + 'T00:00:00'); }
 syncPicker();
 renderToday();
 checkAnniversary();
