@@ -761,6 +761,63 @@
   .spot-cat-badge.室外景點 { background: #EEF4E3; color: #5E7338; border-color: rgba(94,115,56,0.3); }
   .spot-cat-badge.住宿    { background: #FDF0FB; color: #7B3FA0; border-color: rgba(123,63,160,0.3); }
 
+  /* ─── Search input ─── */
+  .search-input-wrap {
+    display: flex; align-items: center;
+    background: var(--paper);
+    border: 1.5px solid var(--coffee);
+    border-radius: 22px;
+    padding: 0 14px;
+    box-shadow: 2px 2px 0 var(--coffee-light);
+    gap: 8px;
+  }
+  .search-icon { font-size: 16px; flex-shrink: 0; opacity: 0.55; }
+  .search-input {
+    flex: 1; border: none; background: transparent; outline: none;
+    font-family: var(--body); font-size: 14px; color: var(--coffee);
+    padding: 12px 0;
+  }
+  .search-input::placeholder { color: var(--coffee-light); opacity: 0.65; }
+  .search-clear {
+    background: none; border: none; font-size: 16px;
+    color: var(--coffee-light); cursor: pointer;
+    padding: 4px; line-height: 1; flex-shrink: 0;
+    touch-action: manipulation; opacity: 0.7;
+  }
+
+  /* ─── Region hierarchy ─── */
+  .region-parent-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 6px; }
+  .region-parent-btn {
+    background: none; border: 1.5px solid var(--coffee); border-radius: 20px;
+    padding: 6px 13px; font-family: var(--hand-display); font-size: 13px;
+    color: var(--coffee); cursor: pointer; transition: all 0.18s;
+    white-space: nowrap; display: flex; align-items: center; gap: 5px;
+  }
+  .region-parent-btn.city-active {
+    background: var(--pea-dark); color: var(--paper);
+    border-color: var(--pea-dark); box-shadow: 2px 2px 0 var(--coffee);
+    transform: rotate(-1deg);
+  }
+  .region-parent-btn.city-open:not(.city-active) {
+    background: var(--pea-light); border-color: var(--pea-dark); color: var(--pea-dark);
+  }
+  .region-expand-arrow { font-size: 9px; transition: transform 0.2s; display: inline-block; }
+  .region-parent-btn.city-open .region-expand-arrow,
+  .region-parent-btn.city-active .region-expand-arrow { transform: rotate(90deg); }
+  .region-sub-panel {
+    display: none; background: var(--cream); border-radius: 12px;
+    padding: 9px 11px; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;
+  }
+  .region-sub-panel.open { display: flex; }
+  .region-sub-btn {
+    background: none; border: 1px solid var(--coffee-light); border-radius: 16px;
+    padding: 5px 12px; font-family: var(--hand-display); font-size: 12px;
+    color: var(--coffee-light); cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .region-sub-btn.active {
+    background: var(--pea-dark); color: var(--paper); border-color: var(--pea-dark);
+  }
+
   /* ── Spot rating modal ─────────────────────────────────── */
   .spot-result-card { cursor: pointer; }
   .spot-modal-bg {
@@ -978,6 +1035,14 @@
     <div class="section-title">快速查詢</div>
 
     <div class="filter-row">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-text" class="search-input" placeholder="搜尋景點名稱、關鍵字…" autocomplete="off">
+        <button class="search-clear" id="search-clear-btn" style="display:none">✕</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
       <div class="filter-label">類別</div>
       <div class="search-chips" id="cat-chips">
         <button class="chip active" data-cat="all">全部</button>
@@ -990,7 +1055,7 @@
 
     <div class="filter-row">
       <div class="filter-label">地區</div>
-      <div class="search-chips" id="region-chips"></div>
+      <div id="region-selector"></div>
     </div>
 
     <div class="search-count" id="search-count"></div>
@@ -1062,7 +1127,7 @@ async function bootstrap() {
     TRIPS = data.trips || [];
 
     renderHome();
-    buildRegionChips();
+    buildRegionSelector();
     renderSearch();
     loadAllRatings();
     loadUserFoodSpots();
@@ -1337,7 +1402,17 @@ let currentSpots  = [];
 let userFoodSpots = [];
 let activeCategory = 'all';
 let activeRegion    = 'all';
-const REGION_EMOJI  = { '埔里': '🏘️', '日月潭': '💧', '仁愛山區': '🏔️' };
+let searchText      = '';
+let openCityKey     = null;
+
+const REGION_HIERARCHY = [
+  { key: '台北市',  label: '台北', emoji: '🏙️', regions: ['台北', '台北・南港'] },
+  { key: '新竹市',  label: '新竹', emoji: '🌬️', regions: ['新竹', '新竹市'] },
+  { key: '南投縣',  label: '南投', emoji: '🌲', regions: ['埔里', '日月潭', '仁愛山區', '南投・仁愛鄉'] },
+  { key: '台中市',  label: '台中', emoji: '🌆', regions: ['台中', '后里區', '中區', '南屯區', '清水區', '西屯區', '西區', '梧棲區'] },
+  { key: '台南市',  label: '台南', emoji: '🏯', regions: ['台南'] },
+  { key: '澎湖縣',  label: '澎湖', emoji: '🏖️', regions: ['澎湖', '南方四島', '七美島', '望安島', '白沙鄉', '馬公市'] },
+];
 
 function accumulateRatings(data) {
   if (!Array.isArray(data)) return;
@@ -1399,28 +1474,61 @@ async function loadUserFoodSpots() {
         prefix: 'food__', tripFile: 'account.html', mapUrl: null,
       });
     }
+    renderRegionSelector();
     renderSearch();
   } catch(e) { console.warn('食物景點載入失敗', e); }
 }
 
-function buildRegionChips() {
-  const regions = [...new Set([
+function getAllUsedRegions() {
+  return new Set([
     ...TRIPS.flatMap(t => (t.spots || []).map(s => s.region)),
     ...userFoodSpots.map(s => s.region),
-  ].filter(Boolean))];
-  const container = document.getElementById('region-chips');
-  container.innerHTML =
-    `<button class="chip active" data-region="all">全部</button>` +
-    regions.map(r => `<button class="chip" data-region="${r}">${REGION_EMOJI[r] || ''} ${r}</button>`).join('');
+  ].filter(Boolean));
+}
 
-  container.querySelectorAll('.chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      container.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeRegion = btn.dataset.region;
-      renderSearch();
-    });
+function buildRegionSelector() { renderRegionSelector(); }
+
+function renderRegionSelector() {
+  const container = document.getElementById('region-selector');
+  if (!container) return;
+  const allRegions = getAllUsedRegions();
+  let html = '<div class="region-parent-row">';
+  html += `<button class="region-parent-btn ${activeRegion === 'all' ? 'city-active' : ''}" onclick="setRegionAll()">🗾 全部</button>`;
+  REGION_HIERARCHY.forEach(city => {
+    if (!city.regions.some(r => allRegions.has(r))) return;
+    const isOpen = openCityKey === city.key;
+    const isCityActive = activeRegion === 'city:' + city.key || city.regions.includes(activeRegion);
+    const cls = ['region-parent-btn', isCityActive ? 'city-active' : '', isOpen ? 'city-open' : ''].filter(Boolean).join(' ');
+    html += `<button class="${cls}" onclick="toggleCity('${city.key}')">${city.emoji} ${city.label} <span class="region-expand-arrow">›</span></button>`;
   });
+  html += '</div>';
+  REGION_HIERARCHY.forEach(city => {
+    const subs = city.regions.filter(r => allRegions.has(r));
+    if (!subs.length) return;
+    const isOpen = openCityKey === city.key;
+    html += `<div class="region-sub-panel ${isOpen ? 'open' : ''}">`;
+    subs.forEach(r => {
+      const safe = r.replace(/'/g, '&#39;');
+      html += `<button class="region-sub-btn ${activeRegion === r ? 'active' : ''}" onclick="setRegionSub('${safe}','${city.key}')">${r}</button>`;
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function setRegionAll() {
+  activeRegion = 'all'; openCityKey = null;
+  renderRegionSelector(); renderSearch();
+}
+function toggleCity(cityKey) {
+  if (openCityKey === cityKey) { openCityKey = null; activeRegion = 'all'; }
+  else { openCityKey = cityKey; activeRegion = 'city:' + cityKey; }
+  renderRegionSelector(); renderSearch();
+}
+function setRegionSub(region, cityKey) {
+  activeRegion = (activeRegion === region) ? 'city:' + cityKey : region;
+  openCityKey = cityKey;
+  renderRegionSelector(); renderSearch();
 }
 
 function renderSearch() {
@@ -1434,7 +1542,23 @@ function renderSearch() {
 
   let filtered = allSpots;
   if (activeCategory !== 'all') filtered = filtered.filter(s => s.category === activeCategory);
-  if (activeRegion    !== 'all') filtered = filtered.filter(s => s.region    === activeRegion);
+  if (activeRegion !== 'all') {
+    if (activeRegion.startsWith('city:')) {
+      const cityKey = activeRegion.slice(5);
+      const city = REGION_HIERARCHY.find(c => c.key === cityKey);
+      if (city) filtered = filtered.filter(s => city.regions.includes(s.region));
+    } else {
+      filtered = filtered.filter(s => s.region === activeRegion);
+    }
+  }
+  if (searchText) {
+    const q = searchText.toLowerCase();
+    filtered = filtered.filter(s =>
+      s.name.toLowerCase().includes(q) ||
+      (s.desc && s.desc.toLowerCase().includes(q)) ||
+      (s.region && s.region.toLowerCase().includes(q))
+    );
+  }
 
   // 按評分排序（有評分的高到低，無評分的最後）
   filtered = [...filtered].sort((a, b) => {
@@ -1448,8 +1572,16 @@ function renderSearch() {
 
   const countEl = document.getElementById('search-count');
   const parts = [];
+  if (searchText) parts.push(`"${searchText}"`);
   if (activeCategory !== 'all') parts.push(activeCategory);
-  if (activeRegion    !== 'all') parts.push(activeRegion);
+  if (activeRegion !== 'all') {
+    if (activeRegion.startsWith('city:')) {
+      const city = REGION_HIERARCHY.find(c => c.key === activeRegion.slice(5));
+      if (city) parts.push(city.label);
+    } else {
+      parts.push(activeRegion);
+    }
+  }
   countEl.textContent = parts.length
     ? `${parts.join(' · ')} · ${filtered.length} 個地點`
     : `共 ${filtered.length} 個地點`;
@@ -1621,6 +1753,19 @@ document.getElementById('cat-chips').querySelectorAll('.chip').forEach(btn => {
     activeCategory = btn.dataset.cat;
     renderSearch();
   });
+});
+
+// 文字搜尋
+document.getElementById('search-text').addEventListener('input', function() {
+  searchText = this.value;
+  document.getElementById('search-clear-btn').style.display = searchText ? '' : 'none';
+  renderSearch();
+});
+document.getElementById('search-clear-btn').addEventListener('click', function() {
+  searchText = '';
+  document.getElementById('search-text').value = '';
+  this.style.display = 'none';
+  renderSearch();
 });
 
 // 啟動
