@@ -447,25 +447,39 @@ body {
 }
 .spot-location-row {
   display: none;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 0;
   margin: 0 16px 10px;
-  padding: 8px 14px 10px;
+  padding: 10px 14px 12px;
   background: #fff8f0;
   border: 1.5px solid #f5c87a;
   border-top: none;
   border-radius: 0 0 12px 12px;
 }
 .spot-location-row.visible { display: flex; }
-.spot-location-label { font-size: 12px; color: #a0622a; flex-shrink: 0; white-space: nowrap; }
-.spot-location-inp {
-  flex: 1; border: none; border-bottom: 1.5px solid rgba(245,168,35,0.55);
-  background: transparent; padding: 4px 2px;
-  font-size: 14px; font-family: inherit; color: var(--text); outline: none;
-  transition: border-color 0.15s;
+.srp-cities {
+  display: flex; gap: 6px; flex-wrap: wrap; padding-bottom: 0;
 }
-.spot-location-inp::placeholder { color: #c89050; opacity: 0.75; font-size: 12px; }
-.spot-location-inp:focus { border-bottom-color: #f5a623; }
+.srp-city-btn {
+  background: none; border: 1.5px solid rgba(200,144,80,0.5); border-radius: 16px;
+  padding: 5px 12px; font-size: 12px; font-family: inherit;
+  color: #a0622a; cursor: pointer; transition: all 0.15s;
+  touch-action: manipulation; white-space: nowrap; line-height: 1.4;
+}
+.srp-city-btn.active { background: #f5a623; border-color: #f5a623; color: white; }
+.srp-districts {
+  display: none; gap: 6px; flex-wrap: wrap;
+  padding-top: 8px; margin-top: 8px;
+  border-top: 1px dashed rgba(245,168,35,0.4);
+}
+.srp-districts.open { display: flex; }
+.srp-dist-btn {
+  background: none; border: 1px solid rgba(200,144,80,0.4); border-radius: 14px;
+  padding: 4px 11px; font-size: 12px; font-family: inherit;
+  color: #c89050; cursor: pointer; transition: all 0.15s;
+  touch-action: manipulation; white-space: nowrap; line-height: 1.4;
+}
+.srp-dist-btn.active { background: #f5a623; border-color: #f5a623; color: white; }
 
 /* Numpad */
 .numpad {
@@ -724,8 +738,8 @@ body.is-anniversary {
       </div>
     </label>
     <div class="spot-location-row" id="spot-location-row">
-      <span class="spot-location-label">📌 地區</span>
-      <input class="spot-location-inp" id="spot-location-inp" placeholder="台北市 / 新竹市 / 台中市…" maxlength="20" autocomplete="off">
+      <div class="srp-cities" id="srp-cities"></div>
+      <div class="srp-districts" id="srp-districts"></div>
     </div>
     <div class="numpad">
       <button class="nk" data-k="7">7</button>
@@ -1099,9 +1113,9 @@ function openSheet(entry = null) {
   const isSpot   = rawNote.endsWith('#spot');
   const spotBody = isSpot ? rawNote.slice(0, -5) : rawNote;
   const pipeIdx  = isSpot ? spotBody.lastIndexOf('|') : -1;
-  document.getElementById('note-inp').value          = pipeIdx >= 0 ? spotBody.slice(0, pipeIdx) : spotBody;
-  document.getElementById('spot-location-inp').value = pipeIdx >= 0 ? spotBody.slice(pipeIdx + 1) : '';
-  document.getElementById('spot-toggle').checked     = isSpot;
+  document.getElementById('note-inp').value      = pipeIdx >= 0 ? spotBody.slice(0, pipeIdx) : spotBody;
+  document.getElementById('spot-toggle').checked = isSpot;
+  restoreRegionPicker(pipeIdx >= 0 ? spotBody.slice(pipeIdx + 1) : '');
 
   const cats = curType === 'expense' ? EXP_CATS : INC_CATS;
   selCat = entry ? entry.category : cats[0].key;
@@ -1156,6 +1170,70 @@ document.querySelectorAll('.type-btn').forEach(btn => {
   });
 });
 
+// ── 地區選擇器資料 ────────────────────────────────────────────
+const CITY_DISTRICTS = [
+  { city: '台北市', dists: ['信義區','大安區','中正區','松山區','中山區','內湖區','士林區','文山區','北投區','南港區','萬華區','大同區'] },
+  { city: '新北市', dists: ['板橋區','新莊區','中和區','永和區','新店區','汐止區','土城區','三重區','蘆洲區','林口區','淡水區','樹林區','鶯歌區','三峽區','瑞芳區','深坑區','石碇區'] },
+  { city: '桃園市', dists: ['桃園區','中壢區','平鎮區','楊梅區','八德區','龜山區','蘆竹區','大園區'] },
+  { city: '新竹市', dists: ['東區','北區','香山區'] },
+  { city: '新竹縣', dists: ['竹北市','竹東鎮','新埔鎮','關西鎮','橫山鄉'] },
+  { city: '苗栗縣', dists: ['苗栗市','頭份市','竹南鎮','通霄鎮'] },
+  { city: '台中市', dists: ['中區','西屯區','南屯區','北屯區','西區','北區','大里區','太平區','豐原區','后里區','清水區','梧棲區','沙鹿區','大甲區'] },
+  { city: '彰化縣', dists: ['彰化市','員林市','鹿港鎮','溪湖鎮'] },
+  { city: '南投縣', dists: ['南投市','埔里鎮','草屯鎮','竹山鎮','集集鎮','仁愛鄉','魚池鄉'] },
+  { city: '雲林縣', dists: ['斗六市','虎尾鎮','斗南鎮','西螺鎮'] },
+  { city: '嘉義市', dists: ['東區','西區'] },
+  { city: '台南市', dists: ['中西區','東區','南區','北區','安平區','安南區','永康區','仁德區','歸仁區','善化區','新市區'] },
+  { city: '高雄市', dists: ['三民區','鼓山區','左營區','楠梓區','苓雅區','前鎮區','小港區','鳳山區','林園區','岡山區','旗山區'] },
+  { city: '宜蘭縣', dists: ['宜蘭市','羅東鎮','蘇澳鎮','礁溪鄉','冬山鄉'] },
+  { city: '花蓮縣', dists: ['花蓮市','吉安鄉','壽豐鄉','鳳林鎮','玉里鎮','秀林鄉'] },
+  { city: '台東縣', dists: ['台東市','成功鎮','關山鎮','池上鄉','鹿野鄉'] },
+  { city: '澎湖縣', dists: ['馬公市','西嶼鄉','望安鄉','七美鄉','白沙鄉','湖西鄉'] },
+  { city: '金門縣', dists: ['金城鎮','金湖鎮','金沙鎮','金寧鄉','烈嶼鄉'] },
+];
+
+let selCity = null, selDistrict = null;
+
+function buildRegionPicker() {
+  const citiesEl = document.getElementById('srp-cities');
+  if (!citiesEl) return;
+  citiesEl.innerHTML = CITY_DISTRICTS.map(c =>
+    `<button type="button" class="srp-city-btn${selCity === c.city ? ' active' : ''}" onclick="pickCity('${c.city}')">${c.city}</button>`
+  ).join('');
+  const distsEl = document.getElementById('srp-districts');
+  const cityData = CITY_DISTRICTS.find(c => c.city === selCity);
+  if (cityData) {
+    distsEl.classList.add('open');
+    distsEl.innerHTML = cityData.dists.map(d =>
+      `<button type="button" class="srp-dist-btn${selDistrict === d ? ' active' : ''}" onclick="pickDistrict('${d}')">${d}</button>`
+    ).join('');
+  } else {
+    distsEl.classList.remove('open');
+    distsEl.innerHTML = '';
+  }
+}
+
+function pickCity(city) {
+  selCity = (selCity === city) ? null : city;
+  selDistrict = null;
+  buildRegionPicker();
+}
+function pickDistrict(dist) {
+  selDistrict = (selDistrict === dist) ? null : dist;
+  buildRegionPicker();
+}
+function restoreRegionPicker(regionStr) {
+  selCity = null; selDistrict = null;
+  if (regionStr) {
+    for (const c of CITY_DISTRICTS) {
+      if (c.city === regionStr) { selCity = c.city; break; }
+      if (c.dists.includes(regionStr)) { selCity = c.city; selDistrict = regionStr; break; }
+    }
+  }
+  buildRegionPicker();
+}
+
+// ─────────────────────────────────────────────────────────────
 document.getElementById('spot-toggle').addEventListener('change', syncSpotToggle);
 
 function syncSpotToggle() {
@@ -1166,11 +1244,12 @@ function syncSpotToggle() {
     const isOn = document.getElementById('spot-toggle').checked;
     row.classList.toggle('loc-open', isOn);
     locRow.classList.toggle('visible', isOn);
+    if (isOn) buildRegionPicker();
   } else {
     row.classList.remove('visible', 'loc-open');
     locRow.classList.remove('visible');
     document.getElementById('spot-toggle').checked = false;
-    document.getElementById('spot-location-inp').value = '';
+    selCity = null; selDistrict = null;
   }
 }
 
@@ -1219,7 +1298,7 @@ document.getElementById('save-btn').addEventListener('click', async () => {
   btn.textContent = '…'; btn.disabled = true;
   const noteRaw  = document.getElementById('note-inp').value.trim();
   const isSpot   = document.getElementById('spot-toggle').checked;
-  const locRaw   = document.getElementById('spot-location-inp').value.trim();
+  const locRaw   = selDistrict || selCity || '';
   const noteVal  = (isSpot && noteRaw)
     ? (locRaw ? `${noteRaw}|${locRaw}` : noteRaw) + '#spot'
     : noteRaw;
