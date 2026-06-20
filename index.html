@@ -1458,13 +1458,16 @@ async function loadUserFoodSpots() {
     userFoodSpots = [];
 
     for (const e of entries) {
-      const raw  = e.note?.trim();
+      const raw      = e.note?.trim();
       if (!raw) continue;
-      const name = raw.endsWith('#spot') ? raw.slice(0, -5) : raw;
+      const spotBody = raw.endsWith('#spot') ? raw.slice(0, -5) : raw;
+      const pipeIdx  = raw.endsWith('#spot') ? spotBody.lastIndexOf('|') : -1;
+      const name     = pipeIdx >= 0 ? spotBody.slice(0, pipeIdx) : spotBody;
+      const noteRegion = pipeIdx >= 0 ? spotBody.slice(pipeIdx + 1).trim() : null;
       if (!name || seen.has(name) || existingNames.has(name)) continue;
       seen.add(name);
       const trip   = TRIPS.find(t => t.startDate && t.endDate && e.date >= t.startDate && e.date <= t.endDate);
-      const region = trip ? trip.destination : `${e.date.slice(0,4)}/${+e.date.slice(5,7)}`;
+      const region = noteRegion || (trip ? trip.destination : '未分類');
       const CAT_MAP = { '食': ['食物','🍽️'], '住': ['住宿','🏨'], '行': ['室外景點','🚗'],
                         '育': ['室內景點','🎓'], '樂': ['室外景點','🎡'] };
       const [category, emoji] = CAT_MAP[e.category] || ['室外景點','📍'];

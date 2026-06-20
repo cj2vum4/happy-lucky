@@ -440,6 +440,32 @@ body {
 .spot-toggle-inp:checked + .spot-toggle-track .spot-toggle-thumb {
   transform: translateX(18px);
 }
+.spot-toggle-row.loc-open {
+  border-radius: 12px 12px 0 0;
+  border-bottom: 1px dashed rgba(245,168,35,0.45);
+  margin-bottom: 0;
+}
+.spot-location-row {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin: 0 16px 10px;
+  padding: 8px 14px 10px;
+  background: #fff8f0;
+  border: 1.5px solid #f5c87a;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+}
+.spot-location-row.visible { display: flex; }
+.spot-location-label { font-size: 12px; color: #a0622a; flex-shrink: 0; white-space: nowrap; }
+.spot-location-inp {
+  flex: 1; border: none; border-bottom: 1.5px solid rgba(245,168,35,0.55);
+  background: transparent; padding: 4px 2px;
+  font-size: 14px; font-family: inherit; color: var(--text); outline: none;
+  transition: border-color 0.15s;
+}
+.spot-location-inp::placeholder { color: #c89050; opacity: 0.75; font-size: 12px; }
+.spot-location-inp:focus { border-bottom-color: #f5a623; }
 
 /* Numpad */
 .numpad {
@@ -697,6 +723,10 @@ body.is-anniversary {
         <div class="spot-toggle-track"><div class="spot-toggle-thumb"></div></div>
       </div>
     </label>
+    <div class="spot-location-row" id="spot-location-row">
+      <span class="spot-location-label">📌 地區</span>
+      <input class="spot-location-inp" id="spot-location-inp" placeholder="台北市 / 新竹市 / 台中市…" maxlength="20" autocomplete="off">
+    </div>
     <div class="numpad">
       <button class="nk" data-k="7">7</button>
       <button class="nk" data-k="8">8</button>
@@ -1040,7 +1070,7 @@ function renderEntry(e) {
       <div class="ent-icon" style="background:${info.bg}">${info.emoji}</div>
       <div class="ent-body">
         <div class="ent-cat">${e.category}</div>
-        <div class="ent-note">${e.note ? (e.note.endsWith('#spot') ? '📍 ' + e.note.slice(0,-5) : e.note) : '<span style="color:var(--text3)">點擊編輯</span>'}</div>
+        <div class="ent-note">${e.note ? (e.note.endsWith('#spot') ? '📍 ' + e.note.slice(0,-5).replace(/\|[^|]*$/,'') : e.note) : '<span style="color:var(--text3)">點擊編輯</span>'}</div>
       </div>
       <div class="ent-right">
         <div class="ent-amt ${cls}">${sign}$${fmtAmt(e.amount)}</div>
@@ -1065,10 +1095,13 @@ function openSheet(entry = null) {
 
   amtStr = entry ? String(entry.amount) : '0';
   document.getElementById('amt-display').textContent = amtStr;
-  const rawNote = entry ? (entry.note || '') : '';
-  const isSpot  = rawNote.endsWith('#spot');
-  document.getElementById('note-inp').value = isSpot ? rawNote.slice(0, -5) : rawNote;
-  document.getElementById('spot-toggle').checked = isSpot;
+  const rawNote  = entry ? (entry.note || '') : '';
+  const isSpot   = rawNote.endsWith('#spot');
+  const spotBody = isSpot ? rawNote.slice(0, -5) : rawNote;
+  const pipeIdx  = isSpot ? spotBody.lastIndexOf('|') : -1;
+  document.getElementById('note-inp').value          = pipeIdx >= 0 ? spotBody.slice(0, pipeIdx) : spotBody;
+  document.getElementById('spot-location-inp').value = pipeIdx >= 0 ? spotBody.slice(pipeIdx + 1) : '';
+  document.getElementById('spot-toggle').checked     = isSpot;
 
   const cats = curType === 'expense' ? EXP_CATS : INC_CATS;
   selCat = entry ? entry.category : cats[0].key;
@@ -1123,13 +1156,21 @@ document.querySelectorAll('.type-btn').forEach(btn => {
   });
 });
 
+document.getElementById('spot-toggle').addEventListener('change', syncSpotToggle);
+
 function syncSpotToggle() {
-  const row = document.getElementById('spot-toggle-row');
+  const row    = document.getElementById('spot-toggle-row');
+  const locRow = document.getElementById('spot-location-row');
   if (curType === 'expense') {
     row.classList.add('visible');
+    const isOn = document.getElementById('spot-toggle').checked;
+    row.classList.toggle('loc-open', isOn);
+    locRow.classList.toggle('visible', isOn);
   } else {
-    row.classList.remove('visible');
+    row.classList.remove('visible', 'loc-open');
+    locRow.classList.remove('visible');
     document.getElementById('spot-toggle').checked = false;
+    document.getElementById('spot-location-inp').value = '';
   }
 }
 
@@ -1178,7 +1219,10 @@ document.getElementById('save-btn').addEventListener('click', async () => {
   btn.textContent = '…'; btn.disabled = true;
   const noteRaw  = document.getElementById('note-inp').value.trim();
   const isSpot   = document.getElementById('spot-toggle').checked;
-  const noteVal  = (isSpot && noteRaw) ? noteRaw + '#spot' : noteRaw;
+  const locRaw   = document.getElementById('spot-location-inp').value.trim();
+  const noteVal  = (isSpot && noteRaw)
+    ? (locRaw ? `${noteRaw}|${locRaw}` : noteRaw) + '#spot'
+    : noteRaw;
   const data = {
     type: curType, amount: amt,
     category: selCat,
