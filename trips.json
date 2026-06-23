@@ -50,7 +50,11 @@
         { "name": "澎湖跨海大橋",     "category": "室外景點", "region": "白沙鄉",   "emoji": "🌉", "desc": "台灣第一長橋 2,494m",                  "mapUrl": "https://maps.google.com/?q=澎湖跨海大橋" },
         { "name": "澎湖天后宮",       "category": "室外景點", "region": "馬公市",   "emoji": "🛕", "desc": "全台最古老媽祖廟・中央老街旁",          "mapUrl": "https://maps.google.com/?q=澎湖天后宮" },
         { "name": "馬公 小管麵線",     "category": "食物",    "region": "馬公市",   "emoji": "🍜", "desc": "澎湖必吃・搭配風茹茶最絕",              "mapUrl": "https://maps.google.com/?q=小管麵線+馬公" },
-        { "name": "易家仙人掌冰",     "category": "食物",    "region": "白沙鄉",   "emoji": "🍦", "desc": "跨海大橋旁・夏日消暑必吃",              "mapUrl": "https://maps.google.com/?q=易家仙人掌冰+澎湖" }
+        { "name": "易家仙人掌冰",     "category": "食物",    "region": "白沙鄉",   "emoji": "🍦", "desc": "跨海大橋旁・夏日消暑必吃",              "mapUrl": "https://maps.google.com/?q=易家仙人掌冰+澎湖" },
+        { "name": "冠軍民宿",            "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/9–10・$937/晚",                       "mapUrl": "https://maps.google.com/?q=冠軍民宿+馬公+澎湖" },
+        { "name": "合興大飯店 SDU Hotel", "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/10–11・$1,263/晚",                    "mapUrl": "https://maps.google.com/?q=合興大飯店+馬公+澎湖" },
+        { "name": "等風來海景電梯民宿",   "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/11–12・$3,600/晚・海景房",            "mapUrl": "https://maps.google.com/?q=等風來海景電梯民宿+澎湖" },
+        { "name": "葳葳民宿",            "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/12–13・$1,270/晚",                    "mapUrl": "https://maps.google.com/?q=葳葳民宿+澎湖" }
       ]
     },
     {
