@@ -814,16 +814,7 @@ body {
         <div class="budget-row-name">七美望安跳島一日遊</div>
         <div class="budget-row-price">~$1,200 <span class="unit">/ 人</span></div>
       </div>
-      <div class="budget-row">
-        <div class="budget-row-icon">🏄</div>
-        <div class="budget-row-name">吉貝八合一水上活動</div>
-        <div class="budget-row-price">~$800 <span class="unit">/ 人</span></div>
-      </div>
-      <div class="budget-row">
-        <div class="budget-row-icon">🦑</div>
-        <div class="budget-row-name">夜釣小管體驗</div>
-        <div class="budget-row-price">~$600 <span class="unit">/ 人</span></div>
-      </div>
+
       <div class="budget-row">
         <div class="budget-row-icon">🛵</div>
         <div class="budget-row-name">租機車（4天）</div>
@@ -887,9 +878,110 @@ body {
         <div class="transport-icon-wrap">🛵</div>
         <div class="transport-body">
           <div class="transport-title">租機車</div>
-          <div class="transport-sub">澎湖最方便的移動方式・建議到馬公市區租車</div>
+          <div class="transport-sub">澎湖最方便的移動方式・$300–400 / 台 / 天・旺季提早 2 週預訂</div>
         </div>
       </div>
+      <div class="transport-card" style="border-left:3px solid var(--pea-dark);">
+        <div class="transport-icon-wrap" style="font-size:18px;">⭐</div>
+        <div class="transport-body">
+          <div class="transport-title">宏蓁租車（機場店）推薦</div>
+          <div class="transport-sub">出5號出口步行即達・提供免費機場接駁・KKday 6,000+ 次租車紀錄</div>
+        </div>
+      </div>
+      <div class="transport-card">
+        <div class="transport-icon-wrap" style="font-size:18px;">🏅</div>
+        <div class="transport-body">
+          <div class="transport-title">啟發租車行（備選）</div>
+          <div class="transport-sub">Google 評分 4.8⭐・機場附近・885澎湖縣湖西鄉95-7號</div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:24px">🗺️ 本島景點手繪地圖</div>
+      <div style="background:var(--pea-bg); border:1px solid rgba(27,145,201,0.2); border-radius:14px; padding:10px; margin-bottom:14px; overflow:hidden;">
+        <svg width="100%" viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'Caveat',cursive; overflow:visible;">
+          <defs>
+            <filter id="wobble" x="-5%" y="-5%" width="115%" height="115%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" result="noise" seed="5"/>
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+          </defs>
+
+          <!-- Sea -->
+          <rect width="300" height="230" fill="#C8E9F8" rx="10"/>
+          <!-- Wave hints -->
+          <text x="10" y="220" style="font-size:16px;opacity:0.18;">🌊🌊🌊🌊🌊🌊🌊🌊</text>
+
+          <!-- Title -->
+          <text x="150" y="19" text-anchor="middle" font-size="14" font-weight="700" fill="#0A6B99">澎湖 · 本島行程路線</text>
+
+          <!-- 西嶼 island -->
+          <path filter="url(#wobble)" d="M 44,108 C 36,98 34,84 40,72 C 46,60 60,56 72,60 C 84,64 90,78 88,92 C 86,106 74,116 62,114 C 52,112 46,116 44,108 Z" fill="#D0E8B8" stroke="#4A7C59" stroke-width="2"/>
+          <text x="63" y="92" text-anchor="middle" font-size="10" fill="#2E5A2E" font-weight="600">西嶼</text>
+
+          <!-- 跨海大橋 -->
+          <line filter="url(#wobble)" x1="89" y1="84" x2="118" y2="76" stroke="#7B5EA7" stroke-width="2.5" stroke-dasharray="6,3"/>
+          <text x="103" y="70" text-anchor="middle" font-size="8" fill="#7B5EA7">跨海大橋</text>
+
+          <!-- 白沙鄉 peninsula (north) -->
+          <path filter="url(#wobble)" d="M 118,76 C 114,58 112,38 118,24 C 124,10 138,8 148,14 C 158,20 160,36 156,52 C 153,63 146,72 138,76 C 130,80 120,80 118,76 Z" fill="#D0E8B8" stroke="#4A7C59" stroke-width="2"/>
+          <text x="137" y="50" text-anchor="middle" font-size="9" fill="#2E5A2E">白沙鄉</text>
+
+          <!-- 本島主體 (馬公＋湖西) -->
+          <path filter="url(#wobble)" d="M 118,76 C 120,78 130,82 142,80 C 155,78 168,74 180,80 C 192,86 198,100 196,116 C 194,132 184,144 174,155 C 164,166 154,172 144,180 C 134,188 126,196 116,194 C 106,192 100,182 100,170 C 100,158 108,148 112,136 C 116,124 116,110 116,96 C 116,86 116,78 118,76 Z" fill="#D0E8B8" stroke="#4A7C59" stroke-width="2"/>
+          <text x="158" y="118" text-anchor="middle" font-size="9" fill="#2E5A2E">湖西鄉</text>
+          <text x="116" y="168" text-anchor="middle" font-size="9" fill="#2E5A2E">馬公市</text>
+
+          <!-- Route line (dotted) -->
+          <path filter="url(#wobble)" d="M 148,128 L 148,22 L 118,76 L 89,84 L 70,72 L 46,104" stroke="#E05252" stroke-width="1.2" stroke-dasharray="4,3" fill="none" opacity="0.55"/>
+
+          <!-- 馬公機場 -->
+          <circle cx="148" cy="128" r="6" fill="#E05252" stroke="white" stroke-width="2"/>
+          <text x="158" y="132" font-size="10" fill="#B03030" font-weight="600">✈ 馬公機場</text>
+
+          <!-- 馬公市區 / 住宿 -->
+          <circle cx="112" cy="178" r="5" fill="#4A7BBE" stroke="white" stroke-width="1.5"/>
+          <text x="120" y="182" font-size="9" fill="#2E5090">🏘 市區・住宿</text>
+
+          <!-- 奎壁山摩西分海 -->
+          <circle cx="186" cy="92" r="4" fill="#D4883C" stroke="white" stroke-width="1.5"/>
+          <text x="192" y="90" font-size="8" fill="#8C5A1A">摩西分海</text>
+
+          <!-- 後寮天堂路 -->
+          <circle cx="148" cy="22" r="4" fill="#D4883C" stroke="white" stroke-width="1.5"/>
+          <text x="155" y="20" font-size="8" fill="#8C5A1A">天堂路</text>
+
+          <!-- 通樑古榕 -->
+          <circle cx="118" cy="76" r="4" fill="#4A7C59" stroke="white" stroke-width="1.5"/>
+          <text x="98" y="68" font-size="8" fill="#2E5A2E">通樑古榕</text>
+
+          <!-- 二崁聚落 -->
+          <circle cx="70" cy="72" r="4" fill="#D4883C" stroke="white" stroke-width="1.5"/>
+          <text x="14" y="68" font-size="8" fill="#8C5A1A">二崁聚落</text>
+
+          <!-- 三仙塔・外垵 -->
+          <circle cx="44" cy="106" r="4" fill="#D4883C" stroke="white" stroke-width="1.5"/>
+          <text x="2" y="104" font-size="8" fill="#8C5A1A">三仙塔</text>
+
+          <!-- Legend -->
+          <rect x="204" y="100" width="90" height="110" rx="8" fill="rgba(255,255,255,0.85)" stroke="#C4AE9E" stroke-width="1"/>
+          <text x="249" y="116" text-anchor="middle" font-size="10" font-weight="700" fill="#2E2018">📍 圖例</text>
+          <circle cx="214" cy="128" r="4" fill="#E05252"/>
+          <text x="222" y="132" font-size="8.5" fill="#2E2018">機場</text>
+          <circle cx="214" cy="143" r="4" fill="#4A7BBE"/>
+          <text x="222" y="147" font-size="8.5" fill="#2E2018">市區・住宿</text>
+          <circle cx="214" cy="158" r="4" fill="#D4883C"/>
+          <text x="222" y="162" font-size="8.5" fill="#2E2018">景點</text>
+          <circle cx="214" cy="173" r="4" fill="#4A7C59"/>
+          <text x="222" y="177" font-size="8.5" fill="#2E2018">自然</text>
+          <line x1="210" y1="187" x2="226" y2="187" stroke="#7B5EA7" stroke-width="2" stroke-dasharray="5,3"/>
+          <text x="230" y="191" font-size="8.5" fill="#2E2018">大橋</text>
+
+          <!-- North -->
+          <text x="278" y="198" font-size="22" text-anchor="middle" fill="#0A6B99">↑</text>
+          <text x="278" y="212" font-size="9" text-anchor="middle" fill="#5A4232">北</text>
+        </svg>
+      </div>
+
       <div class="transport-card">
         <div class="transport-icon-wrap">🚤</div>
         <div class="transport-body">
@@ -1252,7 +1344,7 @@ body {
         <div class="day-banner">
           <div class="day-banner-num">D4</div>
           <div class="day-banner-info">
-            <div class="day-banner-title">本島環島・吉貝・夜釣小管</div>
+            <div class="day-banner-title">本島環島・天堂路・西嶼古厝</div>
             <div class="day-banner-date">2026年7月12日（日）</div>
           </div>
         </div>
@@ -1324,39 +1416,55 @@ body {
             <div class="itinerary-dot"></div>
             <div class="itinerary-card">
               <div class="itinerary-card-top">
-                <div class="itinerary-name">吉貝島 八合一水上活動 🏄</div>
+                <div class="itinerary-name">後寮天堂路 🌊</div>
                 <span class="itype itype-動">動</span>
               </div>
-              <div class="itinerary-desc">香蕉船・海戰車・甜甜圈・SUP・浮潛・貝殼沙灘・白色細沙超美</div>
-              <a class="nav-btn" href="https://maps.google.com/?q=吉貝島+澎湖" target="_blank" rel="noopener">🧭 導航</a>
+              <div class="itinerary-desc">蜿蜒入海的廢棄舊碼頭堤岸・澎湖秘境 IG 打卡熱點・漲潮時宛如海中公路</div>
+              <a class="nav-btn" href="https://maps.google.com/?q=後寮天堂路+澎湖白沙" target="_blank" rel="noopener">🧭 導航</a>
             </div>
           </div>
           <div class="itinerary-item">
             <div class="itinerary-time-col">
-              <div class="itinerary-time">17:00</div>
+              <div class="itinerary-time">14:30</div>
               <div class="itinerary-line"></div>
             </div>
             <div class="itinerary-dot"></div>
             <div class="itinerary-card">
               <div class="itinerary-card-top">
-                <div class="itinerary-name">夜釣小管 🦑</div>
+                <div class="itinerary-name">西嶼 二崁聚落 🏘️</div>
                 <span class="itype itype-動">動</span>
               </div>
-              <div class="itinerary-desc">傍晚出海・現釣小管・船長現做小管麵線和生魚片・澎湖夏季限定體驗</div>
+              <div class="itinerary-desc">百年閩南咾咕石古厝群・必吃古早味杏仁茶豆花・子孫巷穿梭小巷時光倒流</div>
+              <a class="nav-btn" href="https://maps.google.com/?q=二崁聚落+西嶼+澎湖" target="_blank" rel="noopener">🧭 導航</a>
             </div>
           </div>
           <div class="itinerary-item">
             <div class="itinerary-time-col">
-              <div class="itinerary-time">21:00</div>
+              <div class="itinerary-time">16:00</div>
               <div class="itinerary-line"></div>
             </div>
             <div class="itinerary-dot"></div>
             <div class="itinerary-card">
               <div class="itinerary-card-top">
-                <div class="itinerary-name">返馬公・宵夜</div>
+                <div class="itinerary-name">西嶼三仙塔・外垵漁港 🏛️</div>
+                <span class="itype itype-動">動</span>
+              </div>
+              <div class="itinerary-desc">藍白希臘風情漁港・眺望外垵全景・夕陽觀賞絕佳點・如地中海異國景色</div>
+              <a class="nav-btn" href="https://maps.google.com/?q=三仙塔+西嶼+澎湖" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col">
+              <div class="itinerary-time">18:00</div>
+              <div class="itinerary-line"></div>
+            </div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top">
+                <div class="itinerary-name">返馬公・晚餐</div>
                 <span class="itype itype-食">食</span>
               </div>
-              <div class="itinerary-desc">馬公市區夜市宵夜・最後一晚好好品嚐澎湖美食</div>
+              <div class="itinerary-desc">天后宮旁海鮮熱炒・最後一晚好好品嚐澎湖美食</div>
             </div>
           </div>
           <div class="itinerary-item">
@@ -1497,10 +1605,26 @@ body {
         <span class="spot-badge badge-out">室外</span>
       </div>
       <div class="spot-card">
-        <div class="spot-emoji-wrap">🏖️</div>
+        <div class="spot-emoji-wrap">🌊</div>
         <div class="spot-info">
-          <div class="spot-name">吉貝島</div>
-          <div class="spot-desc">白色貝殼沙灘・八合一水上活動</div>
+          <div class="spot-name">後寮天堂路</div>
+          <div class="spot-desc">蜿蜒入海堤岸・澎湖 IG 秘境</div>
+        </div>
+        <span class="spot-badge badge-out">室外</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🏘️</div>
+        <div class="spot-info">
+          <div class="spot-name">西嶼 二崁聚落</div>
+          <div class="spot-desc">百年閩南古厝・古早味杏仁茶豆花</div>
+        </div>
+        <span class="spot-badge badge-out">室外</span>
+      </div>
+      <div class="spot-card">
+        <div class="spot-emoji-wrap">🏛️</div>
+        <div class="spot-info">
+          <div class="spot-name">西嶼三仙塔・外垵漁港</div>
+          <div class="spot-desc">藍白希臘風情・夕陽絕佳觀賞點</div>
         </div>
         <span class="spot-badge badge-out">室外</span>
       </div>
