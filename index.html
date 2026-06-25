@@ -1557,8 +1557,10 @@ function setRegionSub(region, cityKey) {
 }
 
 function renderSearch() {
+  const TODAY = new Date().toISOString().slice(0, 10);
   const allSpots = [];
   TRIPS.forEach(trip => {
+    if (trip.startDate && trip.startDate > TODAY) return;
     (trip.spots || []).forEach(spot => {
       allSpots.push({ ...spot, tripFile: trip.file, prefix: trip.itemPrefix || '', sortDate: trip.startDate || '' });
     });
