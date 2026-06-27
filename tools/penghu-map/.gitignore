@@ -1,0 +1,5 @@
+node_modules/
+# 中間產物（可由 build_geo.js 重新產生）
+inject_3d.txt
+svg_block.txt
+geo_out.json

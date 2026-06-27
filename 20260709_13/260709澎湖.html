@@ -974,7 +974,6 @@ body {
 
       <div class="section-label" style="margin-top:24px">🧊 立體路線地圖（可切換每日）</div>
       <div class="map3d-wrap">
-        <button class="map-expand-btn" data-zoom-target=".map3d-wrap" type="button">⛶ 放大</button>
         <div class="map3d-tabs" id="map3dTabs">
           <button class="map3d-tab active" data-day="all" type="button">全部</button>
           <button class="map3d-tab" data-day="1" type="button">D1</button>
@@ -983,12 +982,13 @@ body {
           <button class="map3d-tab" data-day="4" type="button">D4</button>
         </div>
         <div class="map3d-holder" id="map3dHolder">
+          <button class="map-expand-btn" data-zoom-target=".map3d-wrap" type="button">⛶ 放大</button>
           <div class="map3d-fallback" id="map3dFallback">立體地圖載入中…</div>
           <svg class="map3d-leaders" id="map3dLeaders"></svg>
           <div class="map3d-labels" id="map3dLabels"></div>
         </div>
         <div class="map3d-routename" id="map3dRouteName">🗺️ 全部路線總覽</div>
-        <div class="map3d-hint">☝ 單指拖曳旋轉・雙指縮放・點上方切換每日路線</div>
+        <div class="map3d-hint">☝ 單指拖曳旋轉・雙指縮放與移動・點上方切換每日路線</div>
       </div>
 
       <div class="section-label" style="margin-top:24px">🗺️ 本島地圖（真實海岸線）</div>
@@ -2214,7 +2214,8 @@ injectRateButtons();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   holder.appendChild(renderer.domElement);
   const controls=new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping=true; controls.dampingFactor=0.08; controls.enablePan=false;
+  controls.enableDamping=true; controls.dampingFactor=0.08; controls.enablePan=true; controls.screenSpacePanning=true;
+  controls.touches={ONE:THREE.TOUCH.ROTATE, TWO:THREE.TOUCH.DOLLY_PAN};
   controls.minDistance=MAXD*0.5; controls.maxDistance=MAXD*1.8; controls.maxPolarAngle=1.45;
   controls.target.set(CX,1.5,CZ);
 
