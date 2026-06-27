@@ -965,94 +965,48 @@ body {
         <div class="map3d-hint">☝ 單指拖曳旋轉・雙指縮放・點上方切換每日路線</div>
       </div>
 
-      <div class="section-label" style="margin-top:24px">🗺️ 本島景點手繪地圖</div>
+      <div class="section-label" style="margin-top:24px">🗺️ 本島地圖（真實海岸線）</div>
       <div style="background:var(--pea-bg); border:1px solid rgba(27,145,201,0.2); border-radius:14px; padding:10px; margin-bottom:14px; overflow:hidden;">
         <svg width="100%" viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'Caveat',cursive; overflow:visible;">
-          <defs>
-            <filter id="wobble" x="-5%" y="-5%" width="115%" height="115%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" result="noise" seed="5"/>
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-          </defs>
-
-          <!-- Sea -->
-          <rect width="300" height="230" fill="#C8E9F8" rx="10"/>
-          <!-- Wave hints -->
-          <text x="10" y="220" style="font-size:16px;opacity:0.18;">🌊🌊🌊🌊🌊🌊🌊🌊</text>
-
-          <!-- Title -->
-          <text x="150" y="19" text-anchor="middle" font-size="14" font-weight="700" fill="#0A6B99">澎湖 · 本島行程路線</text>
-
-          <!-- 西嶼 island -->
-          <path filter="url(#wobble)" d="M 44,108 C 36,98 34,84 40,72 C 46,60 60,56 72,60 C 84,64 90,78 88,92 C 86,106 74,116 62,114 C 52,112 46,116 44,108 Z" fill="#D0E8B8" stroke="#4A7C59" stroke-width="2"/>
-          <text x="63" y="92" text-anchor="middle" font-size="10" fill="#2E5A2E" font-weight="600">西嶼</text>
-
-          <!-- 跨海大橋 -->
-          <line filter="url(#wobble)" x1="89" y1="84" x2="118" y2="76" stroke="#7B5EA7" stroke-width="2.5" stroke-dasharray="6,3"/>
-          <text x="103" y="70" text-anchor="middle" font-size="8" fill="#7B5EA7">跨海大橋</text>
-
-          <!-- 白沙鄉 peninsula (north) -->
-          <path filter="url(#wobble)" d="M 118,76 C 114,58 112,38 118,24 C 124,10 138,8 148,14 C 158,20 160,36 156,52 C 153,63 146,72 138,76 C 130,80 120,80 118,76 Z" fill="#D0E8B8" stroke="#4A7C59" stroke-width="2"/>
-          <text x="137" y="50" text-anchor="middle" font-size="9" fill="#2E5A2E">白沙鄉</text>
-
-          <!-- 本島主體 (馬公＋湖西) -->
-          <path filter="url(#wobble)" d="M 118,76 C 120,78 130,82 142,80 C 155,78 168,74 180,80 C 192,86 198,100 196,116 C 194,132 184,144 174,155 C 164,166 154,172 144,180 C 134,188 126,196 116,194 C 106,192 100,182 100,170 C 100,158 108,148 112,136 C 116,124 116,110 116,96 C 116,86 116,78 118,76 Z" fill="#D0E8B8" stroke="#4A7C59" stroke-width="2"/>
-          <text x="158" y="118" text-anchor="middle" font-size="9" fill="#2E5A2E">湖西鄉</text>
-          <text x="116" y="168" text-anchor="middle" font-size="9" fill="#2E5A2E">馬公市</text>
-
-          <!-- Route line (dotted) -->
-          <path filter="url(#wobble)" d="M 148,128 L 148,22 L 118,76 L 89,84 L 70,72 L 46,104" stroke="#E05252" stroke-width="1.2" stroke-dasharray="4,3" fill="none" opacity="0.55"/>
-
-          <!-- 馬公機場 -->
-          <circle cx="148" cy="128" r="6" fill="#E05252" stroke="white" stroke-width="2"/>
-          <text x="158" y="132" font-size="10" fill="#B03030" font-weight="600">✈ 馬公機場</text>
-
-          <!-- 馬公市區 / 住宿 -->
-          <circle cx="112" cy="178" r="5" fill="#4A7BBE" stroke="white" stroke-width="1.5"/>
-          <text x="120" y="182" font-size="9" fill="#2E5090">🏘 市區・住宿</text>
-
-          <!-- 奎壁山摩西分海 -->
-          <circle cx="186" cy="92" r="4" fill="#D4883C" stroke="white" stroke-width="1.5"/>
-          <text x="192" y="90" font-size="8" fill="#8C5A1A">摩西分海</text>
-
-          <!-- 龍門 很大的馬桶 -->
-          <circle cx="194" cy="118" r="4" fill="#D4883C" stroke="white" stroke-width="1.5"/>
-          <text x="180" y="132" font-size="8" fill="#8C5A1A">🚽 馬桶</text>
-
-          <!-- 後寮天堂路 -->
-          <circle cx="148" cy="22" r="4" fill="#D4883C" stroke="white" stroke-width="1.5"/>
-          <text x="155" y="20" font-size="8" fill="#8C5A1A">天堂路</text>
-
-          <!-- 通樑古榕 -->
-          <circle cx="118" cy="76" r="4" fill="#4A7C59" stroke="white" stroke-width="1.5"/>
-          <text x="98" y="68" font-size="8" fill="#2E5A2E">通樑古榕</text>
-
-          <!-- 二崁聚落 -->
-          <circle cx="70" cy="72" r="4" fill="#D4883C" stroke="white" stroke-width="1.5"/>
-          <text x="14" y="68" font-size="8" fill="#8C5A1A">二崁聚落</text>
-
-          <!-- 三仙塔・外垵 -->
-          <circle cx="44" cy="106" r="4" fill="#D4883C" stroke="white" stroke-width="1.5"/>
-          <text x="2" y="104" font-size="8" fill="#8C5A1A">三仙塔</text>
-
-          <!-- Legend -->
-          <rect x="204" y="100" width="90" height="110" rx="8" fill="rgba(255,255,255,0.85)" stroke="#C4AE9E" stroke-width="1"/>
-          <text x="249" y="116" text-anchor="middle" font-size="10" font-weight="700" fill="#2E2018">📍 圖例</text>
-          <circle cx="214" cy="128" r="4" fill="#E05252"/>
-          <text x="222" y="132" font-size="8.5" fill="#2E2018">機場</text>
-          <circle cx="214" cy="143" r="4" fill="#4A7BBE"/>
-          <text x="222" y="147" font-size="8.5" fill="#2E2018">市區・住宿</text>
-          <circle cx="214" cy="158" r="4" fill="#D4883C"/>
-          <text x="222" y="162" font-size="8.5" fill="#2E2018">景點</text>
-          <circle cx="214" cy="173" r="4" fill="#4A7C59"/>
-          <text x="222" y="177" font-size="8.5" fill="#2E2018">自然</text>
-          <line x1="210" y1="187" x2="226" y2="187" stroke="#7B5EA7" stroke-width="2" stroke-dasharray="5,3"/>
-          <text x="230" y="191" font-size="8.5" fill="#2E2018">大橋</text>
-
-          <!-- North -->
-          <text x="278" y="198" font-size="22" text-anchor="middle" fill="#0A6B99">↑</text>
-          <text x="278" y="212" font-size="9" text-anchor="middle" fill="#5A4232">北</text>
-        </svg>
+  <defs><filter id="wob" x="-4%" y="-4%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter></defs>
+  <rect width="300" height="230" fill="#C8E9F8" rx="10"/>
+  <text x="150" y="17" text-anchor="middle" font-size="13" font-weight="700" fill="#0A6B99">澎湖本島 · 真實海岸線</text>
+  <path filter="url(#wob)" d="M 125.7,111 L 123,115.3 L 124.9,115.2 L 122.6,120.1 L 115.9,123 L 111.4,122.2 L 110.9,123.7 L 110.6,122.1 L 107.9,124 L 111.2,143.6 L 108.7,149 L 104,150.6 L 106.7,155.6 L 103.8,159.8 L 104.1,162.6 L 105.9,163.5 L 104.6,166.3 L 107.8,168.9 L 106.6,170.5 L 103.3,171.3 L 93.2,168.1 L 88.9,172.1 L 83.2,170.8 L 80.1,174.2 L 74.4,173.7 L 75.5,170.1 L 81.1,167.4 L 83.2,163 L 90.3,166.9 L 98,160.1 L 98.1,152.9 L 94.8,150 L 89,148.4 L 91.8,147.8 L 90.3,145.2 L 91.8,143.4 L 94.6,144.5 L 94.4,147.8 L 98.6,147.1 L 97.9,140 L 101.7,136 L 99.6,132.3 L 98.4,133.2 L 95.3,130.3 L 98.5,127.7 L 97.2,122.4 L 99,118.6 L 100.8,118.5 L 103.5,110.2 L 106.1,108.6 L 108.7,110.2 L 107.5,107.1 L 105.3,107 L 105.3,104.4 L 111.9,104.2 L 112,107.5 L 109,110 L 108.7,112.6 L 113.1,113.2 L 116.2,116.4 L 122.7,115.5 L 125.7,111 Z" fill="#CFE6B6" stroke="#4A7C59" stroke-width="1.4"/>
+  <path filter="url(#wob)" d="M 170.9,140.5 L 168.9,137.4 L 165.4,138.3 L 160.5,132.8 L 166.1,130.3 L 165.5,126.7 L 162.5,130.1 L 159,126.9 L 154.8,128.3 L 159.6,118.7 L 158.3,114.7 L 154.4,112.8 L 154.7,110.4 L 150.8,106.6 L 149.6,99.9 L 143.4,99.5 L 140.8,101.2 L 138,107.5 L 132.1,103 L 125.7,111 L 131.8,103 L 130.6,101.6 L 129.2,102.9 L 132.6,95 L 142.3,93.2 L 150.7,88.5 L 156.2,92.6 L 162.4,91.2 L 165.7,94.8 L 164.2,97.3 L 168.1,99.2 L 166.8,101.9 L 170.7,106.5 L 170.5,108.4 L 169.3,109.9 L 164,109.3 L 163.7,113.9 L 160.8,116.1 L 164.7,120.5 L 167.3,118.2 L 169.4,118.9 L 168.8,121.2 L 165.3,121.9 L 164.1,124.1 L 166.4,129.6 L 171.6,130.7 L 171.7,134.5 L 169.1,137.3 L 170.9,140.5 Z" fill="#D4E9BC" stroke="#4A7C59" stroke-width="1.4"/>
+  <path filter="url(#wob)" d="M 170.7,31.3 L 170.8,33.7 L 177.7,37.2 L 178.2,40.1 L 175.7,42.7 L 170,42.1 L 169.5,43.3 L 172.5,44.9 L 169.1,43.7 L 166.8,45.3 L 164.5,53.7 L 162.6,46.8 L 159.7,44.7 L 168.2,34 L 166.3,33.3 L 170.1,30 L 170.7,31.3 Z" fill="#D8ECC2" stroke="#4A7C59" stroke-width="1.4"/>
+  <path filter="url(#wob)" d="M 123.3,189.4 L 125,190.6 L 128.8,189.3 L 128.3,193.5 L 131.4,194.4 L 133.8,200.6 L 138.8,198.6 L 144.1,201.6 L 145.1,204.8 L 143,210.1 L 144.4,211.8 L 152,211 L 155.5,208.4 L 159.8,209.3 L 161.1,207.3 L 160.4,209.1 L 166.7,212 L 167.7,208.3 L 166.1,205.9 L 170.3,203.9 L 170.3,202 L 166.8,201.6 L 166.3,196.8 L 173.2,189.4 L 176.8,190 L 176.4,187.1 L 181.5,183.3 L 186.1,183.3 L 185.6,180.5 L 190.2,175.4 L 193.6,173.6 L 206.9,173 L 208.9,176.6 L 207.5,173.2 L 208.7,172.5 L 210.5,174.5 L 213.2,174.2 L 213.8,176.3 L 212.1,177.8 L 214.6,180.3 L 225.6,178 L 224.3,175.1 L 225.4,173.8 L 217.9,170 L 215.8,163.4 L 217.6,156.6 L 210.6,144.2 L 207.9,144.5 L 209.1,147.4 L 207.9,151.3 L 202.7,151 L 202.6,148.3 L 205.8,148.7 L 199.4,146 L 200.7,140.4 L 195.9,138 L 194,139.6 L 196.4,139.5 L 195.9,142.1 L 190.4,151.9 L 192.2,152.8 L 189.3,154.6 L 190.1,153 L 187.6,151.1 L 190.1,147.5 L 187.5,145.7 L 183.6,149.3 L 185.4,151.5 L 183.7,157.2 L 181.7,159.3 L 178.9,159.2 L 180.1,156.2 L 178.5,154.5 L 178.9,150.1 L 181.1,148 L 179.3,144.6 L 183.1,139.5 L 176.1,140.1 L 177,142.6 L 173.7,144.2 L 172.9,142.3 L 171.3,143.5 L 170.9,140.5 L 166.4,140.9 L 164.5,144.5 L 167.6,149.5 L 167.3,155.1 L 161.4,157.4 L 162.1,161.7 L 163.9,161.6 L 161,163.3 L 160.7,167.5 L 158.4,166.2 L 158.6,163.3 L 154.9,165.5 L 152.8,164.1 L 155.1,158.9 L 154.2,160.5 L 151.2,159.9 L 152.9,158.9 L 150.9,157.1 L 153.2,154.6 L 151.1,151.6 L 151.9,149.1 L 145.4,156 L 137.2,155.6 L 140.8,163.1 L 136.3,165.9 L 135.9,170.7 L 133.3,171.5 L 134.6,173.5 L 141.8,170.6 L 141.3,172.5 L 143.3,170.3 L 141.7,170.1 L 145.3,168.2 L 145.7,170.2 L 148.8,171.5 L 146.9,171.3 L 147,173.6 L 144,171.7 L 147.4,175 L 146.7,176.2 L 144.8,174.8 L 146.3,177.7 L 142.9,179.3 L 137.5,176 L 137.3,179.5 L 139.3,180.1 L 137.4,181.3 L 142.3,180.6 L 141.7,182.5 L 144,181.9 L 144.5,184.1 L 150.1,181.5 L 151.8,182.5 L 154.2,179.9 L 156.5,179.7 L 156.6,181.5 L 157.2,179.3 L 159.7,182.7 L 162.2,181.1 L 164.1,182.9 L 162.5,184.7 L 164.6,188.4 L 159.2,189.9 L 162.3,194.9 L 159.8,198.4 L 156.3,195.2 L 153.4,196.5 L 151,193.9 L 149.5,194.6 L 149.4,200.4 L 145.2,203.3 L 143.7,194.4 L 141.2,195 L 139.6,192.5 L 138.8,196 L 136.4,195.3 L 136.7,197.8 L 134.7,198.4 L 132.3,196.4 L 133.6,190 L 129,188.1 L 130.3,182.4 L 127.9,180.7 L 128.4,178.4 L 126,183.8 L 123.9,182.8 L 123.3,189.4 Z" fill="#CDE6B2" stroke="#4A7C59" stroke-width="1.4"/>
+  <line filter="url(#wob)" x1="125.7" y1="111" x2="125.7" y2="111" stroke="#7B5EA7" stroke-width="2.2"/>
+  <text x="125.7" y="108" text-anchor="middle" font-size="7" fill="#5E4790">跨海大橋</text>
+  <text x="102.5" y="137.9" text-anchor="middle" font-size="7.5" fill="#3A6B3A" opacity="0.85" font-weight="700">西嶼</text>
+  <text x="157.8" y="114.3" text-anchor="middle" font-size="7.5" fill="#3A6B3A" opacity="0.85" font-weight="700">白沙</text>
+  <text x="169.6" y="39.9" text-anchor="middle" font-size="7.5" fill="#3A6B3A" opacity="0.85" font-weight="700">中屯</text>
+  <text x="164.5" y="173.5" text-anchor="middle" font-size="9" fill="#3A6B3A" opacity="0.85" font-weight="700">馬公本島・湖西</text>
+  <circle cx="181.4" cy="167.7" r="2.6" fill="#E05252" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="140" cy="170" r="2.6" fill="#4A7BBE" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="145.1" cy="169.3" r="2.6" fill="#D4883C" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="139.8" cy="166" r="2.6" fill="#D4883C" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="140.6" cy="167.6" r="2.6" fill="#D4883C" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="138.5" cy="173.3" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="145.5" cy="175.1" r="2.6" fill="#D4883C" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="141.8" cy="171.1" r="2.6" fill="#D4883C" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="161.5" cy="102.3" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="108.1" cy="124.2" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="102.1" cy="128.5" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="89.4" cy="144.9" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="94.8" cy="142.4" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="96.1" cy="130" r="2.6" fill="#D4883C" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="84.8" cy="121.6" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="193.8" cy="145.3" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="207.8" cy="162.7" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <g font-size="7.5" fill="#2E2018" font-family="'Noto Serif TC',serif">
+  <rect x="10" y="28" width="58" height="58" rx="7" fill="rgba(255,255,255,0.8)" stroke="#C4AE9E" stroke-width="0.8"/>
+  <circle cx="20" cy="39.5" r="3" fill="#1B91C9"/><text x="28" y="42">景點</text>
+  <circle cx="20" cy="52.5" r="3" fill="#D4883C"/><text x="28" y="55">美食</text>
+  <circle cx="20" cy="65.5" r="3" fill="#8B6BB1"/><text x="28" y="68">住宿</text>
+  <circle cx="20" cy="78.5" r="3" fill="#E05252"/><text x="28" y="81">機場</text>
+  </g>
+  <text x="284" y="208" font-size="18" text-anchor="middle" fill="#0A6B99">↑</text><text x="284" y="220" font-size="8" text-anchor="middle" fill="#5A4232">北</text>
+</svg>
       </div>
 
       <div class="transport-card">
@@ -2171,216 +2125,162 @@ injectRateButtons();
   const routeNameEl = document.getElementById('map3dRouteName');
   const labelLayer = document.getElementById('map3dLabels');
   const leaderSvg = document.getElementById('map3dLeaders');
-  if (!holder || typeof THREE === 'undefined') {
-    if (fallback) fallback.textContent = '立體地圖無法載入';
-    return;
-  }
+  if (!holder || typeof THREE === 'undefined') { if (fallback) fallback.textContent = '立體地圖無法載入'; return; }
 
-  const SEA_Y = 1.0, BASE = 3.6, RAMP = 3.6, HILL = 1.7;
+  const SEA_Y = 1.0, BASE = 3.4, RAMP = 2.6, HILL = 1.6;
   const COL = { air:0xE0524A, stay:0x8B6BB1, food:0xE08A3C, spot:0x1B91C9 };
   const DAY_COL = { 1:0xE8913C, 2:0x18A0B0, 3:0x1B91C9, 4:0xC0567A };
-  const DAY_NAME = {
-    all:'🗺️ 全部路線總覽',
-    1:'🟠 D1・抵達 → 馬公市區',
-    2:'🟢 D2・馬公市區慢遊',
-    3:'🔵 D3・北環 ＋ 西嶼大環線',
-    4:'🌸 D4・東環 ＋ 摩西分海'
-  };
+  const DAY_NAME = { all:'🗺️ 全部路線總覽', 1:'🟠 D1・抵達 → 馬公市區', 2:'🟢 D2・馬公市區慢遊', 3:'🔵 D3・北環 ＋ 西嶼大環線', 4:'🌸 D4・東環 ＋ 摩西分海' };
 
-  // 島嶼輪廓（x 東+, z 南+；北 = -z）
   const POLYS = [
-    [[-30,-14],[-27,-16],[-24,-14],[-23,-8],[-21,-3],[-20,3],[-21,8],[-24,11],[-27,10],[-28,3],[-29,-4]],   // 西嶼
-    [[-28,-13],[-25,-14],[-24,-12],[-26,-10],[-28,-11]],                                                      // 小門嶼
-    [[-13,-20],[-8,-23],[-3,-22],[1,-18],[2,-13],[-2,-10],[-7,-9],[-11,-12]],                                 // 白沙
-    [[-6,-9],[-1,-11],[5,-10],[11,-11],[17,-9],[23,-7],[27,-3],[28,3],[26,9],[21,13],[14,16],[8,20],[3,23],[-2,22],[-5,17],[-3,12],[-6,8],[-7,2],[-6,-4]] // 本島
+    [[-9.64,-3.96],[-10.73,-2.25],[-9.95,-2.31],[-10.87,-0.36],[-13.53,0.78],[-15.34,0.47],[-15.5,1.08],[-15.62,0.43],[-16.71,1.21],[-15.4,8.98],[-16.4,11.13],[-18.27,11.75],[-17.2,13.73],[-18.34,15.41],[-18.21,16.5],[-17.5,16.85],[-18.04,17.99],[-16.76,19.02],[-17.22,19.65],[-18.55,19.96],[-22.54,18.7],[-24.24,20.28],[-26.51,19.76],[-27.74,21.11],[-30,20.9],[-29.59,19.5],[-27.35,18.43],[-26.52,16.69],[-23.68,18.2],[-20.63,15.51],[-20.6,12.68],[-21.91,11.52],[-24.22,10.88],[-23.09,10.62],[-23.69,9.61],[-23.11,8.91],[-21.97,9.33],[-22.06,10.64],[-20.42,10.35],[-20.69,7.53],[-19.16,5.97],[-20.01,4.47],[-20.5,4.84],[-21.71,3.68],[-20.46,2.66],[-20.95,0.55],[-20.26,-0.96],[-19.53,-1.01],[-18.45,-4.28],[-17.44,-4.91],[-16.4,-4.28],[-16.88,-5.53],[-17.75,-5.54],[-17.73,-6.58],[-15.13,-6.65],[-15.09,-5.34],[-16.28,-4.35],[-16.4,-3.35],[-14.65,-3.09],[-13.42,-1.84],[-10.85,-2.2],[-9.64,-3.96]], // xiyu
+    [[8.31,7.75],[7.51,6.5],[6.11,6.87],[4.18,4.69],[6.4,3.69],[6.16,2.28],[4.96,3.6],[3.59,2.33],[1.92,2.91],[3.8,-0.93],[3.31,-2.52],[1.74,-3.27],[1.85,-4.21],[0.3,-5.72],[-0.17,-8.37],[-2.62,-8.54],[-3.65,-7.85],[-4.76,-5.36],[-7.09,-7.13],[-9.64,-3.96],[-7.22,-7.15],[-7.71,-7.7],[-8.24,-7.19],[-6.91,-10.32],[-3.06,-11.02],[0.29,-12.91],[2.47,-11.26],[4.92,-11.82],[6.23,-10.39],[5.62,-9.42],[7.18,-8.66],[6.67,-7.58],[8.23,-5.75],[8.14,-5],[7.66,-4.41],[5.57,-4.64],[5.42,-2.8],[4.27,-1.96],[5.85,-0.18],[6.88,-1.11],[7.7,-0.83],[7.48,0.06],[6.06,0.35],[5.58,1.25],[6.51,3.43],[8.56,3.86],[8.61,5.34],[7.58,6.45],[8.31,7.75]], // baisha
+    [[8.22,-35.59],[8.26,-34.67],[10.99,-33.28],[11.21,-32.13],[10.19,-31.08],[7.92,-31.32],[7.74,-30.83],[8.92,-30.22],[7.59,-30.69],[6.66,-30.03],[5.77,-26.73],[5.01,-29.45],[3.86,-30.29],[7.23,-34.54],[6.47,-34.82],[7.99,-36.12],[8.22,-35.59]], // zhongtun
+    [[-10.61,27.15],[-9.91,27.63],[-8.42,27.11],[-8.6,28.78],[-7.38,29.14],[-6.43,31.6],[-4.44,30.79],[-2.33,32],[-1.93,33.26],[-2.77,35.38],[-2.24,36.05],[0.8,35.72],[2.19,34.7],[3.88,35.05],[4.39,34.27],[4.14,34.97],[6.61,36.12],[7.02,34.64],[6.41,33.7],[8.04,32.92],[8.07,32.17],[6.66,31.98],[6.45,30.07],[9.19,27.15],[10.65,27.37],[10.48,26.23],[12.52,24.71],[14.32,24.72],[14.14,23.62],[15.96,21.6],[17.31,20.89],[22.59,20.65],[23.36,22.08],[22.84,20.7],[23.29,20.45],[24,21.22],[25.1,21.13],[25.34,21.94],[24.64,22.55],[25.65,23.55],[30,22.61],[29.51,21.48],[29.94,20.95],[26.96,19.43],[26.13,16.81],[26.82,14.12],[24.06,9.19],[22.99,9.31],[23.46,10.48],[22.97,12.02],[20.9,11.91],[20.88,10.84],[22.13,11],[19.61,9.91],[20.12,7.71],[18.23,6.74],[17.46,7.37],[18.41,7.36],[18.21,8.39],[16.03,12.27],[16.76,12.61],[15.59,13.33],[15.91,12.72],[14.94,11.94],[15.91,10.53],[14.9,9.79],[13.35,11.25],[14.05,12.12],[13.38,14.37],[12.58,15.19],[11.46,15.15],[11.95,13.96],[11.32,13.29],[11.48,11.56],[12.34,10.73],[11.62,9.35],[13.15,7.35],[10.34,7.57],[10.71,8.59],[9.41,9.2],[9.1,8.46],[8.45,8.92],[8.31,7.75],[6.49,7.88],[5.74,9.31],[7,11.3],[6.88,13.54],[4.54,14.46],[4.79,16.15],[5.52,16.1],[4.37,16.78],[4.24,18.45],[3.35,17.96],[3.42,16.78],[1.93,17.66],[1.12,17.1],[2.02,15.04],[1.65,15.69],[0.48,15.45],[1.14,15.04],[0.36,14.33],[1.28,13.34],[0.43,12.14],[0.74,11.15],[-1.83,13.88],[-5.09,13.73],[-3.67,16.73],[-5.44,17.81],[-5.61,19.73],[-6.64,20.06],[-6.12,20.85],[-3.25,19.69],[-3.45,20.44],[-2.65,19.58],[-3.28,19.5],[-1.85,18.75],[-1.71,19.54],[-0.46,20.06],[-1.24,19.96],[-1.18,20.89],[-2.37,20.14],[-1.02,21.44],[-1.32,21.9],[-2.07,21.37],[-1.47,22.52],[-2.82,23.13],[-4.97,21.82],[-5.03,23.21],[-4.24,23.47],[-5,23.92],[-3.07,23.64],[-3.31,24.41],[-2.37,24.18],[-2.19,25.03],[0.02,24],[0.7,24.4],[1.65,23.38],[2.59,23.28],[2.6,24],[2.87,23.14],[3.86,24.48],[4.84,23.85],[5.58,24.56],[4.98,25.28],[5.78,26.75],[3.67,27.34],[4.88,29.35],[3.87,30.72],[2.51,29.44],[1.35,29.95],[0.39,28.94],[-0.19,29.21],[-0.25,31.53],[-1.89,32.65],[-2.49,29.14],[-3.51,29.39],[-4.13,28.38],[-4.44,29.78],[-5.41,29.48],[-5.28,30.47],[-6.06,30.74],[-7.02,29.92],[-6.49,27.4],[-8.34,26.63],[-7.8,24.36],[-8.79,23.69],[-8.58,22.8],[-9.51,24.94],[-10.34,24.52],[-10.61,27.15]], // main
   ];
+  const SPOTS = [
+    {n:'✈ 馬公機場', x:12.45, z:18.53, t:'air', d:[1]},
+    {n:'馬公住宿', x:-3.97, z:19.46, t:'stay', d:[1,2,3,4]},
+    {n:'佶肯GK漢堡', x:-1.93, z:19.17, t:'food', d:[1]},
+    {n:'鐘記燒餅', x:-4.04, z:17.87, t:'food', d:[2]},
+    {n:'藍冉刨冰', x:-3.73, z:18.5, t:'food', d:[2]},
+    {n:'篤行十村', x:-4.57, z:20.76, t:'spot', d:[2]},
+    {n:'小島一隅', x:-1.79, z:21.48, t:'food', d:[2]},
+    {n:'三哥雞排', x:-3.25, z:19.89, t:'food', d:[2]},
+    {n:'後寮天堂路', x:4.56, z:-7.41, t:'spot', d:[3]},
+    {n:'通樑古榕', x:-16.62, z:1.26, t:'spot', d:[3]},
+    {n:'跨海大橋', x:-19, z:2.99, t:'spot', d:[3]},
+    {n:'大菓葉玄武岩', x:-24.04, z:9.49, t:'spot', d:[3]},
+    {n:'二崁聚落', x:-21.92, z:8.48, t:'spot', d:[3]},
+    {n:'大池炸粿', x:-21.39, z:3.57, t:'food', d:[3]},
+    {n:'鯨魚洞', x:-25.89, z:0.24, t:'spot', d:[3]},
+    {n:'摩西分海', x:17.4, z:9.63, t:'spot', d:[4]},
+    {n:'很大的馬桶', x:22.96, z:16.57, t:'spot', d:[4]},
+  ];
+  const BRIDGE = { ax:-9.64, az:-3.96, bx:-9.64, bz:-3.96 };
 
-  function pointInPoly(x, z, poly) {
-    let inside = false;
-    for (let i=0, j=poly.length-1; i<poly.length; j=i++) {
-      const xi=poly[i][0], zi=poly[i][1], xj=poly[j][0], zj=poly[j][1];
-      if (((zi>z)!==(zj>z)) && (x < (xj-xi)*(z-zi)/(zj-zi)+xi)) inside=!inside;
-    }
-    return inside;
-  }
-  function distSeg(px,pz, ax,az, bx,bz){
-    const dx=bx-ax, dz=bz-az, l2=dx*dx+dz*dz;
-    let t = l2 ? ((px-ax)*dx+(pz-az)*dz)/l2 : 0; t=Math.max(0,Math.min(1,t));
-    return Math.hypot(px-(ax+t*dx), pz-(az+t*dz));
-  }
-  function distPoly(x,z,poly){
-    let d=Infinity;
-    for(let i=0,j=poly.length-1;i<poly.length;j=i++) d=Math.min(d, distSeg(x,z,poly[i][0],poly[i][1],poly[j][0],poly[j][1]));
-    return d;
-  }
+  // 多邊形 bbox（加速地形判定）
+  const POLY_BB = POLYS.map(r => { let a=[1e9,1e9,-1e9,-1e9]; r.forEach(p=>{a[0]=Math.min(a[0],p[0]);a[1]=Math.min(a[1],p[1]);a[2]=Math.max(a[2],p[0]);a[3]=Math.max(a[3],p[1]);}); return a; });
+  let MINX=1e9,MAXX=-1e9,MINZ=1e9,MAXZ=-1e9;
+  POLYS.forEach(r=>r.forEach(p=>{MINX=Math.min(MINX,p[0]);MAXX=Math.max(MAXX,p[0]);MINZ=Math.min(MINZ,p[1]);MAXZ=Math.max(MAXZ,p[1]);}));
+  const MAPW=MAXX-MINX, MAPH=MAXZ-MINZ, MAXD=Math.max(MAPW,MAPH), CX=(MINX+MAXX)/2, CZ=(MINZ+MAXZ)/2;
+
+  function pointInPoly(x,z,poly){ let inside=false; for(let i=0,j=poly.length-1;i<poly.length;j=i++){const xi=poly[i][0],zi=poly[i][1],xj=poly[j][0],zj=poly[j][1]; if(((zi>z)!==(zj>z)) && (x<(xj-xi)*(z-zi)/(zj-zi)+xi)) inside=!inside;} return inside; }
+  function distSeg(px,pz,ax,az,bx,bz){ const dx=bx-ax,dz=bz-az,l2=dx*dx+dz*dz; let t=l2?((px-ax)*dx+(pz-az)*dz)/l2:0; t=Math.max(0,Math.min(1,t)); return Math.hypot(px-(ax+t*dx),pz-(az+t*dz)); }
+  function distPoly(x,z,poly){ let d=Infinity; for(let i=0,j=poly.length-1;i<poly.length;j=i++) d=Math.min(d,distSeg(x,z,poly[i][0],poly[i][1],poly[j][0],poly[j][1])); return d; }
   function smooth(a,b,x){ let t=Math.max(0,Math.min(1,(x-a)/(b-a))); return t*t*(3-2*t); }
   function noise(x,z){ return Math.sin(x*0.34)*Math.cos(z*0.29)*0.6 + Math.sin(x*0.15+2.1)*Math.sin(z*0.2+0.7)*0.8 + Math.cos((x+z)*0.11)*0.4; }
   function terrainH(x,z){
-    let inside=false, d=Infinity;
-    for(const p of POLYS){ if(pointInPoly(x,z,p)) inside=true; d=Math.min(d, distPoly(x,z,p)); }
-    const signed = inside ? d : -d;
-    return smooth(0, RAMP, signed) * (BASE + Math.max(0,noise(x,z))*HILL);
+    let inside=false,d=Infinity;
+    for(let i=0;i<POLYS.length;i++){ const b=POLY_BB[i]; if(x<b[0]-RAMP||x>b[2]+RAMP||z<b[1]-RAMP||z>b[3]+RAMP) continue; if(pointInPoly(x,z,POLYS[i])) inside=true; const dd=distPoly(x,z,POLYS[i]); if(dd<d)d=dd; }
+    if(d===Infinity) return 0;
+    const signed=inside?d:-d;
+    return smooth(0,RAMP,signed)*(BASE+Math.max(0,noise(x,z))*HILL);
   }
 
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xd6eefb);
-  scene.fog = new THREE.Fog(0xd6eefb, 85, 195);
-  const camera = new THREE.PerspectiveCamera(44, 1, 0.1, 1000);
-  camera.position.set(6, 50, 56);
-  const renderer = new THREE.WebGLRenderer({ antialias:true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color(0xd6eefb);
+  scene.fog=new THREE.Fog(0xd6eefb, MAXD*1.0, MAXD*2.6);
+  const camera=new THREE.PerspectiveCamera(44,1,0.1,1000);
+  camera.position.set(CX+MAXD*0.05, MAXD*0.82, CZ+MAXD*0.95);
+  const renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   holder.appendChild(renderer.domElement);
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true; controls.dampingFactor = 0.08; controls.enablePan = false;
-  controls.minDistance = 30; controls.maxDistance = 100; controls.maxPolarAngle = 1.45;
-  controls.target.set(-2, 2, 0);
+  const controls=new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping=true; controls.dampingFactor=0.08; controls.enablePan=false;
+  controls.minDistance=MAXD*0.5; controls.maxDistance=MAXD*1.8; controls.maxPolarAngle=1.45;
+  controls.target.set(CX,1.5,CZ);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.68));
-  const sun = new THREE.DirectionalLight(0xfff3e0, 0.9); sun.position.set(22, 44, 18); scene.add(sun);
-  scene.add(new THREE.HemisphereLight(0xcfeeff, 0x4a7c59, 0.35));
+  scene.add(new THREE.AmbientLight(0xffffff,0.68));
+  const sun=new THREE.DirectionalLight(0xfff3e0,0.9); sun.position.set(MAXD*0.4,MAXD*0.7,MAXD*0.3); scene.add(sun);
+  scene.add(new THREE.HemisphereLight(0xcfeeff,0x4a7c59,0.35));
 
   // 地形高度場
-  const tgeo = new THREE.PlaneGeometry(72, 60, 144, 120); tgeo.rotateX(-Math.PI/2);
-  const pos = tgeo.attributes.position; const colArr = [];
-  const cSand=new THREE.Color(0xE6D6A0), cGrass=new THREE.Color(0x90C063), cGreen=new THREE.Color(0x68A046), cRock=new THREE.Color(0x9A9080), tmp=new THREE.Color();
-  for(let i=0;i<pos.count;i++){
-    const x=pos.getX(i), z=pos.getZ(i), h=terrainH(x,z); pos.setY(i,h);
+  const TW=MAPW+18, TH=MAPH+18, SX=Math.min(190,Math.round(TW*2.4)), SZ=Math.min(190,Math.round(TH*2.4));
+  const tgeo=new THREE.PlaneGeometry(TW,TH,SX,SZ); tgeo.rotateX(-Math.PI/2); tgeo.translate(CX,0,CZ);
+  const pos=tgeo.attributes.position, colArr=[];
+  const cSand=new THREE.Color(0xE6D6A0),cGrass=new THREE.Color(0x90C063),cGreen=new THREE.Color(0x68A046),cRock=new THREE.Color(0x9A9080),tmp=new THREE.Color();
+  for(let i=0;i<pos.count;i++){ const x=pos.getX(i),z=pos.getZ(i),h=terrainH(x,z); pos.setY(i,h);
     if(h<0.5) tmp.copy(cSand);
-    else if(h<BASE*0.5) tmp.copy(cSand).lerp(cGrass, smooth(0.5,BASE*0.5,h));
-    else if(h<BASE+0.4) tmp.copy(cGrass).lerp(cGreen, smooth(BASE*0.5,BASE+0.4,h));
-    else tmp.copy(cGreen).lerp(cRock, smooth(BASE+0.4,BASE+HILL,h));
-    colArr.push(tmp.r,tmp.g,tmp.b);
-  }
-  tgeo.setAttribute('color', new THREE.Float32BufferAttribute(colArr,3));
-  tgeo.computeVertexNormals();
-  scene.add(new THREE.Mesh(tgeo, new THREE.MeshStandardMaterial({ vertexColors:true, roughness:0.96, metalness:0.0 })));
+    else if(h<BASE*0.5) tmp.copy(cSand).lerp(cGrass,smooth(0.5,BASE*0.5,h));
+    else if(h<BASE+0.4) tmp.copy(cGrass).lerp(cGreen,smooth(BASE*0.5,BASE+0.4,h));
+    else tmp.copy(cGreen).lerp(cRock,smooth(BASE+0.4,BASE+HILL,h));
+    colArr.push(tmp.r,tmp.g,tmp.b); }
+  tgeo.setAttribute('color',new THREE.Float32BufferAttribute(colArr,3)); tgeo.computeVertexNormals();
+  scene.add(new THREE.Mesh(tgeo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:0.96,metalness:0.0})));
 
   // 海
-  const sgeo = new THREE.PlaneGeometry(96, 84, 50, 44); sgeo.rotateX(-Math.PI/2);
-  const sp = sgeo.attributes.position; const sBase = [];
-  for(let i=0;i<sp.count;i++) sBase.push(sp.getX(i), sp.getZ(i));
-  const sea = new THREE.Mesh(sgeo, new THREE.MeshStandardMaterial({ color:0x2C8FC4, transparent:true, opacity:0.82, roughness:0.22, metalness:0.1 }));
-  sea.position.y = SEA_Y; scene.add(sea);
+  const sgeo=new THREE.PlaneGeometry(TW+44,TH+44,52,46); sgeo.rotateX(-Math.PI/2); sgeo.translate(CX,0,CZ);
+  const sp=sgeo.attributes.position, sBase=[]; for(let i=0;i<sp.count;i++) sBase.push(sp.getX(i),sp.getZ(i));
+  const sea=new THREE.Mesh(sgeo,new THREE.MeshStandardMaterial({color:0x2C8FC4,transparent:true,opacity:0.82,roughness:0.22,metalness:0.1}));
+  sea.position.y=SEA_Y; scene.add(sea);
 
-  // 跨海大橋
-  const bridge = new THREE.Mesh(new THREE.BoxGeometry(8.5,0.5,1.2), new THREE.MeshStandardMaterial({ color:0xBFA98A, roughness:0.7 }));
-  bridge.position.set(-17, SEA_Y+1.2, -11.5); bridge.rotation.y = Math.PI*0.16; scene.add(bridge);
+  // 跨海大橋（真實位置）
+  const bdx=BRIDGE.bx-BRIDGE.ax, bdz=BRIDGE.bz-BRIDGE.az, blen=Math.hypot(bdx,bdz);
+  const bridge=new THREE.Mesh(new THREE.BoxGeometry(blen+1.4,0.5,1.1), new THREE.MeshStandardMaterial({color:0xC9B79A,roughness:0.7}));
+  bridge.position.set((BRIDGE.ax+BRIDGE.bx)/2, SEA_Y+1.0, (BRIDGE.az+BRIDGE.bz)/2);
+  bridge.rotation.y=-Math.atan2(bdz,bdx); scene.add(bridge);
 
-  const SPOTS = [
-    {n:'✈ 馬公機場', x:14, z:2,   t:'air',  d:[1]},
-    {n:'馬公住宿',   x:2,  z:16,  t:'stay', d:[1,2,3,4]},
-    {n:'佶肯GK漢堡', x:5,  z:14,  t:'food', d:[1]},
-    {n:'鐘記燒餅',   x:0,  z:15,  t:'food', d:[2]},
-    {n:'藍冉刨冰',   x:3,  z:18,  t:'food', d:[2]},
-    {n:'篤行十村',   x:-2, z:17,  t:'spot', d:[2]},
-    {n:'小島一隅',   x:7,  z:15,  t:'food', d:[2]},
-    {n:'三哥雞排',   x:1,  z:20,  t:'food', d:[2]},
-    {n:'後寮天堂路', x:-6, z:-20, t:'spot', d:[3]},
-    {n:'通樑古榕',   x:-11,z:-14, t:'spot', d:[3]},
-    {n:'跨海大橋',   x:-17,z:-11, t:'spot', d:[3]},
-    {n:'大菓葉玄武岩',x:-21,z:-3, t:'spot', d:[3]},
-    {n:'二崁聚落',   x:-24,z:1,   t:'spot', d:[3]},
-    {n:'大池炸粿',   x:-25,z:-7,  t:'food', d:[3]},
-    {n:'鯨魚洞',     x:-26,z:-12, t:'spot', d:[3]},
-    {n:'摩西分海',   x:24, z:-5,  t:'spot', d:[4]},
-    {n:'很大的馬桶', x:27, z:4,   t:'spot', d:[4]}
-  ];
-  const pinObjs = [];
+  const pinObjs=[];
   SPOTS.forEach(s=>{
-    const baseY = Math.max(terrainH(s.x,s.z), SEA_Y);
-    const g = new THREE.Group();
-    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,3.2,8), new THREE.MeshStandardMaterial({ color:0xffffff, roughness:0.6 }));
-    pole.position.y = 1.6; g.add(pole);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(1.0,18,18), new THREE.MeshStandardMaterial({ color:COL[s.t], emissive:COL[s.t], emissiveIntensity:0.25, roughness:0.4 }));
-    head.position.y = 3.5; g.add(head);
-    g.position.set(s.x, baseY, s.z); scene.add(g);
-    const el = document.createElement('div'); el.className='m3d-label'; el.textContent=s.n; el.style.display='none'; labelLayer.appendChild(el);
-    const ln = document.createElementNS('http://www.w3.org/2000/svg','line'); ln.setAttribute('class','m3d-leader'); ln.style.display='none'; leaderSvg.appendChild(ln);
-    pinObjs.push({ s, g, head, baseY, hw:new THREE.Vector3(), el, ln });
+    const baseY=Math.max(terrainH(s.x,s.z),SEA_Y), g=new THREE.Group();
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,3.2,8),new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.6})); pole.position.y=1.6; g.add(pole);
+    const head=new THREE.Mesh(new THREE.SphereGeometry(1.0,18,18),new THREE.MeshStandardMaterial({color:COL[s.t],emissive:COL[s.t],emissiveIntensity:0.25,roughness:0.4})); head.position.y=3.5; g.add(head);
+    g.position.set(s.x,baseY,s.z); scene.add(g);
+    const el=document.createElement('div'); el.className='m3d-label'; el.textContent=s.n; el.style.display='none'; labelLayer.appendChild(el);
+    const ln=document.createElementNS('http://www.w3.org/2000/svg','line'); ln.setAttribute('class','m3d-leader'); ln.style.display='none'; leaderSvg.appendChild(ln);
+    pinObjs.push({s,g,head,baseY,hw:new THREE.Vector3(),el,ln});
   });
 
-  const ROUTES = {
+  const ROUTES={
     1:['✈ 馬公機場','馬公住宿','佶肯GK漢堡'],
     2:['馬公住宿','鐘記燒餅','藍冉刨冰','篤行十村','小島一隅','三哥雞排'],
     3:['馬公住宿','後寮天堂路','通樑古榕','跨海大橋','大菓葉玄武岩','二崁聚落','大池炸粿','鯨魚洞'],
     4:['馬公住宿','摩西分海','很大的馬桶','馬公住宿']
   };
-  const nodeOf = n => SPOTS.find(o=>o.n===n);
-  const routeObjs = {};
+  const nodeOf=n=>SPOTS.find(o=>o.n===n);
+  const routeObjs={};
   Object.keys(ROUTES).forEach(day=>{
-    const pts = ROUTES[day].map(n=>{ const s=nodeOf(n); return new THREE.Vector3(s.x, Math.max(terrainH(s.x,s.z),SEA_Y)+1.8, s.z); });
-    const curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.35);
-    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve,140,0.5,8,false), new THREE.MeshStandardMaterial({ color:DAY_COL[day], emissive:DAY_COL[day], emissiveIntensity:0.4, roughness:0.4 }));
-    scene.add(tube); routeObjs[day] = { tube, curve };
+    const pts=ROUTES[day].map(n=>{const s=nodeOf(n); return new THREE.Vector3(s.x,Math.max(terrainH(s.x,s.z),SEA_Y)+1.8,s.z);});
+    const curve=new THREE.CatmullRomCurve3(pts,false,'catmullrom',0.3);
+    const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,160,0.5,8,false),new THREE.MeshStandardMaterial({color:DAY_COL[day],emissive:DAY_COL[day],emissiveIntensity:0.4,roughness:0.4}));
+    scene.add(tube); routeObjs[day]={tube,curve};
   });
-  const traveler = new THREE.Mesh(new THREE.SphereGeometry(1.1,16,16), new THREE.MeshStandardMaterial({ color:0xffffff, emissive:0xffdd55, emissiveIntensity:0.6 }));
-  scene.add(traveler);
+  const traveler=new THREE.Mesh(new THREE.SphereGeometry(1.1,16,16),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffdd55,emissiveIntensity:0.6})); scene.add(traveler);
 
-  let activeDay = 'all';
+  let activeDay='all';
   function setDay(day){
-    activeDay = day; routeNameEl.textContent = DAY_NAME[day] || '';
-    Object.keys(routeObjs).forEach(d=>{ routeObjs[d].tube.visible = (day==='all'||String(day)===d); });
-    pinObjs.forEach(o=>{
-      const on = (day==='all') || o.s.d.indexOf(Number(day))>=0;
-      o.g.visible = on;
-      const showLabel = on && day!=='all';
-      o.el.style.display = showLabel ? 'block' : 'none';
-      o.ln.style.display = showLabel ? 'block' : 'none';
-    });
-    traveler.visible = (day!=='all');
-    document.querySelectorAll('#map3dTabs .map3d-tab').forEach(b=>b.classList.toggle('active', b.dataset.day===String(day)));
+    activeDay=day; routeNameEl.textContent=DAY_NAME[day]||'';
+    Object.keys(routeObjs).forEach(d=>{routeObjs[d].tube.visible=(day==='all'||String(day)===d);});
+    pinObjs.forEach(o=>{ const on=(day==='all')||o.s.d.indexOf(Number(day))>=0; o.g.visible=on; const sl=on&&day!=='all'; o.el.style.display=sl?'block':'none'; o.ln.style.display=sl?'block':'none'; });
+    traveler.visible=(day!=='all');
+    document.querySelectorAll('#map3dTabs .map3d-tab').forEach(b=>b.classList.toggle('active',b.dataset.day===String(day)));
   }
-  document.querySelectorAll('#map3dTabs .map3d-tab').forEach(btn=>{
-    btn.addEventListener('click', ()=> setDay(btn.dataset.day==='all' ? 'all' : Number(btn.dataset.day)));
-  });
+  document.querySelectorAll('#map3dTabs .map3d-tab').forEach(btn=>btn.addEventListener('click',()=>setDay(btn.dataset.day==='all'?'all':Number(btn.dataset.day))));
 
-  function resize(){
-    const w = holder.clientWidth||360, h = holder.clientHeight||300;
-    renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix();
-    leaderSvg.setAttribute('width',w); leaderSvg.setAttribute('height',h);
-  }
-  window.addEventListener('resize', resize);
-  const trafficTab = document.querySelector('.tab-btn[data-page="page-traffic"]');
-  if(trafficTab) trafficTab.addEventListener('click', ()=> setTimeout(resize,60));
+  function resize(){ const w=holder.clientWidth||360,h=holder.clientHeight||300; renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); leaderSvg.setAttribute('width',w); leaderSvg.setAttribute('height',h); }
+  window.addEventListener('resize',resize);
+  const trafficTab=document.querySelector('.tab-btn[data-page="page-traffic"]'); if(trafficTab) trafficTab.addEventListener('click',()=>setTimeout(resize,60));
 
-  const _v = new THREE.Vector3();
+  const _v=new THREE.Vector3();
   function updateLabels(){
-    const w = holder.clientWidth, h = holder.clientHeight, active=[];
-    pinObjs.forEach(o=>{
-      if(o.el.style.display==='none') return;
-      o.head.getWorldPosition(o.hw); _v.copy(o.hw); _v.project(camera);
-      const sx=(_v.x*0.5+0.5)*w, sy=(-_v.y*0.5+0.5)*h;
-      active.push({ o, sx, sy, lx:sx, ly:sy-22 });
-    });
+    const w=holder.clientWidth,h=holder.clientHeight,active=[];
+    pinObjs.forEach(o=>{ if(o.el.style.display==='none') return; o.head.getWorldPosition(o.hw); _v.copy(o.hw); _v.project(camera); const sx=(_v.x*0.5+0.5)*w,sy=(-_v.y*0.5+0.5)*h; active.push({o,sx,sy,lx:sx,ly:sy-22}); });
     active.sort((a,b)=>a.ly-b.ly);
     const GAP=17;
-    for(let i=0;i<active.length;i++)
-      for(let j=0;j<i;j++)
-        if(Math.abs(active[i].lx-active[j].lx)<78 && Math.abs(active[i].ly-active[j].ly)<GAP)
-          active[i].ly = active[j].ly+GAP;
-    active.forEach(a=>{
-      const hw=(a.o.el.offsetWidth||60)/2+4;
-      a.lx=Math.max(hw, Math.min(w-hw, a.lx));
-      a.ly=Math.max(14, Math.min(h-14, a.ly));
-      a.o.el.style.left=a.lx+'px'; a.o.el.style.top=a.ly+'px';
-      a.o.ln.setAttribute('x1',a.sx); a.o.ln.setAttribute('y1',a.sy);
-      a.o.ln.setAttribute('x2',a.lx); a.o.ln.setAttribute('y2',a.ly+8);
-    });
+    for(let i=0;i<active.length;i++) for(let j=0;j<i;j++) if(Math.abs(active[i].lx-active[j].lx)<78 && Math.abs(active[i].ly-active[j].ly)<GAP) active[i].ly=active[j].ly+GAP;
+    active.forEach(a=>{ const hw=(a.o.el.offsetWidth||60)/2+4; a.lx=Math.max(hw,Math.min(w-hw,a.lx)); a.ly=Math.max(14,Math.min(h-14,a.ly)); a.o.el.style.left=a.lx+'px'; a.o.el.style.top=a.ly+'px'; a.o.ln.setAttribute('x1',a.sx); a.o.ln.setAttribute('y1',a.sy); a.o.ln.setAttribute('x2',a.lx); a.o.ln.setAttribute('y2',a.ly+8); });
   }
 
-  const t0 = performance.now();
+  const t0=performance.now();
   function animate(){
     requestAnimationFrame(animate);
-    const t = (performance.now()-t0)/1000;
-    for(let i=0;i<sp.count;i++){ const bx=sBase[i*2], bz=sBase[i*2+1]; sp.setY(i, Math.sin(bx*0.5+t)*0.18 + Math.cos(bz*0.4+t*1.2)*0.14); }
-    sp.needsUpdate = true;
-    pinObjs.forEach((o,i)=>{ if(o.g.visible) o.g.position.y = o.baseY + Math.sin(t*2+i)*0.22; });
-    if(activeDay!=='all' && routeObjs[activeDay]){ const p=routeObjs[activeDay].curve.getPointAt((t*0.12)%1); traveler.position.copy(p); traveler.position.y+=0.4; }
-    controls.update();
-    renderer.render(scene, camera);
-    updateLabels();
+    const t=(performance.now()-t0)/1000;
+    for(let i=0;i<sp.count;i++){ const bx=sBase[i*2],bz=sBase[i*2+1]; sp.setY(i,Math.sin(bx*0.5+t)*0.18+Math.cos(bz*0.4+t*1.2)*0.14); } sp.needsUpdate=true;
+    pinObjs.forEach((o,i)=>{ if(o.g.visible) o.g.position.y=o.baseY+Math.sin(t*2+i)*0.22; });
+    if(activeDay!=='all'&&routeObjs[activeDay]){ const p=routeObjs[activeDay].curve.getPointAt((t*0.12)%1); traveler.position.copy(p); traveler.position.y+=0.4; }
+    controls.update(); renderer.render(scene,camera); updateLabels();
   }
-
   if(fallback) fallback.remove();
   resize(); setDay('all'); animate();
 })();
