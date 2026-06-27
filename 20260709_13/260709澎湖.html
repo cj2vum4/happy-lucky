@@ -431,6 +431,18 @@ body {
   color: var(--coffee); font-family: var(--body);
 }
 .map3d-hint { font-size: 11px; color: var(--coffee-light); margin-top: 3px; }
+.map3d-labels { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+.m3d-label {
+  position: absolute; transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(27,145,201,0.4);
+  color: #2E2018; font-family: var(--body);
+  font-size: 11px; line-height: 1; white-space: nowrap;
+  padding: 3px 7px; border-radius: 9px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+.map3d-leaders { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.m3d-leader { stroke: rgba(40,40,40,0.45); stroke-width: 1; stroke-dasharray: 2,2; }
 
 /* ===== 行程 TAB ===== */
 .day-tabs {
@@ -945,7 +957,9 @@ body {
           <button class="map3d-tab" data-day="4" type="button">D4</button>
         </div>
         <div class="map3d-holder" id="map3dHolder">
-          <div class="map3d-fallback" id="map3dFallback">立體地圖載入中…（需網路連線）</div>
+          <div class="map3d-fallback" id="map3dFallback">立體地圖載入中…</div>
+          <svg class="map3d-leaders" id="map3dLeaders"></svg>
+          <div class="map3d-labels" id="map3dLabels"></div>
         </div>
         <div class="map3d-routename" id="map3dRouteName">🗺️ 全部路線總覽</div>
         <div class="map3d-hint">☝ 單指拖曳旋轉・雙指縮放・點上方切換每日路線</div>
@@ -2147,20 +2161,22 @@ function escHtml(s) {
 injectRateButtons();
 </script>
 
-<!-- ===== three.js 立體路線地圖 ===== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<!-- ===== three.js 立體路線地圖（在地化，無 CDN 依賴）===== -->
+<script src="lib/three.min.js"></script>
+<script src="lib/OrbitControls.js"></script>
 <script>
 (function () {
   const holder = document.getElementById('map3dHolder');
   const fallback = document.getElementById('map3dFallback');
   const routeNameEl = document.getElementById('map3dRouteName');
+  const labelLayer = document.getElementById('map3dLabels');
+  const leaderSvg = document.getElementById('map3dLeaders');
   if (!holder || typeof THREE === 'undefined') {
-    if (fallback) fallback.textContent = '立體地圖無法載入（請確認網路連線）';
+    if (fallback) fallback.textContent = '立體地圖無法載入';
     return;
   }
 
-  const LAND_H = 4;                  // 陸地厚度（海平面 0 → 頂面 LAND_H）
+  const SEA_Y = 1.0, BASE = 3.6, RAMP = 3.6, HILL = 1.7;
   const COL = { air:0xE0524A, stay:0x8B6BB1, food:0xE08A3C, spot:0x1B91C9 };
   const DAY_COL = { 1:0xE8913C, 2:0x18A0B0, 3:0x1B91C9, 4:0xC0567A };
   const DAY_NAME = {
@@ -2171,226 +2187,202 @@ injectRateButtons();
     4:'🌸 D4・東環 ＋ 摩西分海'
   };
 
-  // 陸地輪廓（x = 東西, z = 南北；單位為地圖座標）
-  const LANDS = [
-    { c:0x93BE63, pts:[[-27,-17],[-21,-15],[-17,-6],[-16,1],[-17,8],[-22,12],[-26,7],[-27,-5]] },     // 西嶼
-    { c:0xA8CB76, pts:[[-10,-22],[-2,-24],[3,-18],[0,-9],[-8,-8],[-11,-15]] },                         // 白沙
-    { c:0x9CC36A, pts:[[-5,-9],[6,-11],[16,-9],[24,-7],[28,2],[27,10],[20,15],[8,22],[-3,21],[-7,12],[-7,1]] } // 本島(馬公+湖西)
+  // 島嶼輪廓（x 東+, z 南+；北 = -z）
+  const POLYS = [
+    [[-30,-14],[-27,-16],[-24,-14],[-23,-8],[-21,-3],[-20,3],[-21,8],[-24,11],[-27,10],[-28,3],[-29,-4]],   // 西嶼
+    [[-28,-13],[-25,-14],[-24,-12],[-26,-10],[-28,-11]],                                                      // 小門嶼
+    [[-13,-20],[-8,-23],[-3,-22],[1,-18],[2,-13],[-2,-10],[-7,-9],[-11,-12]],                                 // 白沙
+    [[-6,-9],[-1,-11],[5,-10],[11,-11],[17,-9],[23,-7],[27,-3],[28,3],[26,9],[21,13],[14,16],[8,20],[3,23],[-2,22],[-5,17],[-3,12],[-6,8],[-7,2],[-6,-4]] // 本島
   ];
 
-  // 景點（n名稱, x, z, t類型, d所屬日）
-  const SPOTS = [
-    { n:'✈ 馬公機場', x:8,   z:8,   t:'air',  d:[1] },
-    { n:'馬公住宿',    x:0,   z:18,  t:'stay', d:[1,2,3,4] },
-    { n:'佶肯GK漢堡',  x:-3,  z:16,  t:'food', d:[1] },
-    { n:'鐘記燒餅',    x:-5,  z:14,  t:'food', d:[2] },
-    { n:'藍冉刨冰',    x:-3,  z:17,  t:'food', d:[2] },
-    { n:'篤行十村',    x:-7,  z:12,  t:'spot', d:[2] },
-    { n:'小島一隅',    x:3,   z:15,  t:'food', d:[2] },
-    { n:'三哥雞排',    x:-1,  z:20,  t:'food', d:[2] },
-    { n:'後寮天堂路',  x:-2,  z:-20, t:'spot', d:[3] },
-    { n:'通樑古榕',    x:-6,  z:-16, t:'spot', d:[3] },
-    { n:'跨海大橋',    x:-14, z:-13, t:'spot', d:[3] },
-    { n:'大菓葉玄武岩',x:-16, z:-6,  t:'spot', d:[3] },
-    { n:'二崁聚落',    x:-20, z:-4,  t:'spot', d:[3] },
-    { n:'大池炸粿',    x:-22, z:-12, t:'food', d:[3] },
-    { n:'鯨魚洞',      x:-24, z:-16, t:'spot', d:[3] },
-    { n:'摩西分海',    x:22,  z:-6,  t:'spot', d:[4] },
-    { n:'很大的馬桶',  x:26,  z:6,   t:'spot', d:[4] }
-  ];
+  function pointInPoly(x, z, poly) {
+    let inside = false;
+    for (let i=0, j=poly.length-1; i<poly.length; j=i++) {
+      const xi=poly[i][0], zi=poly[i][1], xj=poly[j][0], zj=poly[j][1];
+      if (((zi>z)!==(zj>z)) && (x < (xj-xi)*(z-zi)/(zj-zi)+xi)) inside=!inside;
+    }
+    return inside;
+  }
+  function distSeg(px,pz, ax,az, bx,bz){
+    const dx=bx-ax, dz=bz-az, l2=dx*dx+dz*dz;
+    let t = l2 ? ((px-ax)*dx+(pz-az)*dz)/l2 : 0; t=Math.max(0,Math.min(1,t));
+    return Math.hypot(px-(ax+t*dx), pz-(az+t*dz));
+  }
+  function distPoly(x,z,poly){
+    let d=Infinity;
+    for(let i=0,j=poly.length-1;i<poly.length;j=i++) d=Math.min(d, distSeg(x,z,poly[i][0],poly[i][1],poly[j][0],poly[j][1]));
+    return d;
+  }
+  function smooth(a,b,x){ let t=Math.max(0,Math.min(1,(x-a)/(b-a))); return t*t*(3-2*t); }
+  function noise(x,z){ return Math.sin(x*0.34)*Math.cos(z*0.29)*0.6 + Math.sin(x*0.15+2.1)*Math.sin(z*0.2+0.7)*0.8 + Math.cos((x+z)*0.11)*0.4; }
+  function terrainH(x,z){
+    let inside=false, d=Infinity;
+    for(const p of POLYS){ if(pointInPoly(x,z,p)) inside=true; d=Math.min(d, distPoly(x,z,p)); }
+    const signed = inside ? d : -d;
+    return smooth(0, RAMP, signed) * (BASE + Math.max(0,noise(x,z))*HILL);
+  }
 
-  function P(name){ const s = SPOTS.find(o => o.n === name); return [s.x, s.z]; }
-  const ROUTES = {
-    1: ['✈ 馬公機場','馬公住宿','佶肯GK漢堡'].map(P),
-    2: ['馬公住宿','鐘記燒餅','藍冉刨冰','篤行十村','小島一隅','三哥雞排'].map(P),
-    3: ['馬公住宿','後寮天堂路','通樑古榕','跨海大橋','大菓葉玄武岩','二崁聚落','大池炸粿','鯨魚洞'].map(P),
-    4: ['馬公住宿','摩西分海','很大的馬桶','馬公住宿'].map(P)
-  };
-
-  // ---- 場景 ----
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xdaf0fb);
-  scene.fog = new THREE.Fog(0xdaf0fb, 75, 175);
-
+  scene.background = new THREE.Color(0xd6eefb);
+  scene.fog = new THREE.Fog(0xd6eefb, 85, 195);
   const camera = new THREE.PerspectiveCamera(44, 1, 0.1, 1000);
-  camera.position.set(8, 48, 54);
-
+  camera.position.set(6, 50, 56);
   const renderer = new THREE.WebGLRenderer({ antialias:true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   holder.appendChild(renderer.domElement);
-
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.08;
-  controls.enablePan = false;
-  controls.minDistance = 28;
-  controls.maxDistance = 95;
-  controls.maxPolarAngle = 1.45;
-  controls.target.set(0, 2, 1);
+  controls.enableDamping = true; controls.dampingFactor = 0.08; controls.enablePan = false;
+  controls.minDistance = 30; controls.maxDistance = 100; controls.maxPolarAngle = 1.45;
+  controls.target.set(-2, 2, 0);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.75));
-  const dir = new THREE.DirectionalLight(0xffffff, 0.85);
-  dir.position.set(18, 40, 22);
-  scene.add(dir);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.68));
+  const sun = new THREE.DirectionalLight(0xfff3e0, 0.9); sun.position.set(22, 44, 18); scene.add(sun);
+  scene.add(new THREE.HemisphereLight(0xcfeeff, 0x4a7c59, 0.35));
 
-  // 海平面
-  const sea = new THREE.Mesh(
-    new THREE.PlaneGeometry(200, 200),
-    new THREE.MeshStandardMaterial({ color:0x4FB0DC, transparent:true, opacity:0.92, roughness:0.6 })
-  );
-  sea.rotation.x = -Math.PI / 2;
-  sea.position.y = 0.1;
-  scene.add(sea);
-
-  // 陸地（擠出 + 平面著色低多邊形風）
-  LANDS.forEach(L => {
-    const shape = new THREE.Shape();
-    L.pts.forEach((p, i) => i ? shape.lineTo(p[0], p[1]) : shape.moveTo(p[0], p[1]));
-    shape.closePath();
-    const geo = new THREE.ExtrudeGeometry(shape, { depth: LAND_H, bevelEnabled:false });
-    geo.rotateX(-Math.PI / 2);
-    geo.computeBoundingBox();
-    geo.translate(0, -geo.boundingBox.min.y, 0);   // 讓陸地坐落在海平面上
-    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color:L.c, flatShading:true, roughness:0.9 }));
-    scene.add(mesh);
-  });
-
-  // 跨海大橋（裝飾）
-  const bridge = new THREE.Mesh(
-    new THREE.BoxGeometry(7.5, 0.7, 1.4),
-    new THREE.MeshStandardMaterial({ color:0xBFA98A, roughness:0.7 })
-  );
-  bridge.position.set(-11.5, LAND_H, -11);
-  bridge.rotation.y = Math.PI * 0.28;
-  scene.add(bridge);
-
-  // 文字標籤（canvas → sprite）
-  function makeLabel(text) {
-    const cv = document.createElement('canvas');
-    cv.width = 256; cv.height = 64;
-    const ctx = cv.getContext('2d');
-    ctx.fillStyle = 'rgba(255,255,255,0.92)';
-    roundRect(ctx, 6, 14, 244, 36, 12); ctx.fill();
-    ctx.fillStyle = '#2E2018';
-    ctx.font = 'bold 26px "Noto Serif TC", serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(text, 128, 33);
-    const tex = new THREE.CanvasTexture(cv);
-    tex.minFilter = THREE.LinearFilter;
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false }));
-    sp.scale.set(9, 2.25, 1);
-    return sp;
+  // 地形高度場
+  const tgeo = new THREE.PlaneGeometry(72, 60, 144, 120); tgeo.rotateX(-Math.PI/2);
+  const pos = tgeo.attributes.position; const colArr = [];
+  const cSand=new THREE.Color(0xE6D6A0), cGrass=new THREE.Color(0x90C063), cGreen=new THREE.Color(0x68A046), cRock=new THREE.Color(0x9A9080), tmp=new THREE.Color();
+  for(let i=0;i<pos.count;i++){
+    const x=pos.getX(i), z=pos.getZ(i), h=terrainH(x,z); pos.setY(i,h);
+    if(h<0.5) tmp.copy(cSand);
+    else if(h<BASE*0.5) tmp.copy(cSand).lerp(cGrass, smooth(0.5,BASE*0.5,h));
+    else if(h<BASE+0.4) tmp.copy(cGrass).lerp(cGreen, smooth(BASE*0.5,BASE+0.4,h));
+    else tmp.copy(cGreen).lerp(cRock, smooth(BASE+0.4,BASE+HILL,h));
+    colArr.push(tmp.r,tmp.g,tmp.b);
   }
-  function roundRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-  }
+  tgeo.setAttribute('color', new THREE.Float32BufferAttribute(colArr,3));
+  tgeo.computeVertexNormals();
+  scene.add(new THREE.Mesh(tgeo, new THREE.MeshStandardMaterial({ vertexColors:true, roughness:0.96, metalness:0.0 })));
 
-  // 景點 pin + 標籤
+  // 海
+  const sgeo = new THREE.PlaneGeometry(96, 84, 50, 44); sgeo.rotateX(-Math.PI/2);
+  const sp = sgeo.attributes.position; const sBase = [];
+  for(let i=0;i<sp.count;i++) sBase.push(sp.getX(i), sp.getZ(i));
+  const sea = new THREE.Mesh(sgeo, new THREE.MeshStandardMaterial({ color:0x2C8FC4, transparent:true, opacity:0.82, roughness:0.22, metalness:0.1 }));
+  sea.position.y = SEA_Y; scene.add(sea);
+
+  // 跨海大橋
+  const bridge = new THREE.Mesh(new THREE.BoxGeometry(8.5,0.5,1.2), new THREE.MeshStandardMaterial({ color:0xBFA98A, roughness:0.7 }));
+  bridge.position.set(-17, SEA_Y+1.2, -11.5); bridge.rotation.y = Math.PI*0.16; scene.add(bridge);
+
+  const SPOTS = [
+    {n:'✈ 馬公機場', x:14, z:2,   t:'air',  d:[1]},
+    {n:'馬公住宿',   x:2,  z:16,  t:'stay', d:[1,2,3,4]},
+    {n:'佶肯GK漢堡', x:5,  z:14,  t:'food', d:[1]},
+    {n:'鐘記燒餅',   x:0,  z:15,  t:'food', d:[2]},
+    {n:'藍冉刨冰',   x:3,  z:18,  t:'food', d:[2]},
+    {n:'篤行十村',   x:-2, z:17,  t:'spot', d:[2]},
+    {n:'小島一隅',   x:7,  z:15,  t:'food', d:[2]},
+    {n:'三哥雞排',   x:1,  z:20,  t:'food', d:[2]},
+    {n:'後寮天堂路', x:-6, z:-20, t:'spot', d:[3]},
+    {n:'通樑古榕',   x:-11,z:-14, t:'spot', d:[3]},
+    {n:'跨海大橋',   x:-17,z:-11, t:'spot', d:[3]},
+    {n:'大菓葉玄武岩',x:-21,z:-3, t:'spot', d:[3]},
+    {n:'二崁聚落',   x:-24,z:1,   t:'spot', d:[3]},
+    {n:'大池炸粿',   x:-25,z:-7,  t:'food', d:[3]},
+    {n:'鯨魚洞',     x:-26,z:-12, t:'spot', d:[3]},
+    {n:'摩西分海',   x:24, z:-5,  t:'spot', d:[4]},
+    {n:'很大的馬桶', x:27, z:4,   t:'spot', d:[4]}
+  ];
   const pinObjs = [];
-  SPOTS.forEach((s, i) => {
-    const cone = new THREE.Mesh(
-      new THREE.ConeGeometry(1.15, 3.4, 8),
-      new THREE.MeshStandardMaterial({ color: COL[s.t], roughness:0.5, emissive: COL[s.t], emissiveIntensity:0.12 })
-    );
-    cone.position.set(s.x, LAND_H + 1.7, s.z);
-    scene.add(cone);
-    const ball = new THREE.Mesh(
-      new THREE.SphereGeometry(0.7, 12, 12),
-      new THREE.MeshStandardMaterial({ color:0xffffff, emissive: COL[s.t], emissiveIntensity:0.3 })
-    );
-    ball.position.set(s.x, LAND_H + 3.6, s.z);
-    scene.add(ball);
-    const label = makeLabel(s.n);
-    label.position.set(s.x, LAND_H + 6, s.z);
-    scene.add(label);
-    pinObjs.push({ s, cone, ball, label, baseY: LAND_H + 1.7 });
+  SPOTS.forEach(s=>{
+    const baseY = Math.max(terrainH(s.x,s.z), SEA_Y);
+    const g = new THREE.Group();
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,3.2,8), new THREE.MeshStandardMaterial({ color:0xffffff, roughness:0.6 }));
+    pole.position.y = 1.6; g.add(pole);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(1.0,18,18), new THREE.MeshStandardMaterial({ color:COL[s.t], emissive:COL[s.t], emissiveIntensity:0.25, roughness:0.4 }));
+    head.position.y = 3.5; g.add(head);
+    g.position.set(s.x, baseY, s.z); scene.add(g);
+    const el = document.createElement('div'); el.className='m3d-label'; el.textContent=s.n; el.style.display='none'; labelLayer.appendChild(el);
+    const ln = document.createElementNS('http://www.w3.org/2000/svg','line'); ln.setAttribute('class','m3d-leader'); ln.style.display='none'; leaderSvg.appendChild(ln);
+    pinObjs.push({ s, g, head, baseY, hw:new THREE.Vector3(), el, ln });
   });
 
-  // 路線 tube
+  const ROUTES = {
+    1:['✈ 馬公機場','馬公住宿','佶肯GK漢堡'],
+    2:['馬公住宿','鐘記燒餅','藍冉刨冰','篤行十村','小島一隅','三哥雞排'],
+    3:['馬公住宿','後寮天堂路','通樑古榕','跨海大橋','大菓葉玄武岩','二崁聚落','大池炸粿','鯨魚洞'],
+    4:['馬公住宿','摩西分海','很大的馬桶','馬公住宿']
+  };
+  const nodeOf = n => SPOTS.find(o=>o.n===n);
   const routeObjs = {};
-  Object.keys(ROUTES).forEach(day => {
-    const pts3 = ROUTES[day].map(p => new THREE.Vector3(p[0], LAND_H + 1.4, p[1]));
-    const curve = new THREE.CatmullRomCurve3(pts3, false, 'catmullrom', 0.4);
-    const tube = new THREE.Mesh(
-      new THREE.TubeGeometry(curve, 120, 0.55, 8, false),
-      new THREE.MeshStandardMaterial({ color: DAY_COL[day], emissive: DAY_COL[day], emissiveIntensity:0.35, roughness:0.4 })
-    );
-    scene.add(tube);
-    routeObjs[day] = { tube, curve };
+  Object.keys(ROUTES).forEach(day=>{
+    const pts = ROUTES[day].map(n=>{ const s=nodeOf(n); return new THREE.Vector3(s.x, Math.max(terrainH(s.x,s.z),SEA_Y)+1.8, s.z); });
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.35);
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve,140,0.5,8,false), new THREE.MeshStandardMaterial({ color:DAY_COL[day], emissive:DAY_COL[day], emissiveIntensity:0.4, roughness:0.4 }));
+    scene.add(tube); routeObjs[day] = { tube, curve };
   });
-
-  // 行進中的小球
-  const traveler = new THREE.Mesh(
-    new THREE.SphereGeometry(1.05, 16, 16),
-    new THREE.MeshStandardMaterial({ color:0xffffff, emissive:0xffdd55, emissiveIntensity:0.6 })
-  );
+  const traveler = new THREE.Mesh(new THREE.SphereGeometry(1.1,16,16), new THREE.MeshStandardMaterial({ color:0xffffff, emissive:0xffdd55, emissiveIntensity:0.6 }));
   scene.add(traveler);
 
   let activeDay = 'all';
-  function setDay(day) {
-    activeDay = day;
-    routeNameEl.textContent = DAY_NAME[day] || '';
-    Object.keys(routeObjs).forEach(d => {
-      routeObjs[d].tube.visible = (day === 'all' || String(day) === d);
+  function setDay(day){
+    activeDay = day; routeNameEl.textContent = DAY_NAME[day] || '';
+    Object.keys(routeObjs).forEach(d=>{ routeObjs[d].tube.visible = (day==='all'||String(day)===d); });
+    pinObjs.forEach(o=>{
+      const on = (day==='all') || o.s.d.indexOf(Number(day))>=0;
+      o.g.visible = on;
+      const showLabel = on && day!=='all';
+      o.el.style.display = showLabel ? 'block' : 'none';
+      o.ln.style.display = showLabel ? 'block' : 'none';
     });
-    pinObjs.forEach(o => {
-      const on = (day === 'all') || o.s.d.indexOf(Number(day)) >= 0;
-      o.label.visible = on;
-      const dim = !on;
-      o.cone.material.opacity = dim ? 0.25 : 1;
-      o.cone.material.transparent = dim;
-      o.ball.visible = on;
-      o.cone.scale.setScalar(on ? 1 : 0.7);
-    });
-    traveler.visible = (day !== 'all');
-    document.querySelectorAll('#map3dTabs .map3d-tab').forEach(b => {
-      b.classList.toggle('active', b.dataset.day === String(day));
-    });
+    traveler.visible = (day!=='all');
+    document.querySelectorAll('#map3dTabs .map3d-tab').forEach(b=>b.classList.toggle('active', b.dataset.day===String(day)));
   }
-
-  document.querySelectorAll('#map3dTabs .map3d-tab').forEach(btn => {
-    btn.addEventListener('click', () => setDay(btn.dataset.day === 'all' ? 'all' : Number(btn.dataset.day)));
+  document.querySelectorAll('#map3dTabs .map3d-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=> setDay(btn.dataset.day==='all' ? 'all' : Number(btn.dataset.day)));
   });
 
-  function resize() {
-    const w = holder.clientWidth || 360;
-    const h = holder.clientHeight || 300;
-    renderer.setSize(w, h);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
+  function resize(){
+    const w = holder.clientWidth||360, h = holder.clientHeight||300;
+    renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix();
+    leaderSvg.setAttribute('width',w); leaderSvg.setAttribute('height',h);
   }
   window.addEventListener('resize', resize);
-  // 切到交通分頁時重新量測尺寸
   const trafficTab = document.querySelector('.tab-btn[data-page="page-traffic"]');
-  if (trafficTab) trafficTab.addEventListener('click', () => setTimeout(resize, 60));
+  if(trafficTab) trafficTab.addEventListener('click', ()=> setTimeout(resize,60));
 
-  let t0 = performance.now();
-  function animate() {
-    requestAnimationFrame(animate);
-    const t = (performance.now() - t0) / 1000;
-    pinObjs.forEach((o, i) => {
-      if (o.ball.visible) o.ball.position.y = LAND_H + 3.6 + Math.sin(t * 2 + i) * 0.35;
+  const _v = new THREE.Vector3();
+  function updateLabels(){
+    const w = holder.clientWidth, h = holder.clientHeight, active=[];
+    pinObjs.forEach(o=>{
+      if(o.el.style.display==='none') return;
+      o.head.getWorldPosition(o.hw); _v.copy(o.hw); _v.project(camera);
+      const sx=(_v.x*0.5+0.5)*w, sy=(-_v.y*0.5+0.5)*h;
+      active.push({ o, sx, sy, lx:sx, ly:sy-22 });
     });
-    if (activeDay !== 'all' && routeObjs[activeDay]) {
-      const u = (t * 0.12) % 1;
-      const pos = routeObjs[activeDay].curve.getPointAt(u);
-      traveler.position.copy(pos);
-      traveler.position.y += 0.4;
-    }
-    controls.update();
-    renderer.render(scene, camera);
+    active.sort((a,b)=>a.ly-b.ly);
+    const GAP=17;
+    for(let i=0;i<active.length;i++)
+      for(let j=0;j<i;j++)
+        if(Math.abs(active[i].lx-active[j].lx)<78 && Math.abs(active[i].ly-active[j].ly)<GAP)
+          active[i].ly = active[j].ly+GAP;
+    active.forEach(a=>{
+      const hw=(a.o.el.offsetWidth||60)/2+4;
+      a.lx=Math.max(hw, Math.min(w-hw, a.lx));
+      a.ly=Math.max(14, Math.min(h-14, a.ly));
+      a.o.el.style.left=a.lx+'px'; a.o.el.style.top=a.ly+'px';
+      a.o.ln.setAttribute('x1',a.sx); a.o.ln.setAttribute('y1',a.sy);
+      a.o.ln.setAttribute('x2',a.lx); a.o.ln.setAttribute('y2',a.ly+8);
+    });
   }
 
-  if (fallback) fallback.remove();
-  resize();
-  setDay('all');
-  animate();
+  const t0 = performance.now();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t = (performance.now()-t0)/1000;
+    for(let i=0;i<sp.count;i++){ const bx=sBase[i*2], bz=sBase[i*2+1]; sp.setY(i, Math.sin(bx*0.5+t)*0.18 + Math.cos(bz*0.4+t*1.2)*0.14); }
+    sp.needsUpdate = true;
+    pinObjs.forEach((o,i)=>{ if(o.g.visible) o.g.position.y = o.baseY + Math.sin(t*2+i)*0.22; });
+    if(activeDay!=='all' && routeObjs[activeDay]){ const p=routeObjs[activeDay].curve.getPointAt((t*0.12)%1); traveler.position.copy(p); traveler.position.y+=0.4; }
+    controls.update();
+    renderer.render(scene, camera);
+    updateLabels();
+  }
+
+  if(fallback) fallback.remove();
+  resize(); setDay('all'); animate();
 })();
 </script>
 
