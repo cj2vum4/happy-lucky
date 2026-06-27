@@ -444,6 +444,31 @@ body {
 .map3d-leaders { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 .m3d-leader { stroke: rgba(40,40,40,0.45); stroke-width: 1; stroke-dasharray: 2,2; }
 
+/* ===== 地圖放大檢視 ===== */
+.map3d-wrap, .svgmap-box { position: relative; }
+.svgmap-box { background: var(--pea-bg); border: 1px solid rgba(27,145,201,0.2); border-radius: 14px; padding: 10px; margin-bottom: 14px; overflow: hidden; }
+.map-expand-btn {
+  position: absolute; top: 8px; right: 8px; z-index: 6;
+  background: rgba(253,250,243,0.92); border: 1.5px solid var(--cream-dark);
+  border-radius: 16px; padding: 4px 11px; font-size: 12px; font-family: var(--body);
+  color: var(--coffee); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  touch-action: manipulation;
+}
+.map-expand-btn:active { transform: scale(0.95); }
+.mapzoom-bg { display: none; position: fixed; inset: 0; z-index: 400; background: rgba(8,28,42,0.93); }
+.mapzoom-bg.open { display: flex; flex-direction: column; }
+.mapzoom-close {
+  align-self: flex-end; margin: 12px 14px;
+  background: rgba(255,255,255,0.92); border: none; border-radius: 18px;
+  padding: 8px 16px; font-size: 14px; font-family: var(--body); color: var(--coffee);
+  cursor: pointer; touch-action: manipulation;
+}
+.mapzoom-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 8px 16px; overflow: auto; }
+.mapzoom-stage > * { width: 100%; max-width: 820px; margin: 0 !important; }
+#mapZoom .map3d-holder { height: 74vh; }
+#mapZoom .map-expand-btn { display: none; }
+#mapZoom .map3d-hint, #mapZoom .map3d-routename { text-align: center; }
+
 /* ===== 行程 TAB ===== */
 .day-tabs {
   display: flex;
@@ -949,6 +974,7 @@ body {
 
       <div class="section-label" style="margin-top:24px">🧊 立體路線地圖（可切換每日）</div>
       <div class="map3d-wrap">
+        <button class="map-expand-btn" data-zoom-target=".map3d-wrap" type="button">⛶ 放大</button>
         <div class="map3d-tabs" id="map3dTabs">
           <button class="map3d-tab active" data-day="all" type="button">全部</button>
           <button class="map3d-tab" data-day="1" type="button">D1</button>
@@ -966,7 +992,8 @@ body {
       </div>
 
       <div class="section-label" style="margin-top:24px">🗺️ 本島地圖（真實海岸線）</div>
-      <div style="background:var(--pea-bg); border:1px solid rgba(27,145,201,0.2); border-radius:14px; padding:10px; margin-bottom:14px; overflow:hidden;">
+      <div class="svgmap-box" id="svgMapBox">
+        <button class="map-expand-btn" data-zoom-target="#svgMapBox" type="button">⛶ 放大</button>
         <svg width="100%" viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'Caveat',cursive; overflow:visible;">
   <defs><filter id="wob" x="-4%" y="-4%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter></defs>
   <rect width="300" height="230" fill="#C8E9F8" rx="10"/>
@@ -2283,6 +2310,37 @@ injectRateButtons();
   }
   if(fallback) fallback.remove();
   resize(); setDay('all'); animate();
+})();
+</script>
+
+<!-- 地圖放大檢視 overlay -->
+<div id="mapZoom" class="mapzoom-bg">
+  <button id="mapZoomClose" class="mapzoom-close" type="button">✕ 關閉</button>
+  <div class="mapzoom-stage" id="mapZoomStage"></div>
+</div>
+<script>
+(function () {
+  const bg = document.getElementById('mapZoom');
+  const stage = document.getElementById('mapZoomStage');
+  const closeBtn = document.getElementById('mapZoomClose');
+  let cur = null, ph = null;
+  const fireResize = () => setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
+  function open(sel) {
+    const el = document.querySelector(sel); if (!el) return;
+    if (cur) restore();
+    ph = document.createComment('zoomph'); el.parentNode.insertBefore(ph, el);
+    stage.appendChild(el); cur = el; bg.classList.add('open'); fireResize();
+  }
+  function restore() {
+    if (!cur) return;
+    if (ph && ph.parentNode) { ph.parentNode.insertBefore(cur, ph); ph.remove(); }
+    cur = null; ph = null;
+  }
+  function close() { if (!cur) return; restore(); bg.classList.remove('open'); fireResize(); }
+  closeBtn.addEventListener('click', close);
+  bg.addEventListener('click', e => { if (e.target === bg) close(); });
+  document.querySelectorAll('.map-expand-btn').forEach(b =>
+    b.addEventListener('click', () => open(b.dataset.zoomTarget)));
 })();
 </script>
 
