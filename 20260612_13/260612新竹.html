@@ -705,6 +705,88 @@ body {
 }
 .submit-btn:active { opacity: 0.75; }
 .submit-btn:disabled { background: var(--coffee-faint); cursor: not-allowed; }
+
+/* ===== 地圖（trip-map）===== */
+/* ===== 立體地圖 ===== */
+.map3d-wrap {
+  background: linear-gradient(160deg, #d4f0fc 0%, #eaf7fe 100%);
+  border: 1px solid rgba(27,145,201,0.2);
+  border-radius: 14px;
+  padding: 10px;
+  margin-bottom: 14px;
+}
+.map3d-tabs { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.map3d-tab {
+  flex: 1; min-width: 52px;
+  border: 1.5px solid var(--pea);
+  background: var(--paper);
+  border-radius: 18px;
+  padding: 6px 4px;
+  font-family: var(--body);
+  font-size: 13px;
+  color: var(--pea-dark);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s;
+}
+.map3d-tab.active { background: var(--pea-dark); color: #fff; border-color: var(--pea-dark); }
+.map3d-tab:active { transform: scale(0.95); }
+.map3d-holder {
+  width: 100%; height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 30%, #bfe6f7, #8fcdec);
+  touch-action: none;
+  position: relative;
+}
+.map3d-holder canvas { display: block; }
+.map3d-fallback {
+  display: flex; align-items: center; justify-content: center;
+  height: 100%; padding: 20px; text-align: center;
+  font-size: 13px; color: var(--coffee-light); font-family: var(--body);
+}
+.map3d-routename {
+  margin-top: 8px; font-size: 14px; font-weight: 600;
+  color: var(--coffee); font-family: var(--body);
+}
+.map3d-hint { font-size: 11px; color: var(--coffee-light); margin-top: 3px; }
+.map3d-labels { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+.m3d-label {
+  position: absolute; transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(27,145,201,0.4);
+  color: #2E2018; font-family: var(--body);
+  font-size: 11px; line-height: 1; white-space: nowrap;
+  padding: 3px 7px; border-radius: 9px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+.map3d-leaders { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.m3d-leader { stroke: rgba(40,40,40,0.45); stroke-width: 1; stroke-dasharray: 2,2; }
+
+/* ===== 地圖放大檢視 ===== */
+.map3d-wrap, .svgmap-box { position: relative; }
+.svgmap-box { background: var(--pea-bg); border: 1px solid rgba(27,145,201,0.2); border-radius: 14px; padding: 10px; margin-bottom: 14px; overflow: hidden; }
+.map-expand-btn {
+  position: absolute; top: 8px; right: 8px; z-index: 6;
+  background: rgba(253,250,243,0.92); border: 1.5px solid var(--cream-dark);
+  border-radius: 16px; padding: 4px 11px; font-size: 12px; font-family: var(--body);
+  color: var(--coffee); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  touch-action: manipulation;
+}
+.map-expand-btn:active { transform: scale(0.95); }
+.mapzoom-bg { display: none; position: fixed; inset: 0; z-index: 400; background: rgba(8,28,42,0.93); }
+.mapzoom-bg.open { display: flex; flex-direction: column; }
+.mapzoom-close {
+  align-self: flex-end; margin: 12px 14px;
+  background: rgba(255,255,255,0.92); border: none; border-radius: 18px;
+  padding: 8px 16px; font-size: 14px; font-family: var(--body); color: var(--coffee);
+  cursor: pointer; touch-action: manipulation;
+}
+.mapzoom-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 8px 16px; overflow: auto; }
+.mapzoom-stage > * { width: 100%; max-width: 820px; margin: 0 !important; }
+#mapZoom .map3d-holder { height: 74vh; }
+#mapZoom .map-expand-btn { display: none; }
+#mapZoom .map3d-hint, #mapZoom .map3d-routename { text-align: center; }
 </style>
 </head>
 <body>
@@ -807,6 +889,47 @@ body {
           <div class="transport-title">停車</div>
           <div class="transport-sub">交通大學校內停車</div>
         </div>
+      </div>
+      <div class="section-label" style="margin-top:24px">🧊 立體路線地圖（可切換每日）</div>
+      <div class="map3d-wrap">
+        <div class="map3d-tabs" id="map3dTabs">
+          <button class="map3d-tab active" data-day="all" type="button">全部</button>
+          <button class="map3d-tab" data-day="1" type="button">D1</button>
+          <button class="map3d-tab" data-day="2" type="button">D2</button>
+        </div>
+        <div class="map3d-holder" id="map3dHolder">
+          <button class="map-expand-btn" data-zoom-target=".map3d-wrap" type="button">⛶ 放大</button>
+          <div class="map3d-fallback" id="map3dFallback">立體地圖載入中…</div>
+          <svg class="map3d-leaders" id="map3dLeaders"></svg>
+          <div class="map3d-labels" id="map3dLabels"></div>
+        </div>
+        <div class="map3d-routename" id="map3dRouteName">🗺️ 全部路線總覽</div>
+        <div class="map3d-hint">☝ 單指拖曳旋轉・雙指縮放與移動・點上方切換每日路線</div>
+      </div>
+      <div class="section-label" style="margin-top:24px">🗺️ 行程地圖（真實鄉鎮界）</div>
+      <div class="svgmap-box" id="svgMapBox">
+        <button class="map-expand-btn" data-zoom-target="#svgMapBox" type="button">⛶ 放大</button>
+        <!--TRIPMAPSVG-->
+<svg width="100%" viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'Caveat',cursive; overflow:visible;">
+  <defs><filter id="wob" x="-4%" y="-4%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter></defs>
+  <rect width="300" height="230" fill="#DDEBC8" rx="10"/>
+  <text x="150" y="17" text-anchor="middle" font-size="13" font-weight="700" fill="#3A6B3A">新竹市</text>
+  <path filter="url(#wob)" d="M 57.7,179.1 L 65.2,185.5 L 68.3,184 L 69.6,186.1 L 72.8,184.8 L 76.7,187.5 L 84,185.4 L 96.3,175.6 L 103.7,193.5 L 103.2,197 L 106.1,200.6 L 103.2,205.7 L 111.6,207 L 115,209.5 L 122.5,207 L 128.4,212 L 132.1,206.9 L 131.5,190.3 L 135.8,191.6 L 136.4,189.2 L 133.6,186.5 L 138.7,171.3 L 143.1,170.3 L 149.9,172.6 L 154,170.2 L 154,164.6 L 158.7,162.4 L 161.1,157.1 L 165.6,155.8 L 168.4,144.8 L 179.6,147.1 L 182.7,141.7 L 189.9,141 L 185.8,130.9 L 192.5,129.4 L 195.2,125 L 219.2,137.4 L 224.7,146.5 L 226.9,155.4 L 236.2,153.5 L 241.5,148.7 L 242.3,146.1 L 238.2,143.1 L 237.3,139.9 L 238.7,135.8 L 236.1,134.5 L 237.8,129.4 L 232.4,125.8 L 235.4,122.3 L 230.5,119.4 L 232.4,117.9 L 231.9,113.9 L 229.1,112.4 L 227.4,107.7 L 230.3,105.1 L 227.4,101.7 L 233.3,101.4 L 228.2,98.1 L 224.5,90.8 L 208.5,75.5 L 203.9,71.9 L 189.1,67.4 L 184.7,61 L 173.9,61.9 L 165.5,58.4 L 153.5,57.2 L 139.3,47.6 L 134.2,36.3 L 128.7,33.3 L 116.5,30 L 106.3,32.6 L 102.3,31 L 106.7,37.8 L 105.6,47.5 L 90.5,69.4 L 78.1,110.5 L 79.4,124.8 L 77.7,134.4 L 81.7,144.1 L 83.5,141 L 84.6,145.4 L 79.3,149.6 L 67.1,168.7 L 57.7,179.1 Z" fill="#BFD8A0" stroke="#4A7C59" stroke-width="1.4"/>
+  <text x="154.9" y="135.1" text-anchor="middle" font-size="8" fill="#3A6B3A" opacity="0.85" font-weight="700">新竹市</text>
+  <circle cx="229.6" cy="127.6" r="2.6" fill="#8B6BB1" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="166.2" cy="96.3" r="2.6" fill="#D4883C" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="199.9" cy="116.8" r="2.6" fill="#1B91C9" stroke="#fff" stroke-width="0.8"/>
+  <circle cx="170.9" cy="100.2" r="2.6" fill="#D4883C" stroke="#fff" stroke-width="0.8"/>
+  <g font-size="7.5" fill="#2E2018" font-family="'Noto Serif TC',serif">
+  <rect x="10" y="28" width="58" height="58" rx="7" fill="rgba(255,255,255,0.8)" stroke="#C4AE9E" stroke-width="0.8"/>
+  <circle cx="20" cy="39.5" r="3" fill="#1B91C9"/><text x="28" y="42">景點</text>
+  <circle cx="20" cy="52.5" r="3" fill="#D4883C"/><text x="28" y="55">美食</text>
+  <circle cx="20" cy="65.5" r="3" fill="#8B6BB1"/><text x="28" y="68">住宿</text>
+  <circle cx="20" cy="78.5" r="3" fill="#E05252"/><text x="28" y="81">交通</text>
+  </g>
+  <text x="284" y="208" font-size="18" text-anchor="middle" fill="#0A6B99">↑</text><text x="284" y="220" font-size="8" text-anchor="middle" fill="#5A4232">北</text>
+</svg>
+<!--/TRIPMAPSVG-->
       </div>
     </div>
 
@@ -1328,6 +1451,186 @@ tabBtns.forEach(btn => {
     }
   });
 });
+</script>
+
+<script src="../lib/three.min.js"></script>
+<script src="../lib/OrbitControls.js"></script>
+<!--TRIPMAP3D-->
+<script>
+(function () {
+  const holder = document.getElementById('map3dHolder');
+  const fallback = document.getElementById('map3dFallback');
+  const routeNameEl = document.getElementById('map3dRouteName');
+  const labelLayer = document.getElementById('map3dLabels');
+  const leaderSvg = document.getElementById('map3dLeaders');
+  if (!holder || typeof THREE === 'undefined') { if (fallback) fallback.textContent = '立體地圖無法載入'; return; }
+
+  const CFG = {"inland":true,"seaColor":14214860,"dayNames":{"1":"🟣 D1・週五抵達入住","2":"🟢 D2・劇本殺 + 甜點","all":"🗺️ 全部路線總覽"},"dayCols":{"1":9137073,"2":1614000}};
+  const POLYS = [
+    [[-26,16.36],[-23.87,18.17],[-23,17.73],[-22.64,18.34],[-21.73,17.97],[-20.63,18.72],[-18.58,18.14],[-15.11,15.36],[-13.03,20.41],[-13.17,21.4],[-12.35,22.41],[-13.18,23.84],[-10.8,24.2],[-9.86,24.92],[-7.74,24.2],[-6.08,25.62],[-5.04,24.18],[-5.22,19.5],[-3.99,19.88],[-3.83,19.2],[-4.62,18.45],[-3.19,14.16],[-1.93,13.87],[-0.04,14.52],[1.14,13.85],[1.13,12.28],[2.46,11.65],[3.13,10.15],[4.38,9.81],[5.17,6.69],[8.33,7.35],[9.2,5.84],[11.24,5.64],[10.09,2.78],[11.97,2.36],[12.73,1.14],[19.47,4.62],[21.04,7.18],[21.65,9.68],[24.28,9.14],[25.76,7.8],[26,7.07],[24.82,6.22],[24.58,5.32],[24.96,4.17],[24.24,3.81],[24.72,2.37],[23.2,1.35],[24.04,0.36],[22.65,-0.44],[23.2,-0.86],[23.06,-2],[22.27,-2.41],[21.79,-3.74],[22.61,-4.47],[21.79,-5.44],[23.45,-5.51],[22.01,-6.45],[20.97,-8.5],[16.48,-12.8],[15.17,-13.81],[11.01,-15.08],[9.77,-16.88],[6.74,-16.65],[4.36,-17.62],[0.99,-17.96],[-3.01,-20.66],[-4.44,-23.85],[-6,-24.68],[-9.42,-25.62],[-12.31,-24.88],[-13.43,-25.35],[-12.2,-23.43],[-12.51,-20.69],[-16.75,-14.53],[-20.25,-2.96],[-19.89,1.06],[-20.36,3.77],[-19.22,6.49],[-18.73,5.64],[-18.4,6.86],[-19.9,8.05],[-23.35,13.42],[-26,16.36]], // 新竹市
+  ];
+  const SPOTS = [
+    {n:'週五住宿', x:22.4, z:1.85, t:'stay', d:[1]},
+    {n:'阿婆早餐麵店', x:4.57, z:-6.94, t:'food', d:[2]},
+    {n:'陽明交大', x:14.06, z:-1.18, t:'spot', d:[2]},
+    {n:'格林小鎮', x:5.88, z:-5.86, t:'food', d:[2]},
+  ];
+  const ROUTES = {"1":["週五住宿"],"2":["阿婆早餐麵店","陽明交大","格林小鎮"]};
+  const BRIDGE = null;
+
+  const SEA_Y = 1.0, BASE = CFG.inland ? 4.2 : 3.4, RAMP = CFG.inland ? 4.5 : 2.6, HILL = CFG.inland ? 4.0 : 1.6;
+  const COL = { air:0xE0524A, stay:0x8B6BB1, food:0xE08A3C, spot:0x1B91C9 };
+  const DAY_COL = CFG.dayCols;
+  const DAY_NAME = CFG.dayNames;
+
+  const POLY_BB = POLYS.map(r => { let a=[1e9,1e9,-1e9,-1e9]; r.forEach(p=>{a[0]=Math.min(a[0],p[0]);a[1]=Math.min(a[1],p[1]);a[2]=Math.max(a[2],p[0]);a[3]=Math.max(a[3],p[1]);}); return a; });
+  let MINX=1e9,MAXX=-1e9,MINZ=1e9,MAXZ=-1e9;
+  POLYS.forEach(r=>r.forEach(p=>{MINX=Math.min(MINX,p[0]);MAXX=Math.max(MAXX,p[0]);MINZ=Math.min(MINZ,p[1]);MAXZ=Math.max(MAXZ,p[1]);}));
+  const MAPW=MAXX-MINX, MAPH=MAXZ-MINZ, MAXD=Math.max(MAPW,MAPH), CX=(MINX+MAXX)/2, CZ=(MINZ+MAXZ)/2;
+
+  function pointInPoly(x,z,poly){ let inside=false; for(let i=0,j=poly.length-1;i<poly.length;j=i++){const xi=poly[i][0],zi=poly[i][1],xj=poly[j][0],zj=poly[j][1]; if(((zi>z)!==(zj>z)) && (x<(xj-xi)*(z-zi)/(zj-zi)+xi)) inside=!inside;} return inside; }
+  function distSeg(px,pz,ax,az,bx,bz){ const dx=bx-ax,dz=bz-az,l2=dx*dx+dz*dz; let t=l2?((px-ax)*dx+(pz-az)*dz)/l2:0; t=Math.max(0,Math.min(1,t)); return Math.hypot(px-(ax+t*dx),pz-(az+t*dz)); }
+  function distPoly(x,z,poly){ let d=Infinity; for(let i=0,j=poly.length-1;i<poly.length;j=i++) d=Math.min(d,distSeg(x,z,poly[i][0],poly[i][1],poly[j][0],poly[j][1])); return d; }
+  function smooth(a,b,x){ let t=Math.max(0,Math.min(1,(x-a)/(b-a))); return t*t*(3-2*t); }
+  function noise(x,z){ return Math.sin(x*0.34)*Math.cos(z*0.29)*0.6 + Math.sin(x*0.15+2.1)*Math.sin(z*0.2+0.7)*0.8 + Math.cos((x+z)*0.11)*0.4; }
+  function terrainH(x,z){
+    let inside=false,d=Infinity;
+    for(let i=0;i<POLYS.length;i++){ const b=POLY_BB[i]; if(x<b[0]-RAMP||x>b[2]+RAMP||z<b[1]-RAMP||z>b[3]+RAMP) continue; if(pointInPoly(x,z,POLYS[i])) inside=true; const dd=distPoly(x,z,POLYS[i]); if(dd<d)d=dd; }
+    if(d===Infinity) return CFG.inland ? SEA_Y*0.7 : 0;
+    const signed=inside?d:-d;
+    const base = smooth(0,RAMP,signed)*(BASE+Math.max(0,noise(x,z))*HILL);
+    return CFG.inland ? Math.max(base, SEA_Y*0.7) : base;  // 內陸：周邊維持平原高度
+  }
+
+  const scene=new THREE.Scene();
+  const bg = CFG.inland ? 0xe6f0e0 : 0xd6eefb;
+  scene.background=new THREE.Color(bg);
+  scene.fog=new THREE.Fog(bg, MAXD*1.0, MAXD*2.6);
+  const camera=new THREE.PerspectiveCamera(44,1,0.1,1000);
+  camera.position.set(CX+MAXD*0.05, MAXD*0.82, CZ+MAXD*0.95);
+  const renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  holder.appendChild(renderer.domElement);
+  const controls=new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping=true; controls.dampingFactor=0.08; controls.enablePan=true; controls.screenSpacePanning=true;
+  controls.touches={ONE:THREE.TOUCH.ROTATE, TWO:THREE.TOUCH.DOLLY_PAN};
+  controls.minDistance=MAXD*0.5; controls.maxDistance=MAXD*1.8; controls.maxPolarAngle=1.45;
+  controls.target.set(CX,1.5,CZ);
+
+  scene.add(new THREE.AmbientLight(0xffffff,0.68));
+  const sun=new THREE.DirectionalLight(0xfff3e0,0.9); sun.position.set(MAXD*0.4,MAXD*0.7,MAXD*0.3); scene.add(sun);
+  scene.add(new THREE.HemisphereLight(0xcfeeff,0x4a7c59,0.35));
+
+  // 地形高度場
+  const TW=MAPW+18, TH=MAPH+18, SX=Math.min(190,Math.round(TW*2.4)), SZ=Math.min(190,Math.round(TH*2.4));
+  const tgeo=new THREE.PlaneGeometry(TW,TH,SX,SZ); tgeo.rotateX(-Math.PI/2); tgeo.translate(CX,0,CZ);
+  const pos=tgeo.attributes.position, colArr=[];
+  const palette = CFG.inland
+    ? { lo:new THREE.Color(0xBFD79A), mid:new THREE.Color(0x86B85C), hi:new THREE.Color(0x4F8A42), top:new THREE.Color(0x7C6B4F) }
+    : { lo:new THREE.Color(0xE6D6A0), mid:new THREE.Color(0x90C063), hi:new THREE.Color(0x68A046), top:new THREE.Color(0x9A9080) };
+  const tmp=new THREE.Color();
+  for(let i=0;i<pos.count;i++){ const x=pos.getX(i),z=pos.getZ(i),h=terrainH(x,z); pos.setY(i,h);
+    if(h<BASE*0.45) tmp.copy(palette.lo).lerp(palette.mid,smooth(0,BASE*0.45,h));
+    else if(h<BASE+0.4) tmp.copy(palette.mid).lerp(palette.hi,smooth(BASE*0.45,BASE+0.4,h));
+    else tmp.copy(palette.hi).lerp(palette.top,smooth(BASE+0.4,BASE+HILL,h));
+    colArr.push(tmp.r,tmp.g,tmp.b); }
+  tgeo.setAttribute('color',new THREE.Float32BufferAttribute(colArr,3)); tgeo.computeVertexNormals();
+  scene.add(new THREE.Mesh(tgeo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:0.96,metalness:0.0})));
+
+  // 周邊：海（沿海）或平原（內陸）
+  const sgeo=new THREE.PlaneGeometry(TW+44,TH+44,52,46); sgeo.rotateX(-Math.PI/2); sgeo.translate(CX,0,CZ);
+  const sp=sgeo.attributes.position, sBase=[]; for(let i=0;i<sp.count;i++) sBase.push(sp.getX(i),sp.getZ(i));
+  const seaMat = CFG.inland
+    ? new THREE.MeshStandardMaterial({color:CFG.seaColor||0xA8C888, roughness:0.95, metalness:0})
+    : new THREE.MeshStandardMaterial({color:0x2C8FC4, transparent:true, opacity:0.82, roughness:0.22, metalness:0.1});
+  const sea=new THREE.Mesh(sgeo, seaMat); sea.position.y= CFG.inland ? SEA_Y*0.66 : SEA_Y; scene.add(sea);
+
+  // 跨海大橋（僅沿海且有 BRIDGE）
+  if (typeof BRIDGE !== 'undefined' && BRIDGE) {
+    const bdx=BRIDGE.bx-BRIDGE.ax, bdz=BRIDGE.bz-BRIDGE.az, blen=Math.hypot(bdx,bdz);
+    const bridge=new THREE.Mesh(new THREE.BoxGeometry(blen+1.4,0.5,1.1), new THREE.MeshStandardMaterial({color:0xC9B79A,roughness:0.7}));
+    bridge.position.set((BRIDGE.ax+BRIDGE.bx)/2, SEA_Y+1.0, (BRIDGE.az+BRIDGE.bz)/2);
+    bridge.rotation.y=-Math.atan2(bdz,bdx); scene.add(bridge);
+  }
+
+  const pinObjs=[];
+  SPOTS.forEach(s=>{
+    const baseY=Math.max(terrainH(s.x,s.z),SEA_Y), g=new THREE.Group();
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,3.2,8),new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.6})); pole.position.y=1.6; g.add(pole);
+    const head=new THREE.Mesh(new THREE.SphereGeometry(1.0,18,18),new THREE.MeshStandardMaterial({color:COL[s.t],emissive:COL[s.t],emissiveIntensity:0.25,roughness:0.4})); head.position.y=3.5; g.add(head);
+    g.position.set(s.x,baseY,s.z); scene.add(g);
+    const el=document.createElement('div'); el.className='m3d-label'; el.textContent=s.n; el.style.display='none'; labelLayer.appendChild(el);
+    const ln=document.createElementNS('http://www.w3.org/2000/svg','line'); ln.setAttribute('class','m3d-leader'); ln.style.display='none'; leaderSvg.appendChild(ln);
+    pinObjs.push({s,g,head,baseY,hw:new THREE.Vector3(),el,ln});
+  });
+
+  const nodeOf=n=>SPOTS.find(o=>o.n===n);
+  const routeObjs={};
+  Object.keys(ROUTES).forEach(day=>{
+    const pts=ROUTES[day].map(n=>{const s=nodeOf(n); return s? new THREE.Vector3(s.x,Math.max(terrainH(s.x,s.z),SEA_Y)+1.8,s.z):null;}).filter(Boolean);
+    if(pts.length<2){ routeObjs[day]={tube:null,curve:null}; return; }
+    const curve=new THREE.CatmullRomCurve3(pts,false,'catmullrom',0.3);
+    const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,160,0.5,8,false),new THREE.MeshStandardMaterial({color:DAY_COL[day],emissive:DAY_COL[day],emissiveIntensity:0.4,roughness:0.4}));
+    scene.add(tube); routeObjs[day]={tube,curve};
+  });
+  const traveler=new THREE.Mesh(new THREE.SphereGeometry(1.1,16,16),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffdd55,emissiveIntensity:0.6})); scene.add(traveler);
+
+  let activeDay='all';
+  function setDay(day){
+    activeDay=day; routeNameEl.textContent=DAY_NAME[day]||'';
+    Object.keys(routeObjs).forEach(d=>{ if(routeObjs[d].tube) routeObjs[d].tube.visible=(day==='all'||String(day)===d); });
+    pinObjs.forEach(o=>{ const on=(day==='all')||o.s.d.indexOf(Number(day))>=0; o.g.visible=on; const sl=on&&day!=='all'; o.el.style.display=sl?'block':'none'; o.ln.style.display=sl?'block':'none'; });
+    traveler.visible=(day!=='all' && routeObjs[day] && routeObjs[day].curve);
+    document.querySelectorAll('#map3dTabs .map3d-tab').forEach(b=>b.classList.toggle('active',b.dataset.day===String(day)));
+  }
+  document.querySelectorAll('#map3dTabs .map3d-tab').forEach(btn=>btn.addEventListener('click',()=>setDay(btn.dataset.day==='all'?'all':Number(btn.dataset.day))));
+
+  function resize(){ const w=holder.clientWidth||360,h=holder.clientHeight||300; renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); leaderSvg.setAttribute('width',w); leaderSvg.setAttribute('height',h); }
+  window.addEventListener('resize',resize);
+  const trafficTab=document.querySelector('.tab-btn[data-page="page-traffic"]'); if(trafficTab) trafficTab.addEventListener('click',()=>setTimeout(resize,60));
+
+  const _v=new THREE.Vector3();
+  function updateLabels(){
+    const w=holder.clientWidth,h=holder.clientHeight,active=[];
+    pinObjs.forEach(o=>{ if(o.el.style.display==='none') return; o.head.getWorldPosition(o.hw); _v.copy(o.hw); _v.project(camera); const sx=(_v.x*0.5+0.5)*w,sy=(-_v.y*0.5+0.5)*h; active.push({o,sx,sy,lx:sx,ly:sy-22}); });
+    active.sort((a,b)=>a.ly-b.ly);
+    const GAP=17;
+    for(let i=0;i<active.length;i++) for(let j=0;j<i;j++) if(Math.abs(active[i].lx-active[j].lx)<78 && Math.abs(active[i].ly-active[j].ly)<GAP) active[i].ly=active[j].ly+GAP;
+    active.forEach(a=>{ const hw=(a.o.el.offsetWidth||60)/2+4; a.lx=Math.max(hw,Math.min(w-hw,a.lx)); a.ly=Math.max(14,Math.min(h-14,a.ly)); a.o.el.style.left=a.lx+'px'; a.o.el.style.top=a.ly+'px'; a.o.ln.setAttribute('x1',a.sx); a.o.ln.setAttribute('y1',a.sy); a.o.ln.setAttribute('x2',a.lx); a.o.ln.setAttribute('y2',a.ly+8); });
+  }
+
+  const t0=performance.now();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t=(performance.now()-t0)/1000;
+    if(!CFG.inland){ for(let i=0;i<sp.count;i++){ const bx=sBase[i*2],bz=sBase[i*2+1]; sp.setY(i,Math.sin(bx*0.5+t)*0.18+Math.cos(bz*0.4+t*1.2)*0.14); } sp.needsUpdate=true; }
+    pinObjs.forEach((o,i)=>{ if(o.g.visible) o.g.position.y=o.baseY+Math.sin(t*2+i)*0.22; });
+    if(activeDay!=='all'&&routeObjs[activeDay]&&routeObjs[activeDay].curve){ const p=routeObjs[activeDay].curve.getPointAt((t*0.12)%1); traveler.position.copy(p); traveler.position.y+=0.4; }
+    controls.update(); renderer.render(scene,camera); updateLabels();
+  }
+  if(fallback) fallback.remove();
+  resize(); setDay('all'); animate();
+})();
+</script>
+<!--/TRIPMAP3D-->
+<div id="mapZoom" class="mapzoom-bg">
+  <button id="mapZoomClose" class="mapzoom-close" type="button">✕ 關閉</button>
+  <div class="mapzoom-stage" id="mapZoomStage"></div>
+</div>
+<script>
+(function () {
+  const bg = document.getElementById('mapZoom');
+  const stage = document.getElementById('mapZoomStage');
+  const closeBtn = document.getElementById('mapZoomClose');
+  let cur = null, ph = null;
+  const fireResize = () => setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
+  function open(sel) { const el = document.querySelector(sel); if (!el) return; if (cur) restore(); ph = document.createComment('zoomph'); el.parentNode.insertBefore(ph, el); stage.appendChild(el); cur = el; bg.classList.add('open'); fireResize(); }
+  function restore() { if (!cur) return; if (ph && ph.parentNode) { ph.parentNode.insertBefore(cur, ph); ph.remove(); } cur = null; ph = null; }
+  function close() { if (!cur) return; restore(); bg.classList.remove('open'); fireResize(); }
+  closeBtn.addEventListener('click', close);
+  bg.addEventListener('click', e => { if (e.target === bg) close(); });
+  document.querySelectorAll('.map-expand-btn').forEach(b => b.addEventListener('click', () => open(b.dataset.zoomTarget)));
+})();
 </script>
 
 </body>
