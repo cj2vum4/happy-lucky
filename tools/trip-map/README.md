@@ -43,6 +43,22 @@ node build.js nantou      # 或 hsinchu
    - `dayNames` / `dayCols`、`title`、`islandNames`、`seaColor`、`islandFill`、`epsilon`、`targetW`
 3. `node build.js <name>`。
 
+## Google 互動地圖
+
+`build.js` 除了 3D / SVG，也會在交通頁產生一張 **Google Maps 互動地圖**
+（真實可導航、標記、每日路線切換）。三個行程（澎湖／南投／新竹）都已加入。
+
+- 金鑰放在 `gkey.js`（已 gitignore，不進版控）：
+
+  ```js
+  // tools/trip-map/gkey.js
+  module.exports = '你的_GOOGLE_MAPS_API_KEY';
+  ```
+
+  > 金鑰仍會出現在產生的 HTML（client-side Maps 的必然），請到 Google Cloud
+  > Console 將其限制為：**HTTP referrer = 你的網域** ＋ **僅 Maps JavaScript API**。
+- 每日路線為各景點的直線連接（非實際道路）。要改實際開車路線可改用 Directions API。
+
 ## 處理流程（build.js）
 
 1. 解 TopoJSON → 取指定鄉鎮，各取主要陸塊（過濾離島小礁）。

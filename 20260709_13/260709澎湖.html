@@ -821,6 +821,13 @@ body {
 }
 .submit-btn:active { opacity: 0.75; }
 .submit-btn:disabled { background: var(--coffee-faint); cursor: not-allowed; }
+
+/* ===== Google 地圖 ===== */
+.gmap-wrap { background: var(--cream); border-radius: 14px; padding: 10px; margin-bottom: 14px; }
+.gmap-tabs { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.gmap-tab { flex: 1; min-width: 52px; border: 1.5px solid var(--pea); background: var(--paper); border-radius: 18px; padding: 6px 4px; font-family: var(--body); font-size: 13px; color: var(--pea-dark); cursor: pointer; touch-action: manipulation; }
+.gmap-tab.active { background: var(--pea-dark); color: #fff; border-color: var(--pea-dark); }
+.gmap-canvas { width: 100%; height: 340px; border-radius: 12px; overflow: hidden; background: #e8eef0; }
 </style>
 </head>
 <body>
@@ -1050,6 +1057,51 @@ body {
           <div class="transport-sub">D3 西嶼大環線里程較長・出發前先加滿油・西嶼加油站較少</div>
         </div>
       </div>
+      <div class="section-label" style="margin-top:24px">🌐 Google 互動地圖</div>
+      <div class="gmap-wrap">
+        <div class="gmap-tabs" id="gmapTabs">
+          <button class="gmap-tab active" data-day="all" type="button">全部</button>
+          <button class="gmap-tab" data-day="1" type="button">D1</button>
+          <button class="gmap-tab" data-day="2" type="button">D2</button>
+          <button class="gmap-tab" data-day="3" type="button">D3</button>
+          <button class="gmap-tab" data-day="4" type="button">D4</button>
+        </div>
+        <div id="gmap" class="gmap-canvas"></div>
+      </div>
+      <!--TRIPGMAP-->
+<script>
+window.initGmap = function () {
+  const SPOTS = [{"n":"馬公機場","lat":23.5687,"lng":119.6283,"t":"air","d":[1]},{"n":"馬公住宿","lat":23.5655,"lng":119.5663,"t":"stay","d":[1,2,3,4]},{"n":"佶肯GK漢堡","lat":23.5665,"lng":119.574,"t":"food","d":[1]},{"n":"鐘記燒餅","lat":23.571,"lng":119.566,"t":"food","d":[2]},{"n":"藍冉刨冰","lat":23.5688,"lng":119.5672,"t":"food","d":[2]},{"n":"篤行十村","lat":23.561,"lng":119.564,"t":"spot","d":[2]},{"n":"小島一隅","lat":23.5585,"lng":119.5745,"t":"food","d":[2]},{"n":"三哥雞排","lat":23.564,"lng":119.569,"t":"food","d":[2]},{"n":"後寮天堂路","lat":23.6585,"lng":119.5985,"t":"spot","d":[3]},{"n":"通樑古榕","lat":23.6285,"lng":119.5185,"t":"spot","d":[3]},{"n":"跨海大橋","lat":23.6225,"lng":119.5095,"t":"spot","d":[3]},{"n":"大菓葉玄武岩","lat":23.6,"lng":119.4905,"t":"spot","d":[3]},{"n":"二崁聚落","lat":23.6035,"lng":119.4985,"t":"spot","d":[3]},{"n":"大池炸粿","lat":23.6205,"lng":119.5005,"t":"food","d":[3]},{"n":"鯨魚洞","lat":23.632,"lng":119.4835,"t":"spot","d":[3]},{"n":"摩西分海","lat":23.5995,"lng":119.647,"t":"spot","d":[4]},{"n":"很大的馬桶","lat":23.5755,"lng":119.668,"t":"spot","d":[4]}], ROUTES = {"1":["馬公機場","馬公住宿","佶肯GK漢堡"],"2":["馬公住宿","鐘記燒餅","藍冉刨冰","篤行十村","小島一隅","三哥雞排"],"3":["馬公住宿","後寮天堂路","通樑古榕","跨海大橋","大菓葉玄武岩","二崁聚落","大池炸粿","鯨魚洞"],"4":["馬公住宿","摩西分海","很大的馬桶","馬公住宿"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#1b91c9","4":"#c0567a"};
+  const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
+  const el = document.getElementById('gmap'); if (!el) return;
+  const map = new google.maps.Map(el, { mapTypeControl:true, streetViewControl:false, fullscreenControl:true, zoom:12 });
+  const info = new google.maps.InfoWindow();
+  const bounds = new google.maps.LatLngBounds();
+  const markers = SPOTS.map(s => {
+    const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
+      icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:7 } });
+    m._d = s.d; m.addListener('click', () => { info.setContent('<b>'+s.n+'</b>'); info.open(map, m); });
+    bounds.extend(m.getPosition()); return m;
+  });
+  const lines = {};
+  Object.keys(ROUTES).forEach(day => {
+    const path = ROUTES[day].map(n => { const s = SPOTS.find(o => o.n === n); return s ? {lat:s.lat,lng:s.lng} : null; }).filter(Boolean);
+    if (path.length >= 2) lines[day] = new google.maps.Polyline({ path, map, strokeColor:DCOL[day]||'#1B91C9', strokeWeight:4, strokeOpacity:0.85 });
+  });
+  map.fitBounds(bounds);
+  function setDay(day) {
+    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.classList.toggle('active', b.dataset.day === String(day)));
+    markers.forEach(m => m.setVisible(day === 'all' || m._d.indexOf(Number(day)) >= 0));
+    Object.keys(lines).forEach(d => lines[d].setMap((day === 'all' || String(day) === d) ? map : null));
+  }
+  document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.addEventListener('click', () => setDay(b.dataset.day)));
+  const tt = document.querySelector('.tab-btn[data-page="page-traffic"]');
+  if (tt) tt.addEventListener('click', () => setTimeout(() => { google.maps.event.trigger(map, 'resize'); map.fitBounds(bounds); }, 90));
+  setDay('all');
+};
+</script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo&callback=initGmap&loading=async"></script>
+<!--/TRIPGMAP-->
     </div>
 
     <!-- PAGE: 行程 -->

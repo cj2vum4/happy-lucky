@@ -860,6 +860,13 @@ body {
 #mapZoom .map3d-holder { height: 74vh; }
 #mapZoom .map-expand-btn { display: none; }
 #mapZoom .map3d-hint, #mapZoom .map3d-routename { text-align: center; }
+
+/* ===== Google 地圖 ===== */
+.gmap-wrap { background: var(--cream); border-radius: 14px; padding: 10px; margin-bottom: 14px; }
+.gmap-tabs { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.gmap-tab { flex: 1; min-width: 52px; border: 1.5px solid var(--pea); background: var(--paper); border-radius: 18px; padding: 6px 4px; font-family: var(--body); font-size: 13px; color: var(--pea-dark); cursor: pointer; touch-action: manipulation; }
+.gmap-tab.active { background: var(--pea-dark); color: #fff; border-color: var(--pea-dark); }
+.gmap-canvas { width: 100%; height: 340px; border-radius: 12px; overflow: hidden; background: #e8eef0; }
 </style>
 </head>
 <body>
@@ -1040,6 +1047,50 @@ body {
 </svg>
 <!--/TRIPMAPSVG-->
       </div>
+      <div class="section-label" style="margin-top:24px">🌐 Google 互動地圖</div>
+      <div class="gmap-wrap">
+        <div class="gmap-tabs" id="gmapTabs">
+          <button class="gmap-tab active" data-day="all" type="button">全部</button>
+          <button class="gmap-tab" data-day="1" type="button">D1</button>
+          <button class="gmap-tab" data-day="2" type="button">D2</button>
+          <button class="gmap-tab" data-day="3" type="button">D3</button>
+        </div>
+        <div id="gmap" class="gmap-canvas"></div>
+      </div>
+      <!--TRIPGMAP-->
+<script>
+window.initGmap = function () {
+  const SPOTS = [{"n":"Cona巧克力城堡","lat":23.945,"lng":120.957,"t":"spot","d":[1]},{"n":"鹿篙咖啡莊園","lat":23.882,"lng":120.918,"t":"food","d":[1]},{"n":"18度C巧克力","lat":23.958,"lng":120.952,"t":"food","d":[1]},{"n":"娜娜泰式料理","lat":23.968,"lng":120.968,"t":"food","d":[1]},{"n":"埔里故事館","lat":23.965,"lng":120.965,"t":"stay","d":[1,2]},{"n":"日月潭遊湖","lat":23.864,"lng":120.91,"t":"spot","d":[2]},{"n":"馬累了吧","lat":24.05,"lng":121.13,"t":"stay","d":[2,3]},{"n":"發祥國小","lat":24.13,"lng":121.18,"t":"spot","d":[3]}], ROUTES = {"1":["Cona巧克力城堡","鹿篙咖啡莊園","18度C巧克力","娜娜泰式料理","埔里故事館"],"2":["埔里故事館","日月潭遊湖","馬累了吧"],"3":["馬累了吧","發祥國小"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#6e8b3d"};
+  const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
+  const el = document.getElementById('gmap'); if (!el) return;
+  const map = new google.maps.Map(el, { mapTypeControl:true, streetViewControl:false, fullscreenControl:true, zoom:12 });
+  const info = new google.maps.InfoWindow();
+  const bounds = new google.maps.LatLngBounds();
+  const markers = SPOTS.map(s => {
+    const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
+      icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:7 } });
+    m._d = s.d; m.addListener('click', () => { info.setContent('<b>'+s.n+'</b>'); info.open(map, m); });
+    bounds.extend(m.getPosition()); return m;
+  });
+  const lines = {};
+  Object.keys(ROUTES).forEach(day => {
+    const path = ROUTES[day].map(n => { const s = SPOTS.find(o => o.n === n); return s ? {lat:s.lat,lng:s.lng} : null; }).filter(Boolean);
+    if (path.length >= 2) lines[day] = new google.maps.Polyline({ path, map, strokeColor:DCOL[day]||'#1B91C9', strokeWeight:4, strokeOpacity:0.85 });
+  });
+  map.fitBounds(bounds);
+  function setDay(day) {
+    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.classList.toggle('active', b.dataset.day === String(day)));
+    markers.forEach(m => m.setVisible(day === 'all' || m._d.indexOf(Number(day)) >= 0));
+    Object.keys(lines).forEach(d => lines[d].setMap((day === 'all' || String(day) === d) ? map : null));
+  }
+  document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.addEventListener('click', () => setDay(b.dataset.day)));
+  const tt = document.querySelector('.tab-btn[data-page="page-traffic"]');
+  if (tt) tt.addEventListener('click', () => setTimeout(() => { google.maps.event.trigger(map, 'resize'); map.fitBounds(bounds); }, 90));
+  setDay('all');
+};
+</script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo&callback=initGmap&loading=async"></script>
+<!--/TRIPGMAP-->
     </div>
 
     <!-- PAGE: 行程 -->
