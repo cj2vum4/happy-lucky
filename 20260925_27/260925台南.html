@@ -332,37 +332,82 @@ body {
       </div>
       <!--TRIPGMAP-->
 <script>
-window.initGmap = function () {
-  const SPOTS = [{"n":"赤崁樓","lat":22.9977,"lng":120.2025,"t":"spot","d":[1]},{"n":"國華街美食","lat":22.9942,"lng":120.198,"t":"food","d":[1]},{"n":"孔廟文化園區","lat":22.9907,"lng":120.2042,"t":"spot","d":[1]},{"n":"藍晒圖文創園區","lat":22.9863,"lng":120.205,"t":"spot","d":[1]},{"n":"花園夜市","lat":23.0085,"lng":120.203,"t":"food","d":[1]},{"n":"六千牛肉湯","lat":22.993,"lng":120.207,"t":"food","d":[2]},{"n":"安平古堡","lat":23.001,"lng":120.161,"t":"spot","d":[2]},{"n":"四草綠色隧道","lat":23.033,"lng":120.153,"t":"spot","d":[2]},{"n":"奇美博物館","lat":22.9345,"lng":120.227,"t":"spot","d":[2]},{"n":"十鼓仁糖文創","lat":22.93,"lng":120.262,"t":"spot","d":[2]},{"n":"豆奶宗早餐","lat":22.996,"lng":120.208,"t":"food","d":[3]},{"n":"漁光島","lat":22.983,"lng":120.148,"t":"spot","d":[3]},{"n":"方舟咖啡","lat":22.982,"lng":120.149,"t":"food","d":[3]},{"n":"林百貨","lat":22.9925,"lng":120.2015,"t":"spot","d":[3]}], ROUTES = {"1":["赤崁樓","國華街美食","孔廟文化園區","藍晒圖文創園區","花園夜市"],"2":["六千牛肉湯","安平古堡","四草綠色隧道","奇美博物館","十鼓仁糖文創"],"3":["豆奶宗早餐","漁光島","方舟咖啡","林百貨"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#c0567a"};
+(function () {
+  const SPOTS = [{"n":"赤崁樓","lat":22.9977,"lng":120.2025,"t":"spot","d":[1]},{"n":"國華街美食","lat":22.9942,"lng":120.198,"t":"food","d":[1]},{"n":"孔廟文化園區","lat":22.9907,"lng":120.2042,"t":"spot","d":[1]},{"n":"藍晒圖文創園區","lat":22.9863,"lng":120.205,"t":"spot","d":[1]},{"n":"花園夜市","lat":23.0085,"lng":120.203,"t":"food","d":[1]},{"n":"六千牛肉湯","lat":22.993,"lng":120.207,"t":"food","d":[2]},{"n":"安平古堡","lat":23.001,"lng":120.161,"t":"spot","d":[2]},{"n":"四草綠色隧道","lat":23.033,"lng":120.153,"t":"spot","d":[2]},{"n":"奇美博物館","lat":22.9345,"lng":120.227,"t":"spot","d":[2]},{"n":"十鼓仁糖文創","lat":22.93,"lng":120.262,"t":"spot","d":[2]},{"n":"豆奶宗早餐","lat":22.996,"lng":120.208,"t":"food","d":[3]},{"n":"漁光島","lat":22.983,"lng":120.148,"t":"spot","d":[3]},{"n":"方舟咖啡","lat":22.982,"lng":120.149,"t":"food","d":[3]},{"n":"林百貨","lat":22.9925,"lng":120.2015,"t":"spot","d":[3]}], ROUTES = {"1":["赤崁樓","國華街美食","孔廟文化園區","藍晒圖文創園區","花園夜市"],"2":["六千牛肉湯","安平古堡","四草綠色隧道","奇美博物館","十鼓仁糖文創"],"3":["豆奶宗早餐","漁光島","方舟咖啡","林百貨"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#c0567a"}, KEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo';
   const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
-  const el = document.getElementById('gmap'); if (!el) return;
-  const map = new google.maps.Map(el, { mapTypeControl:true, streetViewControl:false, fullscreenControl:true, zoom:12 });
-  const info = new google.maps.InfoWindow();
-  const bounds = new google.maps.LatLngBounds();
-  const markers = SPOTS.map(s => {
-    const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
-      icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:7 } });
-    m._d = s.d; m.addListener('click', () => { info.setContent('<b>'+s.n+'</b>'); info.open(map, m); });
-    bounds.extend(m.getPosition()); return m;
-  });
-  const lines = {};
-  Object.keys(ROUTES).forEach(day => {
-    const path = ROUTES[day].map(n => { const s = SPOTS.find(o => o.n === n); return s ? {lat:s.lat,lng:s.lng} : null; }).filter(Boolean);
-    if (path.length >= 2) lines[day] = new google.maps.Polyline({ path, map, strokeColor:DCOL[day]||'#1B91C9', strokeWeight:4, strokeOpacity:0.85 });
-  });
-  map.fitBounds(bounds);
-  function setDay(day) {
-    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.classList.toggle('active', b.dataset.day === String(day)));
-    markers.forEach(m => m.setVisible(day === 'all' || m._d.indexOf(Number(day)) >= 0));
-    Object.keys(lines).forEach(d => lines[d].setMap((day === 'all' || String(day) === d) ? map : null));
+  let map, info, bounds, markers = [], lines = {}, loaded = false, loading = false;
+
+  function dirURL(la, ln) { return 'https://www.google.com/maps/dir/?api=1&destination=' + la + ',' + ln + '&travelmode=driving'; }
+  function allURL() {
+    if (!SPOTS.length) return 'https://www.google.com/maps';
+    const o = SPOTS[0], d = SPOTS[SPOTS.length - 1];
+    const wp = SPOTS.slice(1, -1).slice(0, 8).map(s => s.lat + ',' + s.lng).join('|');
+    return 'https://www.google.com/maps/dir/?api=1&origin=' + o.lat + ',' + o.lng + '&destination=' + d.lat + ',' + d.lng + (wp ? '&waypoints=' + encodeURIComponent(wp) : '') + '&travelmode=driving';
   }
-  document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.addEventListener('click', () => setDay(b.dataset.day)));
-  const tt = document.querySelector('.tab-btn[data-page="page-traffic"]');
-  if (tt) tt.addEventListener('click', () => setTimeout(() => { google.maps.event.trigger(map, 'resize'); map.fitBounds(bounds); }, 90));
-  setDay('all');
-};
+  function fail() {
+    const el = document.getElementById('gmap'); if (!el) return;
+    el.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;padding:20px;text-align:center;font-family:serif;color:#5A4232">'
+      + '<div style="font-size:13px">地圖暫時無法載入</div>'
+      + '<a href="' + allURL() + '" target="_blank" rel="noopener" style="background:#1a73e8;color:#fff;padding:8px 16px;border-radius:18px;text-decoration:none;font-size:13px">在 Google Maps 開啟全部景點</a></div>';
+  }
+  window.gm_authFailure = fail;
+
+  window.initGmap = function () {
+    const el = document.getElementById('gmap'); if (!el || !window.google) { fail(); return; }
+    map = new google.maps.Map(el, { mapTypeControl:true, streetViewControl:false, fullscreenControl:true, zoom:12 });
+    info = new google.maps.InfoWindow();
+    bounds = new google.maps.LatLngBounds();
+    markers = SPOTS.map(s => {
+      const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
+        icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:10 } });
+      m._d = s.d; m._n = s.n;
+      m.addListener('click', () => { info.setContent('<div style="font-size:13px;line-height:1.5"><b>' + s.n + '</b><br><a href="' + dirURL(s.lat, s.lng) + '" target="_blank" rel="noopener" style="color:#1a73e8">🧭 在 Google Maps 導航</a></div>'); info.open(map, m); });
+      bounds.extend(m.getPosition()); return m;
+    });
+    Object.keys(ROUTES).forEach(day => {
+      const p = ROUTES[day].map(n => { const s = SPOTS.find(o => o.n === n); return s ? {lat:s.lat,lng:s.lng} : null; }).filter(Boolean);
+      if (p.length >= 2) lines[day] = new google.maps.Polyline({ path:p, strokeColor:DCOL[day]||'#1B91C9', strokeWeight:4, strokeOpacity:0.85 });
+    });
+    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.addEventListener('click', () => setDay(b.dataset.day)));
+    loaded = true; setDay('all');
+  };
+
+  function setDay(day) {
+    if (!loaded) return;
+    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.classList.toggle('active', b.dataset.day === String(day)));
+    const order = (day !== 'all' && ROUTES[day]) ? ROUTES[day] : null;
+    const b2 = new google.maps.LatLngBounds(); let cnt = 0, last = null;
+    markers.forEach(m => {
+      const on = day === 'all' || m._d.indexOf(Number(day)) >= 0;
+      m.setMap(on ? map : null);
+      if (on) { b2.extend(m.getPosition()); cnt++; last = m.getPosition(); }
+      if (order) { const i = order.indexOf(m._n); m.setLabel(i >= 0 ? { text:String(i + 1), color:'#fff', fontSize:'11px', fontWeight:'700' } : null); }
+      else m.setLabel(null);
+    });
+    Object.keys(lines).forEach(d => lines[d].setMap((day === 'all' || String(day) === d) ? map : null));
+    if (cnt === 1) { map.setCenter(last); map.setZoom(15); }
+    else if (cnt > 1) map.fitBounds(b2);
+  }
+
+  function load() {
+    if (loaded || loading) { onShow(); return; }
+    loading = true;
+    const s = document.createElement('script'); s.async = true;
+    s.src = 'https://maps.googleapis.com/maps/api/js?key=' + KEY + '&callback=initGmap&loading=async';
+    s.onerror = fail; document.head.appendChild(s);
+  }
+  function onShow() {
+    if (loaded && map) setTimeout(() => { google.maps.event.trigger(map, 'resize'); const a = document.querySelector('#gmapTabs .gmap-tab.active'); setDay(a ? a.dataset.day : 'all'); }, 90);
+  }
+  function wire() {
+    const tt = document.querySelector('.tab-btn[data-page="page-traffic"]');
+    if (tt) tt.addEventListener('click', () => { load(); onShow(); });
+    const tp = document.getElementById('page-traffic');
+    if (tp && tp.classList.contains('active')) load();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
+})();
 </script>
-<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo&callback=initGmap&loading=async"></script>
 <!--/TRIPGMAP-->
     </div>
 

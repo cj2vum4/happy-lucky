@@ -920,37 +920,82 @@ body {
       </div>
       <!--TRIPGMAP-->
 <script>
-window.initGmap = function () {
-  const SPOTS = [{"n":"馬公機場","lat":23.5687,"lng":119.6283,"t":"air","d":[1,5]},{"n":"馬公住宿","lat":23.5655,"lng":119.5663,"t":"stay","d":[1,2,3,4,5]},{"n":"中央老街（伴手禮）","lat":23.5658,"lng":119.5658,"t":"spot","d":[5]},{"n":"佶肯GK漢堡","lat":23.5665,"lng":119.574,"t":"food","d":[1]},{"n":"鐘記燒餅","lat":23.571,"lng":119.566,"t":"food","d":[2]},{"n":"藍冉刨冰","lat":23.5688,"lng":119.5672,"t":"food","d":[2]},{"n":"篤行十村","lat":23.561,"lng":119.564,"t":"spot","d":[2]},{"n":"小島一隅","lat":23.5585,"lng":119.5745,"t":"food","d":[2]},{"n":"三哥雞排","lat":23.564,"lng":119.569,"t":"food","d":[2]},{"n":"後寮天堂路","lat":23.6585,"lng":119.5985,"t":"spot","d":[3]},{"n":"通樑古榕","lat":23.6285,"lng":119.5185,"t":"spot","d":[3]},{"n":"跨海大橋","lat":23.6225,"lng":119.5095,"t":"spot","d":[3]},{"n":"大菓葉玄武岩","lat":23.6,"lng":119.4905,"t":"spot","d":[3]},{"n":"二崁聚落","lat":23.6035,"lng":119.4985,"t":"spot","d":[3]},{"n":"大池炸粿","lat":23.6205,"lng":119.5005,"t":"food","d":[3]},{"n":"鯨魚洞","lat":23.632,"lng":119.4835,"t":"spot","d":[3]},{"n":"摩西分海","lat":23.5995,"lng":119.647,"t":"spot","d":[4]},{"n":"很大的馬桶","lat":23.5755,"lng":119.668,"t":"spot","d":[4]}], ROUTES = {"1":["馬公機場","馬公住宿","佶肯GK漢堡"],"2":["馬公住宿","鐘記燒餅","藍冉刨冰","篤行十村","小島一隅","三哥雞排"],"3":["馬公住宿","後寮天堂路","通樑古榕","跨海大橋","大菓葉玄武岩","二崁聚落","大池炸粿","鯨魚洞"],"4":["馬公住宿","摩西分海","很大的馬桶","馬公住宿"],"5":["馬公住宿","中央老街（伴手禮）","馬公機場"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#1b91c9","4":"#c0567a","5":"#5e9e5e"};
+(function () {
+  const SPOTS = [{"n":"馬公機場","lat":23.5687,"lng":119.6283,"t":"air","d":[1,5]},{"n":"馬公住宿","lat":23.5655,"lng":119.5663,"t":"stay","d":[1,2,3,4,5]},{"n":"中央老街（伴手禮）","lat":23.5658,"lng":119.5658,"t":"spot","d":[5]},{"n":"佶肯GK漢堡","lat":23.5665,"lng":119.574,"t":"food","d":[1]},{"n":"鐘記燒餅","lat":23.571,"lng":119.566,"t":"food","d":[2]},{"n":"藍冉刨冰","lat":23.5688,"lng":119.5672,"t":"food","d":[2]},{"n":"篤行十村","lat":23.561,"lng":119.564,"t":"spot","d":[2]},{"n":"小島一隅","lat":23.5585,"lng":119.5745,"t":"food","d":[2]},{"n":"三哥雞排","lat":23.564,"lng":119.569,"t":"food","d":[2]},{"n":"後寮天堂路","lat":23.6585,"lng":119.5985,"t":"spot","d":[3]},{"n":"通樑古榕","lat":23.6285,"lng":119.5185,"t":"spot","d":[3]},{"n":"跨海大橋","lat":23.6225,"lng":119.5095,"t":"spot","d":[3]},{"n":"大菓葉玄武岩","lat":23.6,"lng":119.4905,"t":"spot","d":[3]},{"n":"二崁聚落","lat":23.6035,"lng":119.4985,"t":"spot","d":[3]},{"n":"大池炸粿","lat":23.6205,"lng":119.5005,"t":"food","d":[3]},{"n":"鯨魚洞","lat":23.632,"lng":119.4835,"t":"spot","d":[3]},{"n":"摩西分海","lat":23.5995,"lng":119.647,"t":"spot","d":[4]},{"n":"很大的馬桶","lat":23.5755,"lng":119.668,"t":"spot","d":[4]}], ROUTES = {"1":["馬公機場","馬公住宿","佶肯GK漢堡"],"2":["馬公住宿","鐘記燒餅","藍冉刨冰","篤行十村","小島一隅","三哥雞排"],"3":["馬公住宿","後寮天堂路","通樑古榕","跨海大橋","大菓葉玄武岩","二崁聚落","大池炸粿","鯨魚洞"],"4":["馬公住宿","摩西分海","很大的馬桶","馬公住宿"],"5":["馬公住宿","中央老街（伴手禮）","馬公機場"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#1b91c9","4":"#c0567a","5":"#5e9e5e"}, KEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo';
   const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
-  const el = document.getElementById('gmap'); if (!el) return;
-  const map = new google.maps.Map(el, { mapTypeControl:true, streetViewControl:false, fullscreenControl:true, zoom:12 });
-  const info = new google.maps.InfoWindow();
-  const bounds = new google.maps.LatLngBounds();
-  const markers = SPOTS.map(s => {
-    const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
-      icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:7 } });
-    m._d = s.d; m.addListener('click', () => { info.setContent('<b>'+s.n+'</b>'); info.open(map, m); });
-    bounds.extend(m.getPosition()); return m;
-  });
-  const lines = {};
-  Object.keys(ROUTES).forEach(day => {
-    const path = ROUTES[day].map(n => { const s = SPOTS.find(o => o.n === n); return s ? {lat:s.lat,lng:s.lng} : null; }).filter(Boolean);
-    if (path.length >= 2) lines[day] = new google.maps.Polyline({ path, map, strokeColor:DCOL[day]||'#1B91C9', strokeWeight:4, strokeOpacity:0.85 });
-  });
-  map.fitBounds(bounds);
-  function setDay(day) {
-    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.classList.toggle('active', b.dataset.day === String(day)));
-    markers.forEach(m => m.setVisible(day === 'all' || m._d.indexOf(Number(day)) >= 0));
-    Object.keys(lines).forEach(d => lines[d].setMap((day === 'all' || String(day) === d) ? map : null));
+  let map, info, bounds, markers = [], lines = {}, loaded = false, loading = false;
+
+  function dirURL(la, ln) { return 'https://www.google.com/maps/dir/?api=1&destination=' + la + ',' + ln + '&travelmode=driving'; }
+  function allURL() {
+    if (!SPOTS.length) return 'https://www.google.com/maps';
+    const o = SPOTS[0], d = SPOTS[SPOTS.length - 1];
+    const wp = SPOTS.slice(1, -1).slice(0, 8).map(s => s.lat + ',' + s.lng).join('|');
+    return 'https://www.google.com/maps/dir/?api=1&origin=' + o.lat + ',' + o.lng + '&destination=' + d.lat + ',' + d.lng + (wp ? '&waypoints=' + encodeURIComponent(wp) : '') + '&travelmode=driving';
   }
-  document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.addEventListener('click', () => setDay(b.dataset.day)));
-  const tt = document.querySelector('.tab-btn[data-page="page-traffic"]');
-  if (tt) tt.addEventListener('click', () => setTimeout(() => { google.maps.event.trigger(map, 'resize'); map.fitBounds(bounds); }, 90));
-  setDay('all');
-};
+  function fail() {
+    const el = document.getElementById('gmap'); if (!el) return;
+    el.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;padding:20px;text-align:center;font-family:serif;color:#5A4232">'
+      + '<div style="font-size:13px">地圖暫時無法載入</div>'
+      + '<a href="' + allURL() + '" target="_blank" rel="noopener" style="background:#1a73e8;color:#fff;padding:8px 16px;border-radius:18px;text-decoration:none;font-size:13px">在 Google Maps 開啟全部景點</a></div>';
+  }
+  window.gm_authFailure = fail;
+
+  window.initGmap = function () {
+    const el = document.getElementById('gmap'); if (!el || !window.google) { fail(); return; }
+    map = new google.maps.Map(el, { mapTypeControl:true, streetViewControl:false, fullscreenControl:true, zoom:12 });
+    info = new google.maps.InfoWindow();
+    bounds = new google.maps.LatLngBounds();
+    markers = SPOTS.map(s => {
+      const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
+        icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:10 } });
+      m._d = s.d; m._n = s.n;
+      m.addListener('click', () => { info.setContent('<div style="font-size:13px;line-height:1.5"><b>' + s.n + '</b><br><a href="' + dirURL(s.lat, s.lng) + '" target="_blank" rel="noopener" style="color:#1a73e8">🧭 在 Google Maps 導航</a></div>'); info.open(map, m); });
+      bounds.extend(m.getPosition()); return m;
+    });
+    Object.keys(ROUTES).forEach(day => {
+      const p = ROUTES[day].map(n => { const s = SPOTS.find(o => o.n === n); return s ? {lat:s.lat,lng:s.lng} : null; }).filter(Boolean);
+      if (p.length >= 2) lines[day] = new google.maps.Polyline({ path:p, strokeColor:DCOL[day]||'#1B91C9', strokeWeight:4, strokeOpacity:0.85 });
+    });
+    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.addEventListener('click', () => setDay(b.dataset.day)));
+    loaded = true; setDay('all');
+  };
+
+  function setDay(day) {
+    if (!loaded) return;
+    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.classList.toggle('active', b.dataset.day === String(day)));
+    const order = (day !== 'all' && ROUTES[day]) ? ROUTES[day] : null;
+    const b2 = new google.maps.LatLngBounds(); let cnt = 0, last = null;
+    markers.forEach(m => {
+      const on = day === 'all' || m._d.indexOf(Number(day)) >= 0;
+      m.setMap(on ? map : null);
+      if (on) { b2.extend(m.getPosition()); cnt++; last = m.getPosition(); }
+      if (order) { const i = order.indexOf(m._n); m.setLabel(i >= 0 ? { text:String(i + 1), color:'#fff', fontSize:'11px', fontWeight:'700' } : null); }
+      else m.setLabel(null);
+    });
+    Object.keys(lines).forEach(d => lines[d].setMap((day === 'all' || String(day) === d) ? map : null));
+    if (cnt === 1) { map.setCenter(last); map.setZoom(15); }
+    else if (cnt > 1) map.fitBounds(b2);
+  }
+
+  function load() {
+    if (loaded || loading) { onShow(); return; }
+    loading = true;
+    const s = document.createElement('script'); s.async = true;
+    s.src = 'https://maps.googleapis.com/maps/api/js?key=' + KEY + '&callback=initGmap&loading=async';
+    s.onerror = fail; document.head.appendChild(s);
+  }
+  function onShow() {
+    if (loaded && map) setTimeout(() => { google.maps.event.trigger(map, 'resize'); const a = document.querySelector('#gmapTabs .gmap-tab.active'); setDay(a ? a.dataset.day : 'all'); }, 90);
+  }
+  function wire() {
+    const tt = document.querySelector('.tab-btn[data-page="page-traffic"]');
+    if (tt) tt.addEventListener('click', () => { load(); onShow(); });
+    const tp = document.getElementById('page-traffic');
+    if (tp && tp.classList.contains('active')) load();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
+})();
 </script>
-<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo&callback=initGmap&loading=async"></script>
 <!--/TRIPGMAP-->
     </div>
 
