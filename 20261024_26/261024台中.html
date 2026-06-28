@@ -168,6 +168,13 @@ body { font-family: var(--body); color: var(--coffee); background: var(--cream);
 .submit-btn { width: 100%; padding: 14px; background: var(--pea-dark); color: white; border: none; border-radius: 12px; font-family: var(--body); font-size: 15px; font-weight: 600; cursor: pointer; touch-action: manipulation; transition: opacity 0.15s; }
 .submit-btn:active { opacity: 0.75; }
 .submit-btn:disabled { background: var(--coffee-faint); cursor: not-allowed; }
+
+/* ===== Google 地圖 ===== */
+.gmap-wrap { background: var(--cream); border-radius: 14px; padding: 10px; margin-bottom: 14px; }
+.gmap-tabs { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.gmap-tab { flex: 1; min-width: 52px; border: 1.5px solid var(--pea); background: var(--paper); border-radius: 18px; padding: 6px 4px; font-family: var(--body); font-size: 13px; color: var(--pea-dark); cursor: pointer; touch-action: manipulation; }
+.gmap-tab.active { background: var(--pea-dark); color: #fff; border-color: var(--pea-dark); }
+.gmap-canvas { width: 100%; height: 340px; border-radius: 12px; overflow: hidden; background: #e8eef0; }
 </style>
 </head>
 <body>
@@ -260,6 +267,50 @@ body { font-family: var(--body); color: var(--coffee); background: var(--cream);
           <div class="transport-sub">台中客運班次不密，租機車更彈性，D3 清晨出發</div>
         </div>
       </div>
+      <div class="section-label" style="margin-top:24px">🌐 行程地圖</div>
+      <div class="gmap-wrap">
+        <div class="gmap-tabs" id="gmapTabs">
+          <button class="gmap-tab active" data-day="all" type="button">全部</button>
+          <button class="gmap-tab" data-day="1" type="button">D1</button>
+          <button class="gmap-tab" data-day="2" type="button">D2</button>
+          <button class="gmap-tab" data-day="3" type="button">D3</button>
+        </div>
+        <div id="gmap" class="gmap-canvas"></div>
+      </div>
+      <!--TRIPGMAP-->
+<script>
+window.initGmap = function () {
+  const SPOTS = [{"n":"喜鵲方舟 FairyLand","lat":24.304,"lng":120.713,"t":"spot","d":[1]},{"n":"逢甲夜市","lat":24.1786,"lng":120.6465,"t":"food","d":[1]},{"n":"彩虹眷村","lat":24.1336,"lng":120.6103,"t":"spot","d":[2]},{"n":"東海大學・路思義教堂","lat":24.1817,"lng":120.6027,"t":"spot","d":[2]},{"n":"台中國家歌劇院","lat":24.1625,"lng":120.6405,"t":"spot","d":[2]},{"n":"宮原眼科","lat":24.1378,"lng":120.6855,"t":"food","d":[2]},{"n":"審計新村","lat":24.147,"lng":120.6648,"t":"spot","d":[2]},{"n":"高美濕地","lat":24.312,"lng":120.549,"t":"spot","d":[3]},{"n":"三井 Outlet 台中港","lat":24.2855,"lng":120.564,"t":"spot","d":[3]}], ROUTES = {"1":["喜鵲方舟 FairyLand","逢甲夜市"],"2":["彩虹眷村","東海大學・路思義教堂","台中國家歌劇院","宮原眼科","審計新村"],"3":["高美濕地","三井 Outlet 台中港"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#6e8b3d"};
+  const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
+  const el = document.getElementById('gmap'); if (!el) return;
+  const map = new google.maps.Map(el, { mapTypeControl:true, streetViewControl:false, fullscreenControl:true, zoom:12 });
+  const info = new google.maps.InfoWindow();
+  const bounds = new google.maps.LatLngBounds();
+  const markers = SPOTS.map(s => {
+    const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
+      icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:7 } });
+    m._d = s.d; m.addListener('click', () => { info.setContent('<b>'+s.n+'</b>'); info.open(map, m); });
+    bounds.extend(m.getPosition()); return m;
+  });
+  const lines = {};
+  Object.keys(ROUTES).forEach(day => {
+    const path = ROUTES[day].map(n => { const s = SPOTS.find(o => o.n === n); return s ? {lat:s.lat,lng:s.lng} : null; }).filter(Boolean);
+    if (path.length >= 2) lines[day] = new google.maps.Polyline({ path, map, strokeColor:DCOL[day]||'#1B91C9', strokeWeight:4, strokeOpacity:0.85 });
+  });
+  map.fitBounds(bounds);
+  function setDay(day) {
+    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.classList.toggle('active', b.dataset.day === String(day)));
+    markers.forEach(m => m.setVisible(day === 'all' || m._d.indexOf(Number(day)) >= 0));
+    Object.keys(lines).forEach(d => lines[d].setMap((day === 'all' || String(day) === d) ? map : null));
+  }
+  document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.addEventListener('click', () => setDay(b.dataset.day)));
+  const tt = document.querySelector('.tab-btn[data-page="page-traffic"]');
+  if (tt) tt.addEventListener('click', () => setTimeout(() => { google.maps.event.trigger(map, 'resize'); map.fitBounds(bounds); }, 90));
+  setDay('all');
+};
+</script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo&callback=initGmap&loading=async"></script>
+<!--/TRIPGMAP-->
     </div>
 
     <!-- PAGE: 行程 -->
