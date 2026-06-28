@@ -1,68 +1,46 @@
-# 行程地圖建置工具（config 驅動）
+# 行程地圖建置工具（Google 互動地圖）
 
-用**真實鄉鎮市區界**（[`taiwan-atlas`](https://www.npmjs.com/package/taiwan-atlas)）產生每個行程頁面「交通」分頁裡的兩張地圖：
-
-- **3D 立體路線地圖**（three.js）：真實地形、每日路線切換、可旋轉/縮放/平移、放大檢視
-- **手繪 SVG 地圖**：真實輪廓 + 地名 + 分類圓點 + 圖例 + 指北針
-
-支援**沿海**（藍色海洋，如澎湖）與**內陸**（綠色平原 + 起伏地形，如南投／新竹）。
-
-> 共用的 three.js（r128）放在 repo 根目錄 `lib/`，各頁面以 `../lib/` 參照。
+在各行程頁面的「交通」分頁產生／更新一張 **Google Maps 互動地圖**：
+標記（依類別著色）、每日路線切換、InfoWindow、原生全螢幕。Config 驅動、無外部相依。
 
 ## 已設定的行程
 
-| config | 頁面 | 類型 |
+| config | 頁面 | 天數 |
 |---|---|---|
-| `nantou` | `20260522_24/260522南投.html` | 內陸（埔里/魚池/仁愛） |
-| `hsinchu` | `20260612_13/260612新竹.html` | 內陸（新竹市） |
+| `penghu`  | `20260709_13/260709澎湖.html` | 4 |
+| `nantou`  | `20260522_24/260522南投.html` | 3 |
+| `hsinchu` | `20260612_13/260612新竹.html` | 2 |
 
-（澎湖另由 `tools/penghu-map/` 產生，為最初版本。）
+## 金鑰
 
-## 重新產生地圖
+金鑰放在 `gkey.js`（已 gitignore，不進版控）：
+
+```js
+// tools/trip-map/gkey.js
+module.exports = '你的_GOOGLE_MAPS_API_KEY';
+```
+
+> 金鑰仍會出現在產生的 HTML（client-side Maps 的必然）。請到 Google Cloud Console
+> 將其限制為：**HTTP referrer = 你的網域** ＋ **僅 Maps JavaScript API**。
+
+## 重新產生 / 新增
 
 ```bash
 cd tools/trip-map
-npm install
-node build.js nantou      # 或 hsinchu
+node build.js <config>      # 例：node build.js nantou
 ```
 
-`build.js` 會讀 `configs/<name>.js`，把資料注入 `map.template.js`，並寫回該頁面
-`<!--TRIPMAP3D-->…<!--/TRIPMAP3D-->` 與 `<!--TRIPMAPSVG-->…<!--/TRIPMAPSVG-->` 之間。
+- 首次會自動在交通頁插入地圖 scaffold（`#gmap` + 每日 tabs）與 Maps API 載入。
+- 之後只更新 `<!--TRIPGMAP-->…<!--/TRIPGMAP-->` 之間的資料與初始化腳本。
 
-## 新增一個行程
+### 新增一個行程
 
-1. 頁面要先有 scaffold（CSS、`#map3dHolder`、`#svgMapBox`、`../lib/` 兩支 script、
-   兩組標記、zoom overlay）。可參考既有頁面，或用 `scaffold` 流程（見 git 紀錄）。
+1. 頁面需有 app-shell 的交通頁（`<!-- PAGE: 行程 -->` 之前會自動插入）。
 2. 新增 `configs/<name>.js`：
-   - `county` / `townships`：taiwan-atlas 的縣市與鄉鎮市區名稱
-   - `unions`：要合併成同一陸塊的鄉鎮（例：新竹市三區 → 一塊）
-   - `inland`：內陸 `true`（綠平原）／沿海 `false`（藍海）
-   - `bridgeBetween`：沿海可指定兩陸塊畫橋（取最近點）
+   - `htmlFile`：頁面相對路徑
    - `spots`：`{ n 名稱, lon 經度, lat 緯度, t 類別(spot|food|stay|air), d:[所屬天] }`
    - `routes`：每天依景點名稱串接（單點則不畫路線）
-   - `dayNames` / `dayCols`、`title`、`islandNames`、`seaColor`、`islandFill`、`epsilon`、`targetW`
+   - `dayCols`：每天路線顏色（0xRRGGBB）
 3. `node build.js <name>`。
 
-## Google 互動地圖
-
-`build.js` 除了 3D / SVG，也會在交通頁產生一張 **Google Maps 互動地圖**
-（真實可導航、標記、每日路線切換）。三個行程（澎湖／南投／新竹）都已加入。
-
-- 金鑰放在 `gkey.js`（已 gitignore，不進版控）：
-
-  ```js
-  // tools/trip-map/gkey.js
-  module.exports = '你的_GOOGLE_MAPS_API_KEY';
-  ```
-
-  > 金鑰仍會出現在產生的 HTML（client-side Maps 的必然），請到 Google Cloud
-  > Console 將其限制為：**HTTP referrer = 你的網域** ＋ **僅 Maps JavaScript API**。
-- 每日路線為各景點的直線連接（非實際道路）。要改實際開車路線可改用 Directions API。
-
-## 處理流程（build.js）
-
-1. 解 TopoJSON → 取指定鄉鎮，各取主要陸塊（過濾離島小礁）。
-2. `unions` 指定的鄉鎮以 `polygon-clipping` 聯集成單一陸塊。
-3. Douglas–Peucker 簡化海岸／界線（`epsilon`，單位為度）。
-4. 等距投影置中、縮放到 `targetW`；景點以經緯度同投影定位。
-5. 產生 3D IIFE（`map.template.js` + 資料 + `CFG`）與 SVG，寫回頁面標記區段。
+> 每日路線為各景點的直線連接（非實際道路）。要實際開車路線可改用 Directions API。

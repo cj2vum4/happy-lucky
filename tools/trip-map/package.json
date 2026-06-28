@@ -1,7 +1,6 @@
 {
   "name": "trip-map-build",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "用真實鄉鎮界產生各行程頁面的 3D / SVG 地圖（config 驅動）",
-  "dependencies": { "taiwan-atlas": "*", "topojson-client": "*", "polygon-clipping": "*" }
+  "description": "在各行程頁面的交通分頁產生 Google 互動地圖（config 驅動，無外部相依）"
 }
