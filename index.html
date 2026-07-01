@@ -963,6 +963,36 @@
     transform: scale(0.88);
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   }
+
+  /* ===== 過往旅行地圖 ===== */
+  .trip-map-wrap { margin-bottom: 16px; }
+  .trip-map-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .trip-chip {
+    --c: #1FA2D6;
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1.5px solid rgba(0,0,0,0.12); background: #fff;
+    border-radius: 20px; padding: 7px 14px; font-size: 13px;
+    font-family: inherit; color: #333; cursor: pointer;
+    transition: all 0.15s; touch-action: manipulation; white-space: nowrap;
+  }
+  .trip-chip.active { background: var(--c); border-color: var(--c); color: #fff; }
+  .trip-chip:active { transform: scale(0.95); }
+  .trip-map {
+    width: 100%; height: 400px; border-radius: 16px; overflow: hidden;
+    background: #24303c; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .trip-pin {
+    --c: #1FA2D6;
+    display: flex; align-items: center; gap: 7px;
+    background: rgba(17,26,36,0.92); color: #fff;
+    border: 2px solid var(--c); border-radius: 22px;
+    padding: 6px 13px; font-size: 13px; font-weight: 600;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.45);
+    white-space: nowrap; cursor: pointer; transform: translateY(-14px);
+  }
+  .trip-pin .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); flex-shrink: 0; }
+  .trip-pin .sub { color: #cbd5df; font-weight: 400; font-size: 12px; }
+  .trip-pin:hover { border-color: #fff; }
 </style>
 </head>
 <body>
@@ -1001,7 +1031,11 @@
     <div id="upcoming-trips"></div>
 
     <div class="section-title">過往旅行</div>
-    <div id="past-trips-list"></div>
+    <div class="trip-map-wrap" id="tripMapWrap">
+      <div class="trip-map-chips" id="tripMapChips"></div>
+      <div id="tripMap" class="trip-map"></div>
+    </div>
+    <div id="past-trips-list" style="display:none"></div>
 
     <div class="section-title">回憶相簿</div>
     <div id="past-trips"></div>
@@ -1135,6 +1169,7 @@ async function bootstrap() {
     TRIPS = data.trips || [];
 
     renderHome();
+    setupTripMap();
     buildRegionSelector();
     renderSearch();
     loadAllRatings();
@@ -1174,6 +1209,89 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     window.scrollTo(0, 0);
   });
 });
+
+// ============ 過往旅行地圖（Google Maps）============
+const TRIP_GKEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo';
+const TRIP_GEO = {
+  'hsinchu-2026':     { lat: 24.79782, lng: 120.98617, color: '#1FA2D6' },
+  'nantou-2026':      { lat: 23.98431, lng: 121.00661, color: '#4CAF50' },
+  'tianshi-20260520': { lat: 25.10346, lng: 121.54155, color: '#B072E0' },
+};
+let tripMap, tripMarkers = [], tripMapLoading = false;
+
+function tripMapFallback() {
+  const w = document.getElementById('tripMapWrap'); if (w) w.style.display = 'none';
+  const l = document.getElementById('past-trips-list'); if (l) l.style.display = '';
+}
+window.gm_authFailure = tripMapFallback;
+
+window.initTripMap = async function () {
+  try {
+    const done = TRIPS.filter(t => t.status === 'done' && TRIP_GEO[t.id]);
+    if (!done.length) { tripMapFallback(); return; }
+    const { Map } = await google.maps.importLibrary('maps');
+    const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
+    tripMap = new Map(document.getElementById('tripMap'), {
+      center: { lat: 23.9, lng: 120.9 }, zoom: 7.4,
+      mapId: 'DEMO_MAP_ID', mapTypeId: 'hybrid',
+      streetViewControl: false, mapTypeControl: false, fullscreenControl: true,
+      gestureHandling: 'greedy',
+    });
+    const bounds = new google.maps.LatLngBounds();
+    const chipWrap = document.getElementById('tripMapChips');
+    chipWrap.innerHTML = '';
+    chipWrap.appendChild(makeTripChip('🌍 全島', 'all', null));
+    done.forEach(t => {
+      const g = TRIP_GEO[t.id];
+      const pin = document.createElement('div');
+      pin.className = 'trip-pin'; pin.style.setProperty('--c', g.color);
+      const sub = (t.tags && t.tags[0]) || '';
+      pin.innerHTML = '<span class="dot"></span><b>' + t.destination + '</b>' + (sub ? '<span class="sub">・' + sub + '</span>' : '');
+      const m = new AdvancedMarkerElement({ map: tripMap, position: { lat: g.lat, lng: g.lng }, content: pin, title: t.title });
+      pin.addEventListener('click', () => { location.href = t.file; });
+      bounds.extend({ lat: g.lat, lng: g.lng });
+      tripMarkers.push({ t, g });
+      chipWrap.appendChild(makeTripChip(t.destination, t.id, g.color));
+    });
+    if (tripMarkers.length > 1) tripMap.fitBounds(bounds, 70);
+    else { tripMap.setCenter(bounds.getCenter()); tripMap.setZoom(12); }
+  } catch (e) { console.warn('trip map failed', e); tripMapFallback(); }
+};
+
+function makeTripChip(label, id, color) {
+  const b = document.createElement('button');
+  b.className = 'trip-chip' + (id === 'all' ? ' active' : '');
+  b.textContent = label;
+  if (color) b.style.setProperty('--c', color);
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#tripMapChips .trip-chip').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    if (id === 'all') {
+      const bd = new google.maps.LatLngBounds();
+      tripMarkers.forEach(o => bd.extend({ lat: o.g.lat, lng: o.g.lng }));
+      tripMap.fitBounds(bd, 70);
+    } else {
+      const o = tripMarkers.find(x => x.t.id === id);
+      if (o) { tripMap.panTo({ lat: o.g.lat, lng: o.g.lng }); tripMap.setZoom(13); }
+    }
+  });
+  return b;
+}
+
+function loadTripMap() {
+  if (tripMapLoading) return; tripMapLoading = true;
+  const s = document.createElement('script'); s.async = true;
+  s.src = 'https://maps.googleapis.com/maps/api/js?key=' + TRIP_GKEY + '&libraries=maps,marker&callback=initTripMap&loading=async';
+  s.onerror = tripMapFallback;
+  document.head.appendChild(s);
+}
+function setupTripMap() {
+  const el = document.getElementById('tripMap'); if (!el) return;
+  const io = new IntersectionObserver((ents) => {
+    if (ents.some(e => e.isIntersecting)) { io.disconnect(); loadTripMap(); }
+  }, { rootMargin: '250px' });
+  io.observe(el);
+}
 
 // ============ 首頁 ============
 function renderHome() {
