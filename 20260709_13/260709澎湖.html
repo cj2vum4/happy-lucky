@@ -921,7 +921,7 @@ body {
       <!--TRIPGMAP-->
 <script>
 (function () {
-  const SPOTS = [{"n":"馬公機場","lat":23.560799,"lng":119.629432,"t":"air","d":[1,5],"pid":"ChIJK9SkLB9FbDQRAfuWHLnq9_w"},{"n":"冠軍民宿","lat":23.578923,"lng":119.617752,"t":"stay","d":[1],"pid":"ChIJiZBryKVFbDQRBbMurma_IYc"},{"n":"合興大飯店 SDU Hotel","lat":23.572311,"lng":119.571221,"t":"stay","d":[2],"pid":"ChIJP5pwVYRbbDQRewY5_e2KSPw"},{"n":"暖居民宿 B&B","lat":23.663419,"lng":119.596656,"t":"stay","d":[3],"pid":"ChIJExysUgBdbDQR_-7Fpu6VKNo"},{"n":"葳葳民宿","lat":23.565091,"lng":119.589986,"t":"stay","d":[4,5],"pid":"ChIJ4TkRIptbbDQRtC4zHZa8-qw"},{"n":"中央老街（伴手禮）","lat":23.564755,"lng":119.564853,"t":"spot","d":[5],"pid":"ChIJMVfhy4xabDQR32ysYwAwYs8"},{"n":"佶肯GK漢堡","lat":23.576872,"lng":119.6216,"t":"food","d":[1],"pid":"ChIJ2cPHGUpbbDQRVpSpFauCZVk"},{"n":"鐘記燒餅","lat":23.568407,"lng":119.567121,"t":"food","d":[2],"pid":"ChIJmTMQQ_JabDQRU93LjpXAK6k"},{"n":"藍冉刨冰","lat":23.569329,"lng":119.569312,"t":"food","d":[2],"pid":"ChIJXXQ255FbbDQRsVDnKUbnxUY"},{"n":"篤行十村","lat":23.563854,"lng":119.560949,"t":"spot","d":[2],"pid":"ChIJb5mgoItabDQRD_06Ch4YNZk"},{"n":"小島一隅","lat":23.575797,"lng":119.57114,"t":"food","d":[2],"pid":"ChIJhS0flxVbbDQRjGC6VOz2-Dw"},{"n":"三哥雞排","lat":23.574339,"lng":119.577955,"t":"food","d":[2],"pid":"ChIJQa4sO_NabDQRfp0J953oP_Q"},{"n":"後寮天堂路","lat":23.676064,"lng":119.578302,"t":"spot","d":[3],"pid":"ChIJ2xO01xhdbDQRdduR3uHfk5Q"},{"n":"通樑古榕","lat":23.656613,"lng":119.557015,"t":"spot","d":[3],"pid":"ChIJWUiERLBcbDQRrSn6m8brtMA"},{"n":"跨海大橋","lat":23.657824,"lng":119.554539,"t":"spot","d":[3],"pid":"ChIJKxMN9mZcbDQR3jucr4EaPEs"},{"n":"大菓葉玄武岩","lat":23.595584,"lng":119.516339,"t":"spot","d":[3],"pid":"ChIJ-631YCtabDQR2Vh54vSyngI"},{"n":"二崁聚落","lat":23.605174,"lng":119.519615,"t":"spot","d":[3],"pid":"ChIJgWTbWNBbbDQR8CTWafLvjDg"},{"n":"大池炸粿","lat":23.617725,"lng":119.504502,"t":"food","d":[3],"pid":"ChIJFUKaaWFZbDQRK8MkWfopPKE"},{"n":"鯨魚洞","lat":23.655196,"lng":119.519804,"t":"spot","d":[3],"pid":"ChIJdTIsxhtcbDQRRRzUOAC7O0A"},{"n":"摩西分海","lat":23.597899,"lng":119.672563,"t":"spot","d":[4],"pid":"ChIJhWgytnJEbDQR420Ap52ceMw"},{"n":"很大的馬桶","lat":23.569214,"lng":119.591861,"t":"spot","d":[4],"pid":"ChIJB0sncABbbDQRCBi4cmZ4qhw"}], ROUTES = {"1":["馬公機場","冠軍民宿","佶肯GK漢堡"],"2":["合興大飯店 SDU Hotel","鐘記燒餅","藍冉刨冰","篤行十村","小島一隅","三哥雞排"],"3":["暖居民宿 B&B","後寮天堂路","通樑古榕","跨海大橋","大菓葉玄武岩","二崁聚落","大池炸粿","鯨魚洞"],"4":["葳葳民宿","摩西分海","很大的馬桶","葳葳民宿"],"5":["葳葳民宿","中央老街（伴手禮）","馬公機場"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#1b91c9","4":"#c0567a","5":"#5e9e5e"}, KEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo', REGION = '澎湖';
+  const SPOTS = [{"n":"馬公機場","lat":23.560799,"lng":119.629432,"t":"air","d":[1,5],"pid":"ChIJK9SkLB9FbDQRAfuWHLnq9_w"},{"n":"冠軍民宿","lat":23.578923,"lng":119.617752,"t":"stay","d":[1,2],"pid":"ChIJiZBryKVFbDQRBbMurma_IYc"},{"n":"合興大飯店 SDU Hotel","lat":23.572311,"lng":119.571221,"t":"stay","d":[2,3],"pid":"ChIJP5pwVYRbbDQRewY5_e2KSPw"},{"n":"暖居民宿 B&B","lat":23.663419,"lng":119.596656,"t":"stay","d":[3,4],"pid":"ChIJExysUgBdbDQR_-7Fpu6VKNo"},{"n":"葳葳民宿","lat":23.565091,"lng":119.589986,"t":"stay","d":[4,5],"pid":"ChIJ4TkRIptbbDQRtC4zHZa8-qw"},{"n":"中央老街（伴手禮）","lat":23.564755,"lng":119.564853,"t":"spot","d":[5],"pid":"ChIJMVfhy4xabDQR32ysYwAwYs8"},{"n":"佶肯GK漢堡","lat":23.576872,"lng":119.6216,"t":"food","d":[1],"pid":"ChIJ2cPHGUpbbDQRVpSpFauCZVk"},{"n":"鐘記燒餅","lat":23.568407,"lng":119.567121,"t":"food","d":[2],"pid":"ChIJmTMQQ_JabDQRU93LjpXAK6k"},{"n":"藍冉刨冰","lat":23.569329,"lng":119.569312,"t":"food","d":[2],"pid":"ChIJXXQ255FbbDQRsVDnKUbnxUY"},{"n":"篤行十村","lat":23.563854,"lng":119.560949,"t":"spot","d":[2],"pid":"ChIJb5mgoItabDQRD_06Ch4YNZk"},{"n":"小島一隅","lat":23.575797,"lng":119.57114,"t":"food","d":[2],"pid":"ChIJhS0flxVbbDQRjGC6VOz2-Dw"},{"n":"三哥雞排","lat":23.574339,"lng":119.577955,"t":"food","d":[2],"pid":"ChIJQa4sO_NabDQRfp0J953oP_Q"},{"n":"後寮天堂路","lat":23.676064,"lng":119.578302,"t":"spot","d":[3],"pid":"ChIJ2xO01xhdbDQRdduR3uHfk5Q"},{"n":"通樑古榕","lat":23.656613,"lng":119.557015,"t":"spot","d":[3],"pid":"ChIJWUiERLBcbDQRrSn6m8brtMA"},{"n":"跨海大橋","lat":23.657824,"lng":119.554539,"t":"spot","d":[3],"pid":"ChIJKxMN9mZcbDQR3jucr4EaPEs"},{"n":"大菓葉玄武岩","lat":23.595584,"lng":119.516339,"t":"spot","d":[3],"pid":"ChIJ-631YCtabDQR2Vh54vSyngI"},{"n":"二崁聚落","lat":23.605174,"lng":119.519615,"t":"spot","d":[3],"pid":"ChIJgWTbWNBbbDQR8CTWafLvjDg"},{"n":"大池炸粿","lat":23.617725,"lng":119.504502,"t":"food","d":[3],"pid":"ChIJFUKaaWFZbDQRK8MkWfopPKE"},{"n":"鯨魚洞","lat":23.655196,"lng":119.519804,"t":"spot","d":[3],"pid":"ChIJdTIsxhtcbDQRRRzUOAC7O0A"},{"n":"摩西分海","lat":23.597899,"lng":119.672563,"t":"spot","d":[4],"pid":"ChIJhWgytnJEbDQR420Ap52ceMw"},{"n":"很大的馬桶","lat":23.569214,"lng":119.591861,"t":"spot","d":[4],"pid":"ChIJB0sncABbbDQRCBi4cmZ4qhw"}], ROUTES = {"1":["馬公機場","佶肯GK漢堡","冠軍民宿"],"2":["冠軍民宿","鐘記燒餅","藍冉刨冰","篤行十村","小島一隅","三哥雞排","合興大飯店 SDU Hotel"],"3":["合興大飯店 SDU Hotel","後寮天堂路","通樑古榕","跨海大橋","大菓葉玄武岩","二崁聚落","大池炸粿","鯨魚洞","暖居民宿 B&B"],"4":["暖居民宿 B&B","摩西分海","很大的馬桶","葳葳民宿"],"5":["葳葳民宿","中央老街（伴手禮）","馬公機場"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#1b91c9","4":"#c0567a","5":"#5e9e5e"}, KEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo', REGION = '澎湖';
   const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
   let map, info, bounds, markers = [], lines = {}, loaded = false, loading = false;
 
@@ -1077,6 +1077,7 @@ body {
                 <span class="itype itype-宿">宿</span>
               </div>
               <div class="itinerary-desc">$937 / 晚・馬公市區</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E5%86%A0%E8%BB%8D%E6%B0%91%E5%AE%BF&destination_place_id=ChIJiZBryKVFbDQRBbMurma_IYc" target="_blank" rel="noopener">🧭 導航</a>
             </div>
           </div>
           <div class="itinerary-item">
@@ -1216,6 +1217,7 @@ body {
                 <span class="itype itype-宿">宿</span>
               </div>
               <div class="itinerary-desc">$1,263 / 晚・馬公市區</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E5%90%88%E8%88%88%E5%A4%A7%E9%A3%AF%E5%BA%97%20SDU%20Hotel&destination_place_id=ChIJP5pwVYRbbDQRewY5_e2KSPw" target="_blank" rel="noopener">🧭 導航</a>
             </div>
           </div>
           <div class="itinerary-item">
@@ -1417,6 +1419,7 @@ body {
                 <span class="itype itype-宿">宿</span>
               </div>
               <div class="itinerary-desc">$1,774 / 晚・馬公市區</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E6%9A%96%E5%B1%85%E6%B0%91%E5%AE%BF%20B%26B&destination_place_id=ChIJExysUgBdbDQR_-7Fpu6VKNo" target="_blank" rel="noopener">🧭 導航</a>
             </div>
           </div>
           <div class="itinerary-item">
@@ -1541,6 +1544,7 @@ body {
                 <span class="itype itype-宿">宿</span>
               </div>
               <div class="itinerary-desc">$1,270 / 晚・馬公市區</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E8%91%B3%E8%91%B3%E6%B0%91%E5%AE%BF&destination_place_id=ChIJ4TkRIptbbDQRtC4zHZa8-qw" target="_blank" rel="noopener">🧭 導航</a>
             </div>
           </div>
           <div class="itinerary-item">
