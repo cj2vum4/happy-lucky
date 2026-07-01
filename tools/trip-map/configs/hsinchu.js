@@ -1,6 +1,7 @@
 // 新竹週末小旅（6/12–13）
 module.exports = {
   htmlFile: '../../20260612_13/260612新竹.html',
+  region: '新竹',
   county: '新竹市',
   townships: ['東區', '北區', '香山區'],
   unions: [{ name: '新竹市', members: ['東區', '北區', '香山區'] }],

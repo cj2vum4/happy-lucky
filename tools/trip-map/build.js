@@ -18,11 +18,11 @@ const gCols = JSON.stringify(Object.fromEntries(Object.entries(CFG.dayCols).map(
 
 const gInit = `<script>
 (function () {
-  const SPOTS = ${gSpots}, ROUTES = ${gRoutes}, DCOL = ${gCols}, KEY = '${GKEY}';
+  const SPOTS = ${gSpots}, ROUTES = ${gRoutes}, DCOL = ${gCols}, KEY = '${GKEY}', REGION = '${CFG.region || ''}';
   const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
   let map, info, bounds, markers = [], lines = {}, loaded = false, loading = false;
 
-  function dirURL(la, ln) { return 'https://www.google.com/maps/dir/?api=1&destination=' + la + ',' + ln + '&travelmode=driving'; }
+  function dirURL(s) { const dest = REGION ? encodeURIComponent(s.n + ' ' + REGION) : (s.lat + ',' + s.lng); return 'https://www.google.com/maps/dir/?api=1&destination=' + dest + '&travelmode=driving'; }
   function allURL() {
     if (!SPOTS.length) return 'https://www.google.com/maps';
     const o = SPOTS[0], d = SPOTS[SPOTS.length - 1];
@@ -46,7 +46,7 @@ const gInit = `<script>
       const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
         icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:10 } });
       m._d = s.d; m._n = s.n;
-      m.addListener('click', () => { info.setContent('<div style="font-size:13px;line-height:1.5"><b>' + s.n + '</b><br><a href="' + dirURL(s.lat, s.lng) + '" target="_blank" rel="noopener" style="color:#1a73e8">🧭 在 Google Maps 導航</a></div>'); info.open(map, m); });
+      m.addListener('click', () => { info.setContent('<div style="font-size:13px;line-height:1.5"><b>' + s.n + '</b><br><a href="' + dirURL(s) + '" target="_blank" rel="noopener" style="color:#1a73e8">🧭 在 Google Maps 導航</a></div>'); info.open(map, m); });
       bounds.extend(m.getPosition()); return m;
     });
     Object.keys(ROUTES).forEach(day => {

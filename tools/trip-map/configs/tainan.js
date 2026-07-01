@@ -1,6 +1,7 @@
 // 台南行（9/25–27）— Google 互動地圖
 module.exports = {
   htmlFile: '../../20260925_27/260925台南.html',
+  region: '台南',
   dayCols: { 1: 0xE8913C, 2: 0x18A0B0, 3: 0xC0567A },
   spots: [
     { n: '赤崁樓',         lon: 120.2025, lat: 22.9977, t: 'spot', d: [1] },

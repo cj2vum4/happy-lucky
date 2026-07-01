@@ -1,6 +1,7 @@
 // 台中行（10/24–26）— Google 互動地圖
 module.exports = {
   htmlFile: '../../20261024_26/261024台中.html',
+  region: '台中',
   dayCols: { 1: 0xE8913C, 2: 0x18A0B0, 3: 0x6E8B3D },
   spots: [
     { n: '喜鵲方舟 FairyLand', lon: 120.7130, lat: 24.3040, t: 'spot', d: [1] },

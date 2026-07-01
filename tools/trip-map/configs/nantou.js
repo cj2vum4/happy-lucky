@@ -1,6 +1,7 @@
 // 南投仁愛深山秘境（5/22–24）
 module.exports = {
   htmlFile: '../../20260522_24/260522南投.html',
+  region: '南投',
   county: '南投縣',
   townships: ['埔里鎮', '魚池鄉', '仁愛鄉'],
   unions: [],

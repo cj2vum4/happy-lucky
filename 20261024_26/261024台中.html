@@ -280,11 +280,11 @@ body { font-family: var(--body); color: var(--coffee); background: var(--cream);
       <!--TRIPGMAP-->
 <script>
 (function () {
-  const SPOTS = [{"n":"喜鵲方舟 FairyLand","lat":24.304,"lng":120.713,"t":"spot","d":[1]},{"n":"逢甲夜市","lat":24.1786,"lng":120.6465,"t":"food","d":[1]},{"n":"彩虹眷村","lat":24.1336,"lng":120.6103,"t":"spot","d":[2]},{"n":"東海大學・路思義教堂","lat":24.1817,"lng":120.6027,"t":"spot","d":[2]},{"n":"台中國家歌劇院","lat":24.1625,"lng":120.6405,"t":"spot","d":[2]},{"n":"宮原眼科","lat":24.1378,"lng":120.6855,"t":"food","d":[2]},{"n":"審計新村","lat":24.147,"lng":120.6648,"t":"spot","d":[2]},{"n":"高美濕地","lat":24.312,"lng":120.549,"t":"spot","d":[3]},{"n":"三井 Outlet 台中港","lat":24.2855,"lng":120.564,"t":"spot","d":[3]}], ROUTES = {"1":["喜鵲方舟 FairyLand","逢甲夜市"],"2":["彩虹眷村","東海大學・路思義教堂","台中國家歌劇院","宮原眼科","審計新村"],"3":["高美濕地","三井 Outlet 台中港"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#6e8b3d"}, KEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo';
+  const SPOTS = [{"n":"喜鵲方舟 FairyLand","lat":24.304,"lng":120.713,"t":"spot","d":[1]},{"n":"逢甲夜市","lat":24.1786,"lng":120.6465,"t":"food","d":[1]},{"n":"彩虹眷村","lat":24.1336,"lng":120.6103,"t":"spot","d":[2]},{"n":"東海大學・路思義教堂","lat":24.1817,"lng":120.6027,"t":"spot","d":[2]},{"n":"台中國家歌劇院","lat":24.1625,"lng":120.6405,"t":"spot","d":[2]},{"n":"宮原眼科","lat":24.1378,"lng":120.6855,"t":"food","d":[2]},{"n":"審計新村","lat":24.147,"lng":120.6648,"t":"spot","d":[2]},{"n":"高美濕地","lat":24.312,"lng":120.549,"t":"spot","d":[3]},{"n":"三井 Outlet 台中港","lat":24.2855,"lng":120.564,"t":"spot","d":[3]}], ROUTES = {"1":["喜鵲方舟 FairyLand","逢甲夜市"],"2":["彩虹眷村","東海大學・路思義教堂","台中國家歌劇院","宮原眼科","審計新村"],"3":["高美濕地","三井 Outlet 台中港"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#6e8b3d"}, KEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo', REGION = '台中';
   const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
   let map, info, bounds, markers = [], lines = {}, loaded = false, loading = false;
 
-  function dirURL(la, ln) { return 'https://www.google.com/maps/dir/?api=1&destination=' + la + ',' + ln + '&travelmode=driving'; }
+  function dirURL(s) { const dest = REGION ? encodeURIComponent(s.n + ' ' + REGION) : (s.lat + ',' + s.lng); return 'https://www.google.com/maps/dir/?api=1&destination=' + dest + '&travelmode=driving'; }
   function allURL() {
     if (!SPOTS.length) return 'https://www.google.com/maps';
     const o = SPOTS[0], d = SPOTS[SPOTS.length - 1];
@@ -308,7 +308,7 @@ body { font-family: var(--body); color: var(--coffee); background: var(--cream);
       const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
         icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:10 } });
       m._d = s.d; m._n = s.n;
-      m.addListener('click', () => { info.setContent('<div style="font-size:13px;line-height:1.5"><b>' + s.n + '</b><br><a href="' + dirURL(s.lat, s.lng) + '" target="_blank" rel="noopener" style="color:#1a73e8">🧭 在 Google Maps 導航</a></div>'); info.open(map, m); });
+      m.addListener('click', () => { info.setContent('<div style="font-size:13px;line-height:1.5"><b>' + s.n + '</b><br><a href="' + dirURL(s) + '" target="_blank" rel="noopener" style="color:#1a73e8">🧭 在 Google Maps 導航</a></div>'); info.open(map, m); });
       bounds.extend(m.getPosition()); return m;
     });
     Object.keys(ROUTES).forEach(day => {
