@@ -933,7 +933,11 @@ body {
   const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
   let map, info, bounds, markers = [], lines = {}, loaded = false, loading = false;
 
-  function dirURL(s) { const dest = REGION ? encodeURIComponent(s.n + ' ' + REGION) : (s.lat + ',' + s.lng); return 'https://www.google.com/maps/dir/?api=1&destination=' + dest + '&travelmode=driving'; }
+  function dirURL(s) {
+    if (s.pid) return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(s.n) + '&destination_place_id=' + s.pid + '&travelmode=driving';
+    const dest = REGION ? encodeURIComponent(s.n + ' ' + REGION) : (s.lat + ',' + s.lng);
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + dest + '&travelmode=driving';
+  }
   function allURL() {
     if (!SPOTS.length) return 'https://www.google.com/maps';
     const o = SPOTS[0], d = SPOTS[SPOTS.length - 1];

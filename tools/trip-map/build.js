@@ -10,9 +10,15 @@ if (!name) { console.error('用法：node build.js <config>'); process.exit(1); 
 const CFG = require(path.join(DIR, 'configs', name + '.js'));
 const GKEY = require('./gkey.js'); // 金鑰另存（gkey.js，已 gitignore）
 
+// 若有 geocoded.json（由 geocode.js 產生），以精準座標＋place_id 覆蓋估算座標
+let GEO = {};
+try { GEO = require('./geocoded.json'); } catch (e) { /* 尚未 geocode，用估算座標 */ }
+const geoT = GEO[name] || {};
+CFG.spots.forEach(s => { const g = geoT[s.n]; if (g) { s.lon = g.lng; s.lat = g.lat; if (g.pid) s.pid = g.pid; } });
+
 const hex = n => '#' + n.toString(16).padStart(6, '0');
 const dayCount = Math.max(...CFG.spots.flatMap(s => s.d), ...Object.keys(CFG.routes).map(Number));
-const gSpots = JSON.stringify(CFG.spots.map(s => ({ n: s.n, lat: s.lat, lng: s.lon, t: s.t, d: s.d })));
+const gSpots = JSON.stringify(CFG.spots.map(s => ({ n: s.n, lat: s.lat, lng: s.lon, t: s.t, d: s.d, pid: s.pid })));
 const gRoutes = JSON.stringify(CFG.routes);
 const gCols = JSON.stringify(Object.fromEntries(Object.entries(CFG.dayCols).map(([k, v]) => [k, hex(v)])));
 
@@ -22,7 +28,11 @@ const gInit = `<script>
   const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
   let map, info, bounds, markers = [], lines = {}, loaded = false, loading = false;
 
-  function dirURL(s) { const dest = REGION ? encodeURIComponent(s.n + ' ' + REGION) : (s.lat + ',' + s.lng); return 'https://www.google.com/maps/dir/?api=1&destination=' + dest + '&travelmode=driving'; }
+  function dirURL(s) {
+    if (s.pid) return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(s.n) + '&destination_place_id=' + s.pid + '&travelmode=driving';
+    const dest = REGION ? encodeURIComponent(s.n + ' ' + REGION) : (s.lat + ',' + s.lng);
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + dest + '&travelmode=driving';
+  }
   function allURL() {
     if (!SPOTS.length) return 'https://www.google.com/maps';
     const o = SPOTS[0], d = SPOTS[SPOTS.length - 1];
