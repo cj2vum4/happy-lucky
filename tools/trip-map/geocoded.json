@@ -1,0 +1,342 @@
+{
+ "hsinchu": {
+  "阿婆早餐麵店": {
+   "lat": 24.795742,
+   "lng": 120.980441,
+   "pid": "ChIJQ4a1ouY1aDQROl6yOqnEOAk",
+   "addr": "300台灣新竹市東區東山里東山街6號"
+  },
+  "陽明交大": {
+   "lat": 24.786886,
+   "lng": 120.997497,
+   "pid": "ChIJMV8k71c2aDQRmj5yOn_aKTk",
+   "addr": "30010台灣新竹市東區光明里大學路1001號"
+  },
+  "格林小鎮": {
+   "lat": 24.810844,
+   "lng": 120.98057,
+   "pid": "ChIJgz49IhQ1aDQRrsgspC9NxpY",
+   "addr": "300台灣新竹市東區三民里自由路27巷43號"
+  }
+ },
+ "nantou": {
+  "Cona巧克力城堡": {
+   "lat": 23.943322,
+   "lng": 120.929511,
+   "pid": "ChIJHRsWmszZaDQR1yhoiOKZpwc",
+   "addr": "545台灣南投縣埔里鎮桃米里桃米路32號"
+  },
+  "鹿篙咖啡莊園": {
+   "lat": 23.91667,
+   "lng": 120.942249,
+   "pid": "ChIJw0w9Ff_XaDQR2AF8EkDj5Xw",
+   "addr": "555台灣南投縣魚池鄉新城村香茶巷31-6號"
+  },
+  "18度C巧克力": {
+   "lat": 23.957321,
+   "lng": 120.974888,
+   "pid": "ChIJodngPpDZaDQRO4VQ1NvWoMk",
+   "addr": "545台灣南投縣埔里鎮枇杷里慈恩街20號"
+  },
+  "娜娜泰式料理": {
+   "lat": 23.965253,
+   "lng": 120.977299,
+   "pid": "ChIJSZmUJaLZaDQRoRnnbkmeYH4",
+   "addr": "545台灣南投縣埔里鎮泰安里樹人三街260號"
+  },
+  "埔里故事館": {
+   "lat": 23.955693,
+   "lng": 120.971874,
+   "pid": "ChIJBwC_F5HZaDQRMXiil8WHUUs",
+   "addr": "545台灣南投縣埔里鎮中正路180號"
+  },
+  "日月潭遊湖": {
+   "lat": 23.866249,
+   "lng": 120.911689,
+   "pid": "ChIJfQobVQXWaDQR0hYkCrMuu88",
+   "addr": "555台灣南投縣魚池鄉水社村中山路147號"
+  },
+  "馬累了吧": {
+   "lat": 24.146696,
+   "lng": 121.187687,
+   "pid": "ChIJy_yFFi7taDQRuj0d_ZnAIhs",
+   "addr": "546台灣南投縣仁愛鄉力行村1附1號"
+  },
+  "發祥國小": {
+   "lat": 24.123282,
+   "lng": 121.157722,
+   "pid": "ChIJOwxs8ULpaDQR-sllGoJAZ7c",
+   "addr": "546台灣南投縣仁愛鄉發祥村光復巷24號"
+  }
+ },
+ "penghu": {
+  "馬公機場": {
+   "lat": 23.560799,
+   "lng": 119.629432,
+   "pid": "ChIJK9SkLB9FbDQRAfuWHLnq9_w",
+   "addr": "88593台灣澎湖縣湖西鄉隘門村126-5號"
+  },
+  "冠軍民宿": {
+   "lat": 23.578923,
+   "lng": 119.617752,
+   "pid": "ChIJiZBryKVFbDQRBbMurma_IYc",
+   "addr": "885台灣澎湖县湖西乡成功村260號"
+  },
+  "合興大飯店 SDU Hotel": {
+   "lat": 23.572311,
+   "lng": 119.571221,
+   "pid": "ChIJP5pwVYRbbDQRewY5_e2KSPw",
+   "addr": "880台灣澎湖縣馬公市陽明里光復路106號"
+  },
+  "暖居民宿 B&B": {
+   "lat": 23.663419,
+   "lng": 119.596656,
+   "pid": "ChIJExysUgBdbDQR_-7Fpu6VKNo",
+   "addr": "884台灣澎湖縣白沙鄉赤崁村407-5號"
+  },
+  "葳葳民宿": {
+   "lat": 23.565091,
+   "lng": 119.589986,
+   "pid": "ChIJ4TkRIptbbDQRtC4zHZa8-qw",
+   "addr": "880台灣澎湖縣馬公市西文里西文澳269號"
+  },
+  "中央老街（伴手禮）": {
+   "lat": 23.564755,
+   "lng": 119.564853,
+   "pid": "ChIJMVfhy4xabDQR32ysYwAwYs8",
+   "addr": "880台灣澎湖縣馬公市中央里中央街"
+  },
+  "佶肯GK漢堡": {
+   "lat": 23.576872,
+   "lng": 119.6216,
+   "pid": "ChIJ2cPHGUpbbDQRVpSpFauCZVk",
+   "addr": "885台灣澎湖縣湖西鄉成功村1-1號"
+  },
+  "鐘記燒餅": {
+   "lat": 23.568407,
+   "lng": 119.567121,
+   "pid": "ChIJmTMQQ_JabDQRU93LjpXAK6k",
+   "addr": "880台灣澎湖縣馬公市中興里文康街35號"
+  },
+  "藍冉刨冰": {
+   "lat": 23.569329,
+   "lng": 119.569312,
+   "pid": "ChIJXXQ255FbbDQRsVDnKUbnxUY",
+   "addr": "880台灣澎湖縣馬公市光復里治平路5號"
+  },
+  "篤行十村": {
+   "lat": 23.563854,
+   "lng": 119.560949,
+   "pid": "ChIJb5mgoItabDQRD_06Ch4YNZk",
+   "addr": "880台灣澎湖县马公市复兴里新復路2巷22號"
+  },
+  "小島一隅": {
+   "lat": 23.575797,
+   "lng": 119.57114,
+   "pid": "ChIJhS0flxVbbDQRjGC6VOz2-Dw",
+   "addr": "880台灣澎湖縣馬公市光榮里文光路148號"
+  },
+  "三哥雞排": {
+   "lat": 23.574339,
+   "lng": 119.577955,
+   "pid": "ChIJQa4sO_NabDQRfp0J953oP_Q",
+   "addr": "880台灣澎湖縣馬公市朝陽里三多路75-2號"
+  },
+  "後寮天堂路": {
+   "lat": 23.676064,
+   "lng": 119.578302,
+   "pid": "ChIJ2xO01xhdbDQRdduR3uHfk5Q",
+   "addr": "884台灣澎湖縣白沙鄉後寮村"
+  },
+  "通樑古榕": {
+   "lat": 23.656613,
+   "lng": 119.557015,
+   "pid": "ChIJWUiERLBcbDQRrSn6m8brtMA",
+   "addr": "884台灣澎湖縣白沙鄉"
+  },
+  "跨海大橋": {
+   "lat": 23.657824,
+   "lng": 119.554539,
+   "pid": "ChIJKxMN9mZcbDQR3jucr4EaPEs",
+   "addr": "884台灣澎湖縣白沙鄉通梁村"
+  },
+  "大菓葉玄武岩": {
+   "lat": 23.595584,
+   "lng": 119.516339,
+   "pid": "ChIJ-631YCtabDQR2Vh54vSyngI",
+   "addr": "881台灣澎湖縣西嶼鄉池東村10號"
+  },
+  "二崁聚落": {
+   "lat": 23.605174,
+   "lng": 119.519615,
+   "pid": "ChIJgWTbWNBbbDQR8CTWafLvjDg",
+   "addr": "881台灣澎湖縣西嶼鄉"
+  },
+  "大池炸粿": {
+   "lat": 23.617725,
+   "lng": 119.504502,
+   "pid": "ChIJFUKaaWFZbDQRK8MkWfopPKE",
+   "addr": "881台灣澎湖縣西嶼鄉大池村1-1號"
+  },
+  "鯨魚洞": {
+   "lat": 23.655196,
+   "lng": 119.519804,
+   "pid": "ChIJdTIsxhtcbDQRRRzUOAC7O0A",
+   "addr": "881台灣澎湖縣西嶼鄉 11, 12號"
+  },
+  "摩西分海": {
+   "lat": 23.597899,
+   "lng": 119.672563,
+   "pid": "ChIJhWgytnJEbDQR420Ap52ceMw",
+   "addr": "885台灣澎湖縣湖西鄉北寮村"
+  },
+  "很大的馬桶": {
+   "lat": 23.569214,
+   "lng": 119.591861,
+   "pid": "ChIJB0sncABbbDQRCBi4cmZ4qhw",
+   "addr": "880台灣澎湖縣馬公市縣道203號97-25號"
+  }
+ },
+ "taichung": {
+  "喜鵲方舟 FairyLand": {
+   "lat": 24.326572,
+   "lng": 120.725122,
+   "pid": "ChIJvU9SQgAFaTQRmVVIbnQcTQU",
+   "addr": "421台灣臺中市后里區公館里眉豐路28號"
+  },
+  "逢甲夜市": {
+   "lat": 24.176171,
+   "lng": 120.645627,
+   "pid": "ChIJK4W2WSIWaTQROebP2ugIGg8",
+   "addr": "407台灣臺中市西屯區文華路"
+  },
+  "彩虹眷村": {
+   "lat": 24.133715,
+   "lng": 120.609844,
+   "pid": "ChIJ25Ul-Ic-aTQRNnMAjMs2iJo",
+   "addr": "408台灣台中市南屯区春安里春安路56巷25號"
+  },
+  "東海大學・路思義教堂": {
+   "lat": 24.178895,
+   "lng": 120.600554,
+   "pid": "ChIJp6dwUB4-aTQRTQhFCHoWYqQ",
+   "addr": "407台灣臺中市西屯區協和里台灣大道四段1727號"
+  },
+  "台中國家歌劇院": {
+   "lat": 24.162649,
+   "lng": 120.640303,
+   "pid": "ChIJcaKjTOw9aTQR4mAeJzejtdg",
+   "addr": "407025台灣臺中市西屯區惠來里惠來路二段101號"
+  },
+  "宮原眼科": {
+   "lat": 24.137828,
+   "lng": 120.683555,
+   "pid": "ChIJ-bIJXaeQbjQRBlsPVLME9EY",
+   "addr": "400台灣臺中市中區綠川里中山路20號"
+  },
+  "審計新村": {
+   "lat": 24.144612,
+   "lng": 120.662841,
+   "pid": "ChIJ-6EWw6E9aTQR3zvU6TYesbg",
+   "addr": "403台灣臺中市西區昇平里審計新村"
+  },
+  "高美濕地": {
+   "lat": 24.313276,
+   "lng": 120.545184,
+   "pid": "ChIJvT5yFSYTaTQRdlamuLSItpM",
+   "addr": "台灣臺中市清水區高美野生動物保護區"
+  },
+  "三井 Outlet 台中港": {
+   "lat": 24.258961,
+   "lng": 120.518505,
+   "pid": "ChIJY-bwtRY9aTQRxoY6m3u_ea4",
+   "addr": "435台灣臺中市梧棲區安仁里臺灣大道十段168號"
+  }
+ },
+ "tainan": {
+  "赤崁樓": {
+   "lat": 22.997478,
+   "lng": 120.202543,
+   "pid": "ChIJbYl7d2F2bjQRnFdvyMBuZfI",
+   "addr": "700台灣臺南市中西區赤嵌里民族路二段212號"
+  },
+  "國華街美食": {
+   "lat": 22.99755,
+   "lng": 120.199,
+   "pid": "ChIJezCwC8p3bjQRDdtipPr_yZQ",
+   "addr": "700台灣台南市中西区五条港里国华街三段184號民族路3段11號"
+  },
+  "孔廟文化園區": {
+   "lat": 22.990246,
+   "lng": 120.204066,
+   "pid": "ChIJYw4RTH12bjQRKS6hu0HiVMY",
+   "addr": "700台灣臺南市中西區永華里南門路二號"
+  },
+  "藍晒圖文創園區": {
+   "lat": 22.987102,
+   "lng": 120.197345,
+   "pid": "ChIJtbdB0Xt2bjQR1IE4qcWD-lg",
+   "addr": "702台灣台南市南区新昌里西門路一段689巷12號"
+  },
+  "花園夜市": {
+   "lat": 23.011239,
+   "lng": 120.200227,
+   "pid": "ChIJx7B27Vl2bjQRXNQQFasKOKI",
+   "addr": "704台灣臺南市北區成德里海安路三段533號"
+  },
+  "六千牛肉湯": {
+   "lat": 22.98922,
+   "lng": 120.194848,
+   "pid": "ChIJuSIMDFR2bjQRO5xlAsCglKA",
+   "addr": "700台灣臺南市中西區南廠里海安路一段63號"
+  },
+  "安平古堡": {
+   "lat": 23.001509,
+   "lng": 120.160624,
+   "pid": "ChIJZ-TjeHN2bjQR8a3Jat0VHps",
+   "addr": "708台灣臺南市安平區國勝路82號"
+  },
+  "四草綠色隧道": {
+   "lat": 23.01964,
+   "lng": 120.136146,
+   "pid": "ChIJt0-ISOvYbTQRhg3rUteyQIw",
+   "addr": "709台灣臺南市安南區四草里大眾路360號"
+  },
+  "奇美博物館": {
+   "lat": 22.934561,
+   "lng": 120.226027,
+   "pid": "ChIJq6qqqnp0bjQRpvTHZeYTjKg",
+   "addr": "717015台灣臺南市仁德區成功里文華路二段66號"
+  },
+  "十鼓仁糖文創": {
+   "lat": 22.938363,
+   "lng": 120.229616,
+   "pid": "ChIJA0P9eml0bjQRAFSV5Tjabuc",
+   "addr": "71755台灣臺南市仁德區成功里文華路二段326號"
+  },
+  "豆奶宗早餐": {
+   "lat": 22.991328,
+   "lng": 120.193075,
+   "pid": "ChIJW1n1cnB2bjQRkayQ2G4XQbY",
+   "addr": "700台灣臺南市中西區府前里府前路二段175號"
+  },
+  "漁光島": {
+   "lat": 22.980987,
+   "lng": 120.155832,
+   "pid": "ChIJ87qwKf11bjQRMuEmcom6RX8",
+   "addr": "708台灣臺南市安平區漁光里漁光路"
+  },
+  "方舟咖啡": {
+   "lat": 23.001779,
+   "lng": 120.198115,
+   "pid": "ChIJmXLbXGd2bjQRaN3rdWVRKeY",
+   "addr": "704台灣臺南市北區立人里康樂街406巷1號"
+  },
+  "林百貨": {
+   "lat": 22.991792,
+   "lng": 120.202523,
+   "pid": "ChIJrZJc4GJ2bjQRa3BRyIgtRcM",
+   "addr": "700台灣臺南市中西區南美里忠義路二段63號"
+  }
+ }
+}
