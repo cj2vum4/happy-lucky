@@ -1047,48 +1047,79 @@
     function resize() { const w = ov.clientWidth, h = ov.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }
     resize(); window.addEventListener('resize', resize);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-    const key = new THREE.DirectionalLight(0xffffff, 0.7); key.position.set(4, 8, 10); scene.add(key);
-    const fill = new THREE.DirectionalLight(0xffd9e6, 0.35); fill.position.set(-6, -2, 6); scene.add(fill);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    scene.add(new THREE.HemisphereLight(0xfff5f9, 0xd98cab, 0.55));
+    const key = new THREE.DirectionalLight(0xffffff, 0.85); key.position.set(4, 8, 10); scene.add(key);
+    const fill = new THREE.DirectionalLight(0xffd9e6, 0.4); fill.position.set(-6, -2, 6); scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffe9f2, 0.5); rim.position.set(0, 3, -8); scene.add(rim);
 
     // 顏色：80% 粉 / 15% 白 / 5% 奶黃
     const PINKS = [0xF7A8C4, 0xF48FB1, 0xFBC0D4, 0xEF7DA6, 0xF59CBE];
     const WHITE = 0xFFFFFF, CREAM = 0xFBE3A8;
     function bloomColor() { const r = Math.random(); if (r < 0.80) return PINKS[(Math.random() * PINKS.length) | 0]; if (r < 0.95) return WHITE; return CREAM; }
 
-    // 花瓣形狀
-    const petalShape = new THREE.Shape();
-    petalShape.moveTo(0, 0);
-    petalShape.bezierCurveTo(0.42, 0.18, 0.36, 0.9, 0, 1.15);
-    petalShape.bezierCurveTo(-0.36, 0.9, -0.42, 0.18, 0, 0);
-    const petalGeo = new THREE.ShapeGeometry(petalShape, 10);
+    // 花瓣形狀：先畫平面輪廓，再把頂點沿長度弓起、沿寬度收杯、瓣尖後捲，
+    // 並加上「基部深、瓣尖亮」的頂點漸層色，讓花瓣有真實的立體與層次
+    function makePetalGeo(len, wid, curl) {
+      const geo = new THREE.PlaneGeometry(1, 1, 10, 18);
+      const pos = geo.attributes.position;
+      const colors = [];
+      const cBase = new THREE.Color(0.72, 0.55, 0.62), cTip = new THREE.Color(1, 1, 1), c = new THREE.Color();
+      for (let i = 0; i < pos.count; i++) {
+        const u = pos.getX(i);       // -0.5 ~ 0.5
+        const v = pos.getY(i) + 0.5; // 0 ~ 1
+        const env = Math.sin(Math.PI * Math.min(1, Math.pow(v, 0.72) * 1.06)); // 輪廓：基部窄、中段寬、瓣尖收圓
+        const x = u * 2 * wid * Math.max(0.04, env);
+        const y = v * len;
+        const z = Math.sin(v * Math.PI) * curl - x * x * 1.15 - Math.pow(v, 3) * curl * 1.5
+                + Math.sin(u * Math.PI * 3 + v * 2.5) * 0.02 * v; // 邊緣微波浪
+        pos.setXYZ(i, x, y, z);
+        c.copy(cBase).lerp(cTip, Math.pow(v, 0.75));
+        colors.push(c.r, c.g, c.b);
+      }
+      geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      geo.computeVertexNormals();
+      return geo;
+    }
+    const petalGeo = makePetalGeo(1.15, 0.42, 0.3);
+    const leafGeo = makePetalGeo(1.9, 0.48, 0.2);
 
     function makeBloom(color, scale) {
       const g = new THREE.Group();
-      const petalMat = new THREE.MeshStandardMaterial({ color, side: THREE.DoubleSide, roughness: 0.75, metalness: 0.0 });
-      const rings = [{ n: 5, tilt: 0.75, r: 0.15, s: 1.0 }, { n: 5, tilt: 0.45, r: 0.08, s: 0.7 }];
+      const petals = [];
+      const petalMat = new THREE.MeshStandardMaterial({ color, vertexColors: true, side: THREE.DoubleSide, roughness: 0.68, metalness: 0.0 });
+      // 四層花瓣：外層開、內層合，像玫瑰／牡丹層層包覆
+      const rings = [
+        { n: 7, tilt: 1.05, r: 0.10, s: 1.05 },
+        { n: 6, tilt: 0.78, r: 0.07, s: 0.85 },
+        { n: 5, tilt: 0.50, r: 0.05, s: 0.63 },
+        { n: 4, tilt: 0.24, r: 0.03, s: 0.45 },
+      ];
       rings.forEach((ring, ri) => {
         for (let i = 0; i < ring.n; i++) {
           const pivot = new THREE.Group();
-          pivot.rotation.z = (i / ring.n) * Math.PI * 2 + (ri ? Math.PI / ring.n : 0);
+          pivot.rotation.z = (i / ring.n) * Math.PI * 2 + ri * 0.55;
           const petal = new THREE.Mesh(petalGeo, petalMat);
-          petal.rotation.x = -ring.tilt;
+          const tilt = ring.tilt + (Math.random() - 0.5) * 0.14;
+          petal.rotation.x = -0.15; // 起始半合，之後在動畫中舒展開
+          petal.rotation.y = (Math.random() - 0.5) * 0.12;
           petal.position.y = ring.r;
-          petal.scale.setScalar(ring.s);
+          petal.scale.setScalar(ring.s * (0.94 + Math.random() * 0.12));
           pivot.add(petal); g.add(pivot);
+          petals.push({ mesh: petal, tilt, d: ri * 0.13 + Math.random() * 0.05 });
         }
       });
-      const core = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16),
-        new THREE.MeshStandardMaterial({ color: CREAM, roughness: 0.6, emissive: 0xF7E4A0, emissiveIntensity: 0.15 }));
-      core.position.z = 0.12; g.add(core);
+      const core = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16),
+        new THREE.MeshStandardMaterial({ color: CREAM, roughness: 0.6, emissive: 0xF7E4A0, emissiveIntensity: 0.2 }));
+      core.position.z = 0.1; g.add(core);
       g.scale.setScalar(scale);
-      return g;
+      return { g, petals };
     }
 
     // 綠葉
     function makeLeaf() {
-      const m = new THREE.Mesh(petalGeo, new THREE.MeshStandardMaterial({ color: 0x89C089, side: THREE.DoubleSide, roughness: 0.8, transparent: true, opacity: 0 }));
-      m.scale.set(1.1, 1.7, 1); return m;
+      const m = new THREE.Mesh(leafGeo, new THREE.MeshStandardMaterial({ color: 0x89C089, vertexColors: true, side: THREE.DoubleSide, roughness: 0.8, transparent: true, opacity: 0 }));
+      m.scale.set(0.8, 1, 1); return m;
     }
 
     const bouquet = new THREE.Group(); scene.add(bouquet);
@@ -1100,14 +1131,39 @@
       const ang = i * 2.399963; // 黃金角，散得均勻
       const rad = 2.7 * Math.sqrt(t);
       const target = new THREE.Vector3(Math.cos(ang) * rad, 1.2 + Math.sin(ang) * rad * 0.75, 1.4 - t * 1.6 + (i % 2 ? 0.5 : 0));
-      const bloom = makeBloom(bloomColor(), 0.7 + Math.random() * 0.5);
+      const made = makeBloom(bloomColor(), 0.7 + Math.random() * 0.5);
+      const bloom = made.g;
       // 起始：四面八方遠處
       const dir = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
       const start = target.clone().add(dir.multiplyScalar(16 + Math.random() * 8));
+      // 飛入路徑控制點：讓每朵花沿弧線滑入，而不是直線
+      const ctrl = start.clone().lerp(target, 0.5).add(new THREE.Vector3((Math.random() - 0.5) * 7, (Math.random() - 0.5) * 7, (Math.random() - 0.5) * 4));
       bloom.position.copy(start);
       bloom.rotation.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
       bouquet.add(bloom);
-      blooms.push({ bloom, start, target, delay: i * 0.05, tRot: { x: (Math.random() - 0.5) * 0.6, y: (Math.random() - 0.5) * 0.6, z: (Math.random() - 0.5) * 0.6 } });
+      blooms.push({
+        bloom, start, ctrl, target, petals: made.petals,
+        delay: i * 0.05, phase: Math.random() * Math.PI * 2,
+        settle: { x: (Math.random() - 0.5) * 0.45, y: (Math.random() - 0.5) * 0.5, z: (Math.random() - 0.5) * 0.45 },
+        tRot: { x: (Math.random() - 0.5) * 0.6, y: (Math.random() - 0.5) * 0.6, z: (Math.random() - 0.5) * 0.6 }
+      });
+    }
+
+    // 飄落花瓣：在花束前後緩緩飄落、擺盪、翻轉
+    const drifting = [];
+    for (let i = 0; i < 14; i++) {
+      const m = new THREE.Mesh(petalGeo, new THREE.MeshStandardMaterial({
+        color: PINKS[(Math.random() * PINKS.length) | 0], vertexColors: true, side: THREE.DoubleSide,
+        roughness: 0.65, transparent: true, opacity: 0, depthWrite: false
+      }));
+      m.scale.setScalar(0.28 + Math.random() * 0.22);
+      scene.add(m);
+      drifting.push({
+        m, x0: (Math.random() - 0.5) * 11, z0: (Math.random() - 0.5) * 6 + 1,
+        speed: 1.1 + Math.random() * 1.1, off: Math.random() * 14,
+        sway: 0.7 + Math.random() * 0.8, phase: Math.random() * Math.PI * 2,
+        rs: { x: (Math.random() - 0.5) * 2.4, y: (Math.random() - 0.5) * 2.4, z: (Math.random() - 0.5) * 2.4 }
+      });
     }
 
     // 包裝與葉子（組合完成後淡入）
@@ -1117,8 +1173,10 @@
     wrap.position.set(0, -2.6, 0.2); wrap.rotation.x = Math.PI; bouquet.add(wrap); fadeIns.push(wrap.material);
     for (let i = 0; i < 3; i++) {
       const leaf = makeLeaf();
-      leaf.position.set((i - 1) * 1.3, -0.4 + (i % 2) * 0.5, 0.2);
-      leaf.rotation.z = (i - 1) * 0.6; bouquet.add(leaf); fadeIns.push(leaf.material);
+      leaf.position.set((i - 1) * 1.5, -0.9 + (i % 2) * 0.4, -0.35);
+      leaf.rotation.z = (i - 1) * 0.7;
+      leaf.rotation.x = 0.35; // 往後仰，露出葉尖而不是整片正對鏡頭
+      bouquet.add(leaf); fadeIns.push(leaf.material);
     }
 
     const t0 = performance.now();
@@ -1126,24 +1184,52 @@
     const easeInOut = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
     const A_END = 1.7, B_START = 1.85, B_END = 3.15, C_START = 3.2;
 
+    const _q1 = new THREE.Vector3(), _q2 = new THREE.Vector3();
     function frame() {
       if (done) { renderer.render(scene, camera); return; }
       const tt = (performance.now() - t0) / 1000;
-      // A：飛入
+      // A：沿弧線飛入，落定後隨風輕搖
       blooms.forEach(b => {
         const p = Math.max(0, Math.min(1, (tt - b.delay) / (A_END - b.delay)));
         const e = easeOut(p);
-        b.bloom.position.lerpVectors(b.start, b.target, e);
+        _q1.lerpVectors(b.start, b.ctrl, e); _q2.lerpVectors(b.ctrl, b.target, e);
+        b.bloom.position.lerpVectors(_q1, _q2, e);
         if (p < 1) { b.bloom.rotation.x += b.tRot.x * 0.15; b.bloom.rotation.y += b.tRot.y * 0.15; b.bloom.rotation.z += b.tRot.z * 0.15; }
-        else { b.bloom.rotation.x += (0 - b.bloom.rotation.x) * 0.08; b.bloom.rotation.z += (0 - b.bloom.rotation.z) * 0.08; }
+        else {
+          b.bloom.rotation.x += (b.settle.x + Math.sin(tt * 1.4 + b.phase) * 0.05 - b.bloom.rotation.x) * 0.08;
+          // Y 軸轉到「最近的一圈」的正面朝向，避免花朵背對鏡頭
+          const yt = b.settle.y + Math.PI * 2 * Math.round((b.bloom.rotation.y - b.settle.y) / (Math.PI * 2));
+          b.bloom.rotation.y += (yt + Math.sin(tt * 0.9 + b.phase) * 0.04 - b.bloom.rotation.y) * 0.08;
+          b.bloom.rotation.z += (b.settle.z + Math.cos(tt * 1.1 + b.phase) * 0.05 - b.bloom.rotation.z) * 0.08;
+          b.bloom.position.y = b.target.y + Math.sin(tt * 1.8 + b.phase) * 0.035;
+        }
+        // 花瓣由半合到綻放，外層先開、內層後開
+        const op = Math.max(0, Math.min(1, (tt - b.delay - 0.45) / 1.6));
+        b.petals.forEach(pt => {
+          const pp = Math.max(0, Math.min(1, (op - pt.d) / 0.62));
+          pt.mesh.rotation.x = -(0.15 + (pt.tilt - 0.15) * easeInOut(pp));
+        });
+      });
+      // 飄落花瓣
+      const dOp = Math.max(0, Math.min(1, (tt - 0.5) / 0.9));
+      drifting.forEach(d => {
+        d.m.material.opacity = dOp * 0.85;
+        d.m.position.set(d.x0 + Math.sin(tt * d.sway + d.phase) * 1.3, 7 - ((tt * d.speed + d.off) % 14), d.z0);
+        d.m.rotation.set(tt * d.rs.x + d.phase, tt * d.rs.y, tt * d.rs.z);
       });
       // 淡入包裝/葉
       const fi = Math.max(0, Math.min(1, (tt - 1.4) / 0.9));
       fadeIns.forEach(m => m.opacity = fi * 0.95);
       // B：整束旋轉一圈
       if (tt > B_START) { const p = Math.min(1, (tt - B_START) / (B_END - B_START)); bouquet.rotation.y = easeInOut(p) * Math.PI * 2; }
-      // C：放大＋淡出開站
-      if (tt > C_START) { const p = Math.min(1, (tt - C_START) / 0.7); bouquet.scale.setScalar(1 + p * 0.35); if (!done && p > 0.15) finish(); }
+      // C：放大＋淡出開站（疊上細微呼吸感）
+      let cs = 1;
+      if (tt > C_START) { const p = Math.min(1, (tt - C_START) / 0.7); cs = 1 + p * 0.35; if (!done && p > 0.15) finish(); }
+      bouquet.scale.setScalar(cs * (1 + Math.sin(tt * 2.1) * 0.012));
+      // 鏡頭緩慢漂移
+      camera.position.x = Math.sin(tt * 0.5) * 0.35;
+      camera.position.y = 0.4 + Math.sin(tt * 0.72) * 0.18;
+      camera.lookAt(0, 0.9, 0);
       renderer.render(scene, camera);
       if (!done) requestAnimationFrame(frame);
     }
