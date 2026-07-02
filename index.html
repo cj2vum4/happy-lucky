@@ -1068,11 +1068,11 @@
       for (let i = 0; i < pos.count; i++) {
         const u = pos.getX(i);       // -0.5 ~ 0.5
         const v = pos.getY(i) + 0.5; // 0 ~ 1
-        const env = Math.sin(Math.PI * Math.min(1, Math.pow(v, 0.72) * 1.06)); // 輪廓：基部窄、中段寬、瓣尖收圓
+        const env = Math.sin(Math.PI * Math.min(0.93, Math.pow(v, 0.72) * 1.06)); // 輪廓：基部窄、中段寬、瓣尖圓鈍不尖
         const x = u * 2 * wid * Math.max(0.04, env);
         const y = v * len;
         const z = Math.sin(v * Math.PI) * curl - x * x * 1.15 - Math.pow(v, 3) * curl * 1.5
-                + Math.sin(u * Math.PI * 3 + v * 2.5) * 0.02 * v; // 邊緣微波浪
+                + Math.sin(u * Math.PI * 3 + v * 2.5) * 0.012 * v; // 邊緣微波浪
         pos.setXYZ(i, x, y, z);
         c.copy(cBase).lerp(cTip, Math.pow(v, 0.75));
         colors.push(c.r, c.g, c.b);
@@ -1100,7 +1100,7 @@
           const pivot = new THREE.Group();
           pivot.rotation.z = (i / ring.n) * Math.PI * 2 + ri * 0.55;
           const petal = new THREE.Mesh(petalGeo, petalMat);
-          const tilt = ring.tilt + (Math.random() - 0.5) * 0.14;
+          const tilt = ring.tilt + (Math.random() - 0.5) * 0.08;
           petal.rotation.x = -0.15; // 起始半合，之後在動畫中舒展開
           petal.rotation.y = (Math.random() - 0.5) * 0.12;
           petal.position.y = ring.r;
@@ -1124,27 +1124,35 @@
 
     const bouquet = new THREE.Group(); scene.add(bouquet);
     const blooms = [];
-    const N = 11;
+    const N = 16;
+    const BC = new THREE.Vector3(0, 1.0, 0.1), BR = 1.85; // 花球中心與半徑
+    const ZAXIS = new THREE.Vector3(0, 0, 1);
     for (let i = 0; i < N; i++) {
-      // 目標位置：面向鏡頭的圓頂叢集
-      const t = i / (N - 1);
-      const ang = i * 2.399963; // 黃金角，散得均勻
-      const rad = 2.7 * Math.sqrt(t);
-      const target = new THREE.Vector3(Math.cos(ang) * rad, 1.2 + Math.sin(ang) * rad * 0.75, 1.4 - t * 1.6 + (i % 2 ? 0.5 : 0));
-      const made = makeBloom(bloomColor(), 0.7 + Math.random() * 0.5);
+      // 費波那契球面分布：花朵貼在球面上、面向各自的外法線，
+      // 整束旋轉時每一面都有花，不會露出平面或背面
+      const fy = 1 - (i + 0.5) * 2 / N;
+      const fr = Math.sqrt(Math.max(0, 1 - fy * fy));
+      const ang = i * 2.399963; // 黃金角
+      const outDir = new THREE.Vector3(Math.cos(ang) * fr, fy, Math.sin(ang) * fr);
+      if (outDir.y < -0.35) { outDir.y = -0.35; outDir.normalize(); } // 底部留給包裝紙
+      const made = makeBloom(bloomColor(), 0.62 + Math.random() * 0.34);
       const bloom = made.g;
-      // 起始：四面八方遠處
-      const dir = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
-      const start = target.clone().add(dir.multiplyScalar(16 + Math.random() * 8));
+      // pivot 固定「面向外」的朝向與定位；bloom 在其中翻滾飛入、落定
+      const pivot = new THREE.Group();
+      pivot.position.copy(BC).addScaledVector(outDir, BR * (0.9 + Math.random() * 0.18));
+      pivot.quaternion.setFromUnitVectors(ZAXIS, outDir);
+      bouquet.add(pivot); pivot.add(bloom);
+      // 起始：四面八方遠處（pivot 區域座標）
+      const start = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(16 + Math.random() * 8);
+      const target = new THREE.Vector3(0, 0, 0);
       // 飛入路徑控制點：讓每朵花沿弧線滑入，而不是直線
-      const ctrl = start.clone().lerp(target, 0.5).add(new THREE.Vector3((Math.random() - 0.5) * 7, (Math.random() - 0.5) * 7, (Math.random() - 0.5) * 4));
+      const ctrl = start.clone().multiplyScalar(0.5).add(new THREE.Vector3((Math.random() - 0.5) * 7, (Math.random() - 0.5) * 7, (Math.random() - 0.5) * 4));
       bloom.position.copy(start);
       bloom.rotation.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
-      bouquet.add(bloom);
       blooms.push({
         bloom, start, ctrl, target, petals: made.petals,
-        delay: i * 0.05, phase: Math.random() * Math.PI * 2,
-        settle: { x: (Math.random() - 0.5) * 0.45, y: (Math.random() - 0.5) * 0.5, z: (Math.random() - 0.5) * 0.45 },
+        delay: i * 0.045, phase: Math.random() * Math.PI * 2,
+        settle: { x: (Math.random() - 0.5) * 0.3, y: (Math.random() - 0.5) * 0.4, z: (Math.random() - 0.5) * 0.3 },
         tRot: { x: (Math.random() - 0.5) * 0.6, y: (Math.random() - 0.5) * 0.6, z: (Math.random() - 0.5) * 0.6 }
       });
     }
@@ -1168,15 +1176,39 @@
 
     // 包裝與葉子（組合完成後淡入）
     const fadeIns = [];
-    const wrap = new THREE.Mesh(new THREE.ConeGeometry(2.0, 3.2, 20, 1, true),
+    const wrap = new THREE.Mesh(new THREE.ConeGeometry(2.15, 3.4, 24, 1, true),
       new THREE.MeshStandardMaterial({ color: 0xFFF3DC, side: THREE.DoubleSide, roughness: 0.85, transparent: true, opacity: 0 }));
-    wrap.position.set(0, -2.6, 0.2); wrap.rotation.x = Math.PI; bouquet.add(wrap); fadeIns.push(wrap.material);
-    for (let i = 0; i < 3; i++) {
+    wrap.position.set(0, -1.75, 0.1); wrap.rotation.x = Math.PI; bouquet.add(wrap); fadeIns.push(wrap.material);
+    // 葉子繞花球一圈往外斜插，補側面與後方的縫隙
+    const YAXIS = new THREE.Vector3(0, 1, 0);
+    for (let i = 0; i < 8; i++) {
       const leaf = makeLeaf();
-      leaf.position.set((i - 1) * 1.5, -0.9 + (i % 2) * 0.4, -0.35);
-      leaf.rotation.z = (i - 1) * 0.7;
-      leaf.rotation.x = 0.35; // 往後仰，露出葉尖而不是整片正對鏡頭
+      const a = (i / 8) * Math.PI * 2 + 0.35;
+      const ld = new THREE.Vector3(Math.cos(a), -0.1 + (i % 3) * 0.3, Math.sin(a)).normalize();
+      leaf.position.copy(BC).addScaledVector(ld, BR * 0.7);
+      leaf.quaternion.setFromUnitVectors(YAXIS, ld); // 葉尖沿外法線指出去
+      leaf.rotateY((Math.random() - 0.5) * 1.4);
       bouquet.add(leaf); fadeIns.push(leaf.material);
+    }
+    // 滿天星小白花串：填補花朵之間的空隙
+    const gypMat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.9, transparent: true, opacity: 0 });
+    fadeIns.push(gypMat);
+    const gypGeo = new THREE.SphereGeometry(0.085, 8, 8);
+    const NG = 10;
+    for (let i = 0; i < NG; i++) {
+      const gy = 1 - (i + 0.5) * 2 / NG;
+      const gr = Math.sqrt(Math.max(0, 1 - gy * gy));
+      const ga = i * 2.399963 + 1.2; // 與花朵錯開角度，落在縫隙處
+      const gd = new THREE.Vector3(Math.cos(ga) * gr, gy, Math.sin(ga) * gr);
+      if (gd.y < -0.3) { gd.y = -0.3; gd.normalize(); }
+      const cl = new THREE.Group();
+      cl.position.copy(BC).addScaledVector(gd, BR * 1.05);
+      for (let j = 0; j < 5; j++) {
+        const s = new THREE.Mesh(gypGeo, gypMat);
+        s.position.set((Math.random() - 0.5) * 0.55, (Math.random() - 0.5) * 0.55, (Math.random() - 0.5) * 0.55);
+        cl.add(s);
+      }
+      bouquet.add(cl);
     }
 
     const t0 = performance.now();
