@@ -1751,11 +1751,11 @@ function renderSearch() {
     <div class="spot-result-card" onclick="openSpotModal(${i})">
       <div class="spot-result-emoji">${spot.emoji}</div>
       <div class="spot-result-body">
-        <div class="spot-result-name">${spot.name}</div>
-        <div class="spot-result-desc">${spot.desc}</div>
+        <div class="spot-result-name">${escHtml(spot.name)}</div>
+        <div class="spot-result-desc">${escHtml(spot.desc)}</div>
         <div class="spot-result-meta">
           ${ratingHTML}
-          <span class="spot-result-trip">📍 ${spot.region}</span>
+          <span class="spot-result-trip">📍 ${escHtml(spot.region)}</span>
         </div>
       </div>
       <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
@@ -1825,6 +1825,7 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
 });
 
 const starsHtml = n => '⭐'.repeat(Math.min(5, Math.round(n)));
+function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
 async function loadModalReviews(key) {
   document.getElementById('spot-modal-reviews').innerHTML =
@@ -1850,7 +1851,7 @@ async function loadModalReviews(key) {
             <span class="smd-rev-stars">${starsHtml(r.rating)}</span>
             <span class="smd-rev-date">${date}</span>
           </div>
-          ${r.comment ? `<div class="smd-rev-comment">${r.comment}</div>` : ''}
+          ${r.comment ? `<div class="smd-rev-comment">${escHtml(r.comment)}</div>` : ''}
         </div>`;
     }).join('');
   } catch(e) {
@@ -1874,8 +1875,8 @@ async function openSpotModal(i) {
     <div class="smd-top">
       <div class="smd-emoji">${spot.emoji}</div>
       <div>
-        <div class="smd-name">${spot.name}</div>
-        <div class="smd-trip">📍 ${spot.region}</div>
+        <div class="smd-name">${escHtml(spot.name)}</div>
+        <div class="smd-trip">📍 ${escHtml(spot.region)}</div>
         <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
       </div>
     </div>

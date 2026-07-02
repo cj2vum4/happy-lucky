@@ -1081,6 +1081,7 @@ function getCatInfo(type, key) {
   return list.find(c=>c.key===key) || { emoji:'📦', bg:'#ECEFF1', accent:'#607D8B' };
 }
 
+function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function renderEntry(e) {
   const info = getCatInfo(e.type, e.category);
   const sign = e.type==='expense' ? '-' : '+';
@@ -1090,7 +1091,7 @@ function renderEntry(e) {
       <div class="ent-icon" style="background:${info.bg}">${info.emoji}</div>
       <div class="ent-body">
         <div class="ent-cat">${e.category}</div>
-        <div class="ent-note">${e.note ? (e.note.endsWith('#spot') ? '📍 ' + e.note.slice(0,-5).replace(/\|[^|]*$/,'') : e.note) : '<span style="color:var(--text3)">點擊編輯</span>'}</div>
+        <div class="ent-note">${e.note ? escHtml(e.note.endsWith('#spot') ? '📍 ' + e.note.slice(0,-5).replace(/\|[^|]*$/,'') : e.note) : '<span style="color:var(--text3)">點擊編輯</span>'}</div>
       </div>
       <div class="ent-right">
         <div class="ent-amt ${cls}">${sign}$${fmtAmt(e.amount)}</div>
