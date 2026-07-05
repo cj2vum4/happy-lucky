@@ -27,9 +27,17 @@
 - 範例：南投(綠)、紐西蘭(藍)、台南(琥珀金)、台中(森林綠)、漢來(暖金)
 
 ### Supabase 評分系統
-- `ITEM_PREFIX`：格式為 `{tripkey}__`（例：`tainan2026__`）
+- `ITEM_PREFIX`：格式為 `{tripkey}__`（例：`tainan2026__`），景點/行程單項評分用，僅在該旅程頁內生效
 - `injectRateButtons()`：自動為每個 `.itinerary-card` 和 `.spot-card` 注入評分按鈕
 - 評分底部彈窗：`.rate-sheet-bg` + `.rate-sheet`（在 `.pages` 內）
+
+### 菜單品項評分（餐廳類 spot 專用）
+- `FOOD_SPOTS`：陣列列出該頁 `category: "食物"` 的 spot 名稱，比對 `.spot-name` 決定要用「單項評分」還是「菜單評分」
+- `MENU_PREFIX = 'menu__'`：**不加 `ITEM_PREFIX`**，key 格式為 `menu__{店名}__{品項名}` — 同店名跨旅程頁會自動合併成同一家店的總分（例如同一家連鎖店出現在不同旅程都去過）
+- `loadItemReviews()` 需同時 fetch `trip_id=like.${ITEM_PREFIX}*` 和 `trip_id=like.${MENU_PREFIX}*` 兩批資料
+- 餐廳的 spot-card 評分按鈕不開 `openRateSheet`，改開 `openMenuSheet(name)` → 列出已有品項＋輸入框新增品項 → 點品項才進到既有的 `openRateSheet` 評分
+- 彈窗：`#menuSheetBg`（`.rate-sheet-bg.menu-sheet-bg`，z-index 290，比 `#rateSheetBg` 低一層，兩個彈窗可疊加顯示）
+- 新增旅程若有餐廳要用菜單評分，記得把店名加進該頁的 `FOOD_SPOTS`
 
 ### 參考實作
 `20260522_24/260522南投.html`（最完整範本，含照片牆）

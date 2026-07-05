@@ -75,7 +75,17 @@
       "status": "planning",
       "tags": ["奢華住宿", "無邊際泳池", "自助餐"],
       "file": "20260905_06/260905漢來.html",
-      "photos": []
+      "itemPrefix": "hilai2026__",
+      "photos": [],
+      "spots": [
+        { "name": "室內恆溫泳池",   "category": "室內景點", "region": "南港區", "emoji": "🏊", "desc": "25m 溫水游泳池・全天開放",       "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
+        { "name": "三溫暖 SPA",     "category": "室內景點", "region": "南港區", "emoji": "🧖", "desc": "三溫暖・蒸氣室・放鬆身心",       "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
+        { "name": "島語自助餐廳",   "category": "食物",    "region": "南港區", "emoji": "🍽️", "desc": "多國料理・海鮮・現做甜點",       "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
+        { "name": "東方樓頂級粵菜", "category": "食物",    "region": "南港區", "emoji": "🥢", "desc": "精緻粵式料理・飲茶早午餐",       "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
+        { "name": "行政酒廊 貴賓軒","category": "食物",    "region": "南港區", "emoji": "🍾", "desc": "25F 全景・Happy Hour・專屬禮遇", "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
+        { "name": "24H 健身中心",   "category": "室內景點", "region": "南港區", "emoji": "💪", "desc": "完整器材・不限時間",           "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
+        { "name": "LaLaport 台北南港", "category": "室內景點", "region": "南港區", "emoji": "🛍️", "desc": "200+ 品牌・日本進口・美食廣場", "mapUrl": "https://maps.google.com/?q=LaLaport+台北南港" }
+      ]
     },
     {
       "id": "tainan-2026",
@@ -87,7 +97,20 @@
       "status": "planning",
       "tags": ["古蹟", "美食", "海線", "文創"],
       "file": "20260925_27/260925台南.html",
-      "photos": []
+      "itemPrefix": "tainan2026__",
+      "photos": [],
+      "spots": [
+        { "name": "赤崁樓",           "category": "室內景點", "region": "中西區", "emoji": "🏯", "desc": "荷蘭古堡・台南地標・門票 NT$50",   "mapUrl": "https://maps.google.com/?q=赤崁樓+台南" },
+        { "name": "安平古堡",         "category": "室外景點", "region": "安平區", "emoji": "🏰", "desc": "荷治時代第一座城堡・周氏蝦捲",     "mapUrl": "https://maps.google.com/?q=安平古堡+台南" },
+        { "name": "四草綠色隧道",     "category": "室外景點", "region": "安南區", "emoji": "🚣", "desc": "竹筏遊紅樹林・台版亞馬遜",         "mapUrl": "https://maps.google.com/?q=四草綠色隧道+台南" },
+        { "name": "奇美博物館",       "category": "室內景點", "region": "仁德區", "emoji": "🏛️", "desc": "歐風宮殿・藝術典藏・門票 NT$200",  "mapUrl": "https://maps.google.com/?q=奇美博物館" },
+        { "name": "國華街美食一條街", "category": "食物",    "region": "中西區", "emoji": "🥢", "desc": "碗粿・春捲・刨冰・巷弄小吃",       "mapUrl": "https://maps.google.com/?q=國華街+台南" },
+        { "name": "六千牛肉湯",       "category": "食物",    "region": "中西區", "emoji": "🥛", "desc": "台南早餐王道・現宰溫體牛",         "mapUrl": "https://maps.google.com/?q=六千牛肉湯+台南" },
+        { "name": "漁光島",           "category": "室外景點", "region": "安平區", "emoji": "🌊", "desc": "白沙灘・木麻黃林道・台南祕境",     "mapUrl": "https://maps.google.com/?q=漁光島+台南" },
+        { "name": "藍晒圖文創園區",   "category": "室外景點", "region": "南區",   "emoji": "🟦", "desc": "藍色建築意象・文創市集・免費",     "mapUrl": "https://maps.google.com/?q=藍晒圖文創園區+台南" },
+        { "name": "十鼓仁糖文創園區", "category": "室外景點", "region": "仁德區", "emoji": "🥁", "desc": "擊樂秀・溜索・夜間必玩",           "mapUrl": "https://maps.google.com/?q=十鼓仁糖文創園區" },
+        { "name": "花園夜市",         "category": "食物",    "region": "北區",   "emoji": "🌙", "desc": "台南必訪夜市・碳烤牛排・鹹豆漿",   "mapUrl": "https://maps.google.com/?q=花園夜市+台南" }
+      ]
     },
     {
       "id": "taichung-2026",
