@@ -942,6 +942,32 @@
   }
   .smd-btn-close:active { background: #E4DAC8; }
 
+  /* 菜單品項選擇（餐廳類 spot 用） */
+  .smd-menu-section { padding: 12px 20px 14px; flex-shrink: 0; border-bottom: 1px solid #EDE4CC; background: #FDFAF5; }
+  .menu-sheet-list { max-height: 160px; overflow-y: auto; margin-bottom: 10px; }
+  .menu-item-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 4px; border-bottom: 1px solid #EDE4CC; cursor: pointer; touch-action: manipulation; border-radius: 8px; }
+  .menu-item-row:last-child { border-bottom: none; }
+  .menu-item-row:active { opacity: 0.6; }
+  .menu-item-row.picked { background: #FDF3E7; }
+  .menu-item-name { font-size: 14px; color: #3E2A1A; }
+  .menu-item-score { font-size: 12px; color: #8C7660; flex-shrink: 0; }
+  .smd-menu-add { display: flex; gap: 8px; }
+  .menu-dish-input {
+    flex: 1; padding: 10px 13px;
+    background: #F5F0E8; border: 1.5px solid #D4C8B0;
+    border-radius: 12px; font-size: 14px; font-family: inherit;
+    color: #3E2A1A; outline: none;
+  }
+  .menu-dish-input:focus { border-color: #8C7660; background: white; }
+  .smd-menu-pick-btn {
+    padding: 10px 14px; background: #8C5A1A; color: white;
+    border: none; border-radius: 12px;
+    font-size: 13px; font-weight: 700; font-family: inherit;
+    cursor: pointer; touch-action: manipulation; flex-shrink: 0;
+  }
+  .smd-menu-pick-btn:active { opacity: 0.8; }
+  .smd-menu-picked { font-size: 12px; color: #8C5A1A; font-weight: 700; margin-top: 8px; }
+
   /* ============ 便利商店 FAB ============ */
   .conbini-fab {
     position: fixed;
@@ -1113,6 +1139,17 @@
   <div class="spot-modal">
     <div class="spot-modal-handle"></div>
     <div class="spot-modal-head" id="spot-modal-head"></div>
+
+    <!-- 菜單品項選擇（餐廳類 spot 才顯示，跨旅程/記帳以店名合併） -->
+    <div class="smd-menu-section" id="smd-menu-section" style="display:none">
+      <div class="smd-rate-title">🍽️ 選擇要評分的品項</div>
+      <div class="menu-sheet-list" id="smd-menu-list"></div>
+      <div class="smd-menu-add">
+        <input type="text" class="menu-dish-input" id="smd-menu-dish-inp" placeholder="新增品項，例如：月亮蝦餅">
+        <button type="button" class="smd-menu-pick-btn" id="smd-menu-pick-btn">選這個評分</button>
+      </div>
+      <div class="smd-menu-picked" id="smd-menu-picked"></div>
+    </div>
 
     <!-- 評分輸入 -->
     <div class="smd-rate-section">
@@ -1527,6 +1564,13 @@ const SB_KEY = 'sb_publishable_hDrADaLoZfAGDJH1i_JeHw_OSv_oqAu';
 let ratingsMap    = {};
 let currentSpots  = [];
 let userFoodSpots = [];
+
+// 菜單品項評分：不加旅程/來源前綴，同店名（無論來自旅程頁還是記帳 #spot）都會合併成同一家店的總分
+const MENU_PREFIX = 'menu__';
+const menuKey = (name, dish) => MENU_PREFIX + name + '__' + dish;
+let menuRawData    = [];
+let currentFoodSpot = null;
+let pickedDishName  = '';
 let activeCategory = 'all';
 let activeRegion    = 'all';
 let searchText      = '';
@@ -1575,14 +1619,39 @@ async function loadAllRatings() {
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
       .then(r => r.json()).then(accumulateRatings).catch(()=>{})
   );
-  // Also load ratings for daily food spots
+  // 舊版整店評分（記帳頁 #spot 尚未拆品項前留下的資料），折算進總分避免遺失
   fetches.push(
     fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.food__*&order=created_at.desc`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
       .then(r => r.json()).then(accumulateRatings).catch(()=>{})
   );
+  // 菜單品項評分：跨旅程頁 / 記帳頁以店名合併
+  fetches.push(
+    fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.${MENU_PREFIX}*&order=created_at.desc`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
+      .then(r => r.json()).then(data => {
+        if (Array.isArray(data)) menuRawData = data;
+        accumulateRatings(data);
+      }).catch(()=>{})
+  );
   await Promise.all(fetches);
   renderSearch();
+}
+
+// 餐廳類 spot 的總分：品項評分（menu__）+ 舊版整店評分（food__ 或 itemPrefix+name）合併計算
+function foodSpotRating(spot) {
+  const menuPrefix = MENU_PREFIX + spot.name + '__';
+  const rows = menuRawData.filter(r => r.trip_id.startsWith(menuPrefix) && r.rating);
+  let sum = rows.reduce((a, r) => a + r.rating, 0);
+  let count = rows.length;
+  const legacy = ratingsMap[spot.prefix + spot.name];
+  if (legacy) { sum += parseFloat(legacy.avg) * legacy.count; count += legacy.count; }
+  if (!count) return null;
+  return { avg: (sum / count).toFixed(1), count };
+}
+
+function getSpotRating(spot) {
+  return spot.category === '食物' ? foodSpotRating(spot) : ratingsMap[spot.prefix + spot.name];
 }
 
 async function loadUserFoodSpots() {
@@ -1711,8 +1780,8 @@ function renderSearch() {
     filtered = [...filtered].sort((a, b) => (b.sortDate || '').localeCompare(a.sortDate || ''));
   } else {
     filtered = [...filtered].sort((a, b) => {
-      const ra = ratingsMap[a.prefix + a.name];
-      const rb = ratingsMap[b.prefix + b.name];
+      const ra = getSpotRating(a);
+      const rb = getSpotRating(b);
       if (ra && rb)  return parseFloat(rb.avg) - parseFloat(ra.avg);
       if (ra && !rb) return -1;
       if (!ra && rb) return 1;
@@ -1744,7 +1813,7 @@ function renderSearch() {
 
   currentSpots = filtered;
   container.innerHTML = filtered.map((spot, i) => {
-    const ratingData = ratingsMap[spot.prefix + spot.name];
+    const ratingData = getSpotRating(spot);
     const ratingHTML = ratingData
       ? `<span class="spot-rating">⭐ ${ratingData.avg} <span class="rating-count">(${ratingData.count}則)</span></span>`
       : `<span class="spot-rating unrated">尚未評分</span>`;
@@ -1775,6 +1844,10 @@ function closeSpotModal() {
   document.getElementById('smd-comment-inp').value = '';
   document.getElementById('smd-submit-btn').textContent = '送出評分';
   document.getElementById('smd-submit-btn').disabled = false;
+  currentFoodSpot = null;
+  pickedDishName = '';
+  modalSpotKey = '';
+  document.getElementById('smd-menu-picked').textContent = '';
 }
 document.getElementById('spot-modal-close').addEventListener('click', closeSpotModal);
 document.getElementById('spot-modal-bg').addEventListener('click', e => {
@@ -1794,9 +1867,12 @@ document.getElementById('smd-stars-row').addEventListener('click', e => {
 });
 
 document.getElementById('smd-submit-btn').addEventListener('click', async () => {
+  if (currentFoodSpot && !modalSpotKey) { alert('請先選擇要評分的品項'); return; }
   if (!modalStarPick) { alert('請先點選星星評分'); return; }
   const submitBtn = document.getElementById('smd-submit-btn');
-  const comment   = document.getElementById('smd-comment-inp').value.trim() || null;
+  const comment    = document.getElementById('smd-comment-inp').value.trim() || null;
+  const submitKey    = modalSpotKey;
+  const submitRating = modalStarPick;
   submitBtn.textContent = '送出中…';
   submitBtn.disabled = true;
   try {
@@ -1806,7 +1882,7 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
         apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
         'Content-Type': 'application/json', Prefer: 'return=minimal',
       },
-      body: JSON.stringify({ trip_id: modalSpotKey, rating: modalStarPick, comment }),
+      body: JSON.stringify({ trip_id: submitKey, rating: submitRating, comment }),
     });
     if (!res.ok && res.status !== 201) throw new Error(await res.text());
 
@@ -1815,8 +1891,15 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
     paintStars(0);
     document.getElementById('smd-comment-inp').value = '';
 
+    if (currentFoodSpot) {
+      menuRawData.push({ trip_id: submitKey, rating: submitRating, comment, created_at: new Date().toISOString() });
+      renderMenuPicker();
+      const avgBox = document.getElementById('smd-avg-box');
+      if (avgBox) avgBox.innerHTML = renderAvgBox(getSpotRating(currentFoodSpot));
+    }
+
     // Refresh this spot's review list + update ratingsMap
-    await loadModalReviews(modalSpotKey);
+    await loadModalReviews(submitKey);
     loadAllRatings(); // async, update search list in background
   } catch(e) {
     alert('評分失敗：' + e.message);
@@ -1861,17 +1944,25 @@ async function loadModalReviews(key) {
   }
 }
 
+function renderAvgBox(rd) {
+  return rd
+    ? `<span class="smd-avg-stars">${starsHtml(rd.avg)}</span>
+       <span class="smd-avg-num">${rd.avg}</span>
+       <span class="smd-avg-count">(${rd.count} 則評分)</span>`
+    : `<span class="smd-unrated">尚未評分</span>`;
+}
+
 async function openSpotModal(i) {
   const spot = currentSpots[i];
-  const key  = spot.prefix + spot.name;
-  modalSpotKey = key;
+  const isFood = spot.category === '食物';
   modalStarPick = 0;
   paintStars(0);
   document.getElementById('smd-comment-inp').value = '';
   document.getElementById('smd-submit-btn').textContent = '送出評分';
   document.getElementById('smd-submit-btn').disabled = false;
+  document.getElementById('smd-menu-picked').textContent = '';
 
-  const rd = ratingsMap[key];
+  const rd = getSpotRating(spot);
   document.getElementById('spot-modal-head').innerHTML = `
     <div class="smd-top">
       <div class="smd-emoji">${spot.emoji}</div>
@@ -1881,20 +1972,76 @@ async function openSpotModal(i) {
         <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
       </div>
     </div>
-    <div class="smd-avg">
-      ${rd
-        ? `<span class="smd-avg-stars">${starsHtml(rd.avg)}</span>
-           <span class="smd-avg-num">${rd.avg}</span>
-           <span class="smd-avg-count">(${rd.count} 則評分)</span>`
-        : `<span class="smd-unrated">尚未評分</span>`}
-    </div>`;
+    <div class="smd-avg" id="smd-avg-box">${renderAvgBox(rd)}</div>`;
 
   document.getElementById('spot-modal-go').href = spot.date ? `${spot.tripFile}?date=${spot.date}` : spot.tripFile;
   document.getElementById('spot-modal-map').href =
     spot.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(spot.name + ' ' + spot.region)}`;
+
+  const menuSection = document.getElementById('smd-menu-section');
+  if (isFood) {
+    currentFoodSpot = spot;
+    pickedDishName = '';
+    modalSpotKey = '';
+    menuSection.style.display = 'block';
+    renderMenuPicker();
+    document.getElementById('spot-modal-reviews').innerHTML = '<div class="smd-empty">請先選擇要評分的品項</div>';
+  } else {
+    currentFoodSpot = null;
+    modalSpotKey = spot.prefix + spot.name;
+    menuSection.style.display = 'none';
+    await loadModalReviews(modalSpotKey);
+  }
+
   document.getElementById('spot-modal-bg').classList.add('open');
-  await loadModalReviews(key);
 }
+
+function renderMenuPicker() {
+  if (!currentFoodSpot) return;
+  const prefix = MENU_PREFIX + currentFoodSpot.name + '__';
+  const dishes = {};
+  menuRawData.forEach(r => {
+    if (r.trip_id.startsWith(prefix)) {
+      const dish = r.trip_id.slice(prefix.length);
+      (dishes[dish] = dishes[dish] || []).push(r);
+    }
+  });
+  const dishNames = Object.keys(dishes);
+  const listEl = document.getElementById('smd-menu-list');
+  listEl.innerHTML = dishNames.length ? dishNames.map(dish => {
+    const ratings = dishes[dish].filter(r => r.rating).map(r => r.rating);
+    const avg = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '–';
+    const activeCls = dish === pickedDishName ? ' picked' : '';
+    return `<div class="menu-item-row${activeCls}" data-dish="${escHtml(dish)}">
+      <span class="menu-item-name">${escHtml(dish)}</span>
+      <span class="menu-item-score">⭐ ${avg}（${ratings.length}）</span>
+    </div>`;
+  }).join('') : '<div class="smd-empty">還沒有品項評分，新增第一個吧！</div>';
+  listEl.querySelectorAll('.menu-item-row').forEach(row => {
+    row.addEventListener('click', () => pickDish(row.dataset.dish));
+  });
+  document.getElementById('smd-menu-dish-inp').value = '';
+}
+
+function pickDish(dish) {
+  if (!dish || !currentFoodSpot) return;
+  pickedDishName = dish;
+  modalSpotKey = menuKey(currentFoodSpot.name, dish);
+  document.getElementById('smd-menu-picked').textContent = `📝 評分品項：${dish}`;
+  modalStarPick = 0;
+  paintStars(0);
+  document.getElementById('smd-comment-inp').value = '';
+  document.getElementById('smd-submit-btn').textContent = '送出評分';
+  document.getElementById('smd-submit-btn').disabled = false;
+  renderMenuPicker();
+  loadModalReviews(modalSpotKey);
+}
+
+document.getElementById('smd-menu-pick-btn').addEventListener('click', () => {
+  const dish = document.getElementById('smd-menu-dish-inp').value.trim();
+  if (!dish) return;
+  pickDish(dish);
+});
 
 // 類別 chips
 document.getElementById('cat-chips').querySelectorAll('.chip').forEach(btn => {

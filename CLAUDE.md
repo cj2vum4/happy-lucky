@@ -38,6 +38,7 @@
 - 餐廳的 spot-card 評分按鈕不開 `openRateSheet`，改開 `openMenuSheet(name)` → 列出已有品項＋輸入框新增品項 → 點品項才進到既有的 `openRateSheet` 評分
 - 彈窗：`#menuSheetBg`（`.rate-sheet-bg.menu-sheet-bg`，z-index 290，比 `#rateSheetBg` 低一層，兩個彈窗可疊加顯示）
 - 新增旅程若有餐廳要用菜單評分，記得把店名加進該頁的 `FOOD_SPOTS`
+- `index.html`（查詢頁）統一匯總所有旅程 spots + `account.html` 記帳頁標記 `#spot` 的日常店家，任何 `category === "食物"` 的項目在查詢頁點開都會走同一套菜單品項選擇彈窗（`#smd-menu-section`），key 一律用 `menu__{店名}__{品項}`——所以記帳頁記錄的店家和旅程頁的餐廳只要店名相同就會自動合併評分，不需要另外同步
 
 ### 參考實作
 `20260522_24/260522南投.html`（最完整範本，含照片牆）
