@@ -1996,6 +1996,8 @@ async function openSpotModal(i) {
   document.getElementById('spot-modal-bg').classList.add('open');
 }
 
+const LEGACY_DISH = '__legacy__';
+
 function renderMenuPicker() {
   if (!currentFoodSpot) return;
   const prefix = MENU_PREFIX + currentFoodSpot.name + '__';
@@ -2007,8 +2009,10 @@ function renderMenuPicker() {
     }
   });
   const dishNames = Object.keys(dishes);
-  const listEl = document.getElementById('smd-menu-list');
-  listEl.innerHTML = dishNames.length ? dishNames.map(dish => {
+  const legacyKey = currentFoodSpot.prefix + currentFoodSpot.name;
+  const legacy = ratingsMap[legacyKey];
+
+  let rowsHtml = dishNames.map(dish => {
     const ratings = dishes[dish].filter(r => r.rating).map(r => r.rating);
     const avg = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '–';
     const activeCls = dish === pickedDishName ? ' picked' : '';
@@ -2016,7 +2020,19 @@ function renderMenuPicker() {
       <span class="menu-item-name">${escHtml(dish)}</span>
       <span class="menu-item-score">⭐ ${avg}（${ratings.length}）</span>
     </div>`;
-  }).join('') : '<div class="smd-empty">還沒有品項評分，新增第一個吧！</div>';
+  }).join('');
+
+  // 舊版整店評分（改成品項評分前留下的資料）：獨立列出，才能看到當初寫的評論文字
+  if (legacy) {
+    const activeCls = pickedDishName === LEGACY_DISH ? ' picked' : '';
+    rowsHtml += `<div class="menu-item-row${activeCls}" data-dish="${LEGACY_DISH}">
+      <span class="menu-item-name">📋 整體評價（舊資料）</span>
+      <span class="menu-item-score">⭐ ${legacy.avg}（${legacy.count}）</span>
+    </div>`;
+  }
+
+  const listEl = document.getElementById('smd-menu-list');
+  listEl.innerHTML = rowsHtml || '<div class="smd-empty">還沒有品項評分，新增第一個吧！</div>';
   listEl.querySelectorAll('.menu-item-row').forEach(row => {
     row.addEventListener('click', () => pickDish(row.dataset.dish));
   });
@@ -2026,8 +2042,11 @@ function renderMenuPicker() {
 function pickDish(dish) {
   if (!dish || !currentFoodSpot) return;
   pickedDishName = dish;
-  modalSpotKey = menuKey(currentFoodSpot.name, dish);
-  document.getElementById('smd-menu-picked').textContent = `📝 評分品項：${dish}`;
+  const isLegacy = dish === LEGACY_DISH;
+  modalSpotKey = isLegacy ? (currentFoodSpot.prefix + currentFoodSpot.name) : menuKey(currentFoodSpot.name, dish);
+  document.getElementById('smd-menu-picked').textContent = isLegacy
+    ? '📝 評分：整體評價（舊資料）'
+    : `📝 評分品項：${dish}`;
   modalStarPick = 0;
   paintStars(0);
   document.getElementById('smd-comment-inp').value = '';
