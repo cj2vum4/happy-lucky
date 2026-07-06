@@ -1151,6 +1151,11 @@
       <div class="smd-menu-picked" id="smd-menu-picked"></div>
     </div>
 
+    <div class="spot-modal-body">
+      <div class="smd-revs-title">評分紀錄</div>
+      <div id="spot-modal-reviews"></div>
+    </div>
+
     <!-- 評分輸入 -->
     <div class="smd-rate-section">
       <div class="smd-rate-title">我要評分</div>
@@ -1165,10 +1170,6 @@
       <button class="smd-submit" id="smd-submit-btn">送出評分</button>
     </div>
 
-    <div class="spot-modal-body">
-      <div class="smd-revs-title">評分紀錄</div>
-      <div id="spot-modal-reviews"></div>
-    </div>
     <div class="spot-modal-foot">
       <button class="smd-btn-close" id="spot-modal-close">關閉</button>
       <a class="smd-btn-map" id="spot-modal-map" href="" target="_blank" rel="noopener">🗺 導航</a>
@@ -2053,7 +2054,9 @@ function pickDish(dish) {
   document.getElementById('smd-submit-btn').textContent = '送出評分';
   document.getElementById('smd-submit-btn').disabled = false;
   renderMenuPicker();
-  loadModalReviews(modalSpotKey);
+  loadModalReviews(modalSpotKey).then(() => {
+    document.getElementById('spot-modal-reviews').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
 
 document.getElementById('smd-menu-pick-btn').addEventListener('click', () => {
