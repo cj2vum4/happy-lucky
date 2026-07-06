@@ -1575,6 +1575,16 @@ async function loadAllRatings() {
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
       .then(r => r.json()).then(accumulateRatings).catch(()=>{})
   );
+  // 沒有 itemPrefix 的旅程（例如單店家行程）：spot 名稱本身就是 key，沒有共同前綴可以用 like 查，改成精準比對
+  const noPrefixNames = TRIPS.filter(t => !t.itemPrefix).flatMap(t => (t.spots || []).map(s => s.name));
+  if (noPrefixNames.length) {
+    const inList = noPrefixNames.map(n => encodeURIComponent(n)).join(',');
+    fetches.push(
+      fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=in.(${inList})&order=created_at.desc`,
+        { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
+        .then(r => r.json()).then(accumulateRatings).catch(()=>{})
+    );
+  }
   // Also load ratings for daily food spots
   fetches.push(
     fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.food__*&order=created_at.desc`,
