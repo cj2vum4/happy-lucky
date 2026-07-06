@@ -942,13 +942,25 @@
   }
   .smd-btn-close:active { background: #E4DAC8; }
 
-  /* 菜單品項選擇（餐廳類 spot 用） */
-  .smd-menu-section { padding: 12px 20px 14px; flex-shrink: 0; border-bottom: 1px solid #EDE4CC; background: #FDFAF5; }
-  .menu-sheet-list { max-height: 160px; overflow-y: auto; margin-bottom: 10px; }
+  /* 菜單品項選擇（餐廳類 spot 用）：兩步式（店家頁→品項頁） */
+  .smd-view-store { flex: 1; overflow-y: auto; min-height: 0; }
+  .smd-view-item { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .smd-item-bar { display: flex; align-items: center; gap: 10px; padding: 12px 20px 0; flex-shrink: 0; }
+  .smd-back-btn {
+    background: #F0EAE0; border: none; border-radius: 14px;
+    padding: 8px 14px; font-size: 13px; font-weight: 700; color: #8C7660;
+    font-family: inherit; cursor: pointer; touch-action: manipulation; flex-shrink: 0;
+  }
+  .smd-back-btn:active { background: #E4DAC8; }
+  .smd-item-name {
+    font-size: 15px; font-weight: 700; color: #3E2A1A;
+    flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .smd-menu-section { padding: 12px 20px 14px; background: #FDFAF5; }
+  .menu-sheet-list { margin-bottom: 10px; }
   .menu-item-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 4px; border-bottom: 1px solid #EDE4CC; cursor: pointer; touch-action: manipulation; border-radius: 8px; }
   .menu-item-row:last-child { border-bottom: none; }
   .menu-item-row:active { opacity: 0.6; }
-  .menu-item-row.picked { background: #FDF3E7; }
   .menu-item-name { font-size: 14px; color: #3E2A1A; }
   .menu-item-score { font-size: 12px; color: #8C7660; flex-shrink: 0; }
   .smd-menu-add { display: flex; gap: 8px; }
@@ -966,7 +978,6 @@
     cursor: pointer; touch-action: manipulation; flex-shrink: 0;
   }
   .smd-menu-pick-btn:active { opacity: 0.8; }
-  .smd-menu-picked { font-size: 12px; color: #8C5A1A; font-weight: 700; margin-top: 8px; }
 
   /* ============ 便利商店 FAB ============ */
   .conbini-fab {
@@ -1140,34 +1151,41 @@
     <div class="spot-modal-handle"></div>
     <div class="spot-modal-head" id="spot-modal-head"></div>
 
-    <!-- 菜單品項選擇（餐廳類 spot 才顯示，跨旅程/記帳以店名合併） -->
-    <div class="smd-menu-section" id="smd-menu-section" style="display:none">
-      <div class="smd-rate-title">🍽️ 選擇要評分的品項</div>
-      <div class="menu-sheet-list" id="smd-menu-list"></div>
-      <div class="smd-menu-add">
-        <input type="text" class="menu-dish-input" id="smd-menu-dish-inp" placeholder="新增品項，例如：月亮蝦餅">
-        <button type="button" class="smd-menu-pick-btn" id="smd-menu-pick-btn">選這個評分</button>
+    <!-- 店家頁：菜單品項清單（餐廳類 spot 專用，跨旅程/記帳以店名合併） -->
+    <div class="smd-view-store" id="smd-view-store" style="display:none">
+      <div class="smd-menu-section">
+        <div class="smd-rate-title">🍽️ 點品項看評價、給評分</div>
+        <div class="menu-sheet-list" id="smd-menu-list"></div>
+        <div class="smd-menu-add">
+          <input type="text" class="menu-dish-input" id="smd-menu-dish-inp" placeholder="新增品項，例如：月亮蝦餅">
+          <button type="button" class="smd-menu-pick-btn" id="smd-menu-pick-btn">新增並評分</button>
+        </div>
       </div>
-      <div class="smd-menu-picked" id="smd-menu-picked"></div>
     </div>
 
-    <div class="spot-modal-body">
-      <div class="smd-revs-title">評分紀錄</div>
-      <div id="spot-modal-reviews"></div>
-    </div>
-
-    <!-- 評分輸入 -->
-    <div class="smd-rate-section">
-      <div class="smd-rate-title">我要評分</div>
-      <div class="smd-stars-row" id="smd-stars-row">
-        <button class="smd-star" data-s="1">☆</button>
-        <button class="smd-star" data-s="2">☆</button>
-        <button class="smd-star" data-s="3">☆</button>
-        <button class="smd-star" data-s="4">☆</button>
-        <button class="smd-star" data-s="5">☆</button>
+    <!-- 品項頁（餐廳選完品項後）／一般景點評分頁 -->
+    <div class="smd-view-item" id="smd-view-item">
+      <div class="smd-item-bar" id="smd-item-bar" style="display:none">
+        <button type="button" class="smd-back-btn" id="smd-back-btn">‹ 菜單</button>
+        <div class="smd-item-name" id="smd-item-name"></div>
       </div>
-      <textarea class="smd-comment" id="smd-comment-inp" rows="2" placeholder="留下你的想法（選填）"></textarea>
-      <button class="smd-submit" id="smd-submit-btn">送出評分</button>
+      <div class="spot-modal-body">
+        <div class="smd-revs-title">評分紀錄</div>
+        <div id="spot-modal-reviews"></div>
+      </div>
+      <!-- 評分輸入 -->
+      <div class="smd-rate-section">
+        <div class="smd-rate-title">我要評分</div>
+        <div class="smd-stars-row" id="smd-stars-row">
+          <button class="smd-star" data-s="1">☆</button>
+          <button class="smd-star" data-s="2">☆</button>
+          <button class="smd-star" data-s="3">☆</button>
+          <button class="smd-star" data-s="4">☆</button>
+          <button class="smd-star" data-s="5">☆</button>
+        </div>
+        <textarea class="smd-comment" id="smd-comment-inp" rows="2" placeholder="留下你的想法（選填）"></textarea>
+        <button class="smd-submit" id="smd-submit-btn">送出評分</button>
+      </div>
     </div>
 
     <div class="spot-modal-foot">
@@ -1848,7 +1866,6 @@ function closeSpotModal() {
   currentFoodSpot = null;
   pickedDishName = '';
   modalSpotKey = '';
-  document.getElementById('smd-menu-picked').textContent = '';
 }
 document.getElementById('spot-modal-close').addEventListener('click', closeSpotModal);
 document.getElementById('spot-modal-bg').addEventListener('click', e => {
@@ -1912,12 +1929,16 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
 const starsHtml = n => '⭐'.repeat(Math.min(5, Math.round(n)));
 function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
-async function loadModalReviews(key) {
+async function loadModalReviews(keys) {
+  const keyList = Array.isArray(keys) ? keys : [keys];
+  const filter = keyList.length > 1
+    ? `trip_id=in.${encodeURIComponent('(' + keyList.map(k => `"${k}"`).join(',') + ')')}`
+    : `trip_id=eq.${encodeURIComponent(keyList[0])}`;
   document.getElementById('spot-modal-reviews').innerHTML =
     '<div class="smd-loading">載入中…</div>';
   try {
     const res = await fetch(
-      `${SB_URL}/rest/v1/trip_reviews?trip_id=eq.${encodeURIComponent(key)}&order=created_at.desc`,
+      `${SB_URL}/rest/v1/trip_reviews?${filter}&order=created_at.desc`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
     );
     const reviews = await res.json();
@@ -1961,7 +1982,6 @@ async function openSpotModal(i) {
   document.getElementById('smd-comment-inp').value = '';
   document.getElementById('smd-submit-btn').textContent = '送出評分';
   document.getElementById('smd-submit-btn').disabled = false;
-  document.getElementById('smd-menu-picked').textContent = '';
 
   const rd = getSpotRating(spot);
   document.getElementById('spot-modal-head').innerHTML = `
@@ -1979,25 +1999,32 @@ async function openSpotModal(i) {
   document.getElementById('spot-modal-map').href =
     spot.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(spot.name + ' ' + spot.region)}`;
 
-  const menuSection = document.getElementById('smd-menu-section');
+  const storeView = document.getElementById('smd-view-store');
+  const itemView  = document.getElementById('smd-view-item');
+  const itemBar   = document.getElementById('smd-item-bar');
+  pickedDishName = '';
   if (isFood) {
+    // 餐廳：先進店家頁（菜單清單），點品項才進評分頁
     currentFoodSpot = spot;
-    pickedDishName = '';
     modalSpotKey = '';
-    menuSection.style.display = 'block';
     renderMenuPicker();
-    document.getElementById('spot-modal-reviews').innerHTML = '<div class="smd-empty">請先選擇要評分的品項</div>';
+    storeView.style.display = 'block';
+    itemView.style.display = 'none';
+    itemBar.style.display = 'none';
   } else {
     currentFoodSpot = null;
     modalSpotKey = spot.prefix + spot.name;
-    menuSection.style.display = 'none';
+    storeView.style.display = 'none';
+    itemView.style.display = 'flex';
+    itemBar.style.display = 'none';
     await loadModalReviews(modalSpotKey);
   }
 
   document.getElementById('spot-modal-bg').classList.add('open');
 }
 
-const LEGACY_DISH = '__legacy__';
+// 「整體評價」是保留品項名：不想拆品項的快速評分入口，跨旅程/記帳一樣以店名合併
+const OVERALL_DISH = '整體';
 
 function renderMenuPicker() {
   if (!currentFoodSpot) return;
@@ -2009,31 +2036,30 @@ function renderMenuPicker() {
       (dishes[dish] = dishes[dish] || []).push(r);
     }
   });
-  const dishNames = Object.keys(dishes);
-  const legacyKey = currentFoodSpot.prefix + currentFoodSpot.name;
-  const legacy = ratingsMap[legacyKey];
 
-  let rowsHtml = dishNames.map(dish => {
+  // 整體評價 = menu__店名__整體 ＋ 舊版整店評分（food__ / itemPrefix key，唯讀併入）
+  const overallRatings = (dishes[OVERALL_DISH] || []).filter(r => r.rating).map(r => r.rating);
+  let oSum = overallRatings.reduce((a, b) => a + b, 0);
+  let oCount = overallRatings.length;
+  const legacy = ratingsMap[currentFoodSpot.prefix + currentFoodSpot.name];
+  if (legacy) { oSum += parseFloat(legacy.avg) * legacy.count; oCount += legacy.count; }
+
+  let rowsHtml = `<div class="menu-item-row" data-dish="${OVERALL_DISH}">
+      <span class="menu-item-name">🏠 整體評價</span>
+      <span class="menu-item-score">⭐ ${oCount ? (oSum / oCount).toFixed(1) : '–'}（${oCount}）</span>
+    </div>`;
+
+  rowsHtml += Object.keys(dishes).filter(d => d !== OVERALL_DISH).map(dish => {
     const ratings = dishes[dish].filter(r => r.rating).map(r => r.rating);
     const avg = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '–';
-    const activeCls = dish === pickedDishName ? ' picked' : '';
-    return `<div class="menu-item-row${activeCls}" data-dish="${escHtml(dish)}">
+    return `<div class="menu-item-row" data-dish="${escHtml(dish)}">
       <span class="menu-item-name">${escHtml(dish)}</span>
       <span class="menu-item-score">⭐ ${avg}（${ratings.length}）</span>
     </div>`;
   }).join('');
 
-  // 舊版整店評分（改成品項評分前留下的資料）：獨立列出，才能看到當初寫的評論文字
-  if (legacy) {
-    const activeCls = pickedDishName === LEGACY_DISH ? ' picked' : '';
-    rowsHtml += `<div class="menu-item-row${activeCls}" data-dish="${LEGACY_DISH}">
-      <span class="menu-item-name">📋 整體評價（舊資料）</span>
-      <span class="menu-item-score">⭐ ${legacy.avg}（${legacy.count}）</span>
-    </div>`;
-  }
-
   const listEl = document.getElementById('smd-menu-list');
-  listEl.innerHTML = rowsHtml || '<div class="smd-empty">還沒有品項評分，新增第一個吧！</div>';
+  listEl.innerHTML = rowsHtml;
   listEl.querySelectorAll('.menu-item-row').forEach(row => {
     row.addEventListener('click', () => pickDish(row.dataset.dish));
   });
@@ -2043,21 +2069,32 @@ function renderMenuPicker() {
 function pickDish(dish) {
   if (!dish || !currentFoodSpot) return;
   pickedDishName = dish;
-  const isLegacy = dish === LEGACY_DISH;
-  modalSpotKey = isLegacy ? (currentFoodSpot.prefix + currentFoodSpot.name) : menuKey(currentFoodSpot.name, dish);
-  document.getElementById('smd-menu-picked').textContent = isLegacy
-    ? '📝 評分：整體評價（舊資料）'
-    : `📝 評分品項：${dish}`;
+  const isOverall = dish === OVERALL_DISH;
+  modalSpotKey = menuKey(currentFoodSpot.name, dish);
+  document.getElementById('smd-item-name').textContent = isOverall ? '🏠 整體評價' : dish;
   modalStarPick = 0;
   paintStars(0);
   document.getElementById('smd-comment-inp').value = '';
   document.getElementById('smd-submit-btn').textContent = '送出評分';
   document.getElementById('smd-submit-btn').disabled = false;
-  renderMenuPicker();
-  loadModalReviews(modalSpotKey).then(() => {
-    document.getElementById('spot-modal-reviews').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  document.getElementById('smd-view-store').style.display = 'none';
+  document.getElementById('smd-view-item').style.display = 'flex';
+  document.getElementById('smd-item-bar').style.display = 'flex';
+  // 整體評價頁同時列出舊版整店評分的評論文字
+  const keys = isOverall
+    ? [modalSpotKey, currentFoodSpot.prefix + currentFoodSpot.name]
+    : modalSpotKey;
+  loadModalReviews(keys);
 }
+
+document.getElementById('smd-back-btn').addEventListener('click', () => {
+  pickedDishName = '';
+  modalSpotKey = '';
+  renderMenuPicker();
+  document.getElementById('smd-view-item').style.display = 'none';
+  document.getElementById('smd-item-bar').style.display = 'none';
+  document.getElementById('smd-view-store').style.display = 'block';
+});
 
 document.getElementById('smd-menu-pick-btn').addEventListener('click', () => {
   const dish = document.getElementById('smd-menu-dish-inp').value.trim();
