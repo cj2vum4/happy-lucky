@@ -439,40 +439,6 @@ body {
   height: 72px; outline: none; margin-bottom: 10px; display: block;
 }
 .review-textarea:focus { border-color: var(--pea-dark); }
-
-/* ===== 菜單品項評分（跨旅程以店名合併） ===== */
-.menu-sheet-bg { z-index: 290; }
-.menu-sheet-bg .rate-sheet { z-index: 291; }
-.menu-sheet-list { max-height: 220px; overflow-y: auto; margin-bottom: 12px; }
-.menu-item-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--cream-dark);
-  cursor: pointer;
-  touch-action: manipulation;
-}
-.menu-item-row:last-child { border-bottom: none; }
-.menu-item-row:active { opacity: 0.6; }
-.menu-item-name { font-size: 14px; color: var(--coffee); }
-.menu-item-score { font-size: 12px; color: var(--coffee-light); flex-shrink: 0; }
-.menu-dish-input {
-  width: 100%;
-  border: 1.5px solid var(--cream-dark);
-  border-radius: 12px;
-  padding: 12px;
-  font-family: var(--body);
-  font-size: 14px;
-  color: var(--coffee);
-  background: var(--paper);
-  outline: none;
-  margin-bottom: 10px;
-  display: block;
-}
-.menu-dish-input:focus { border-color: var(--pea-dark); }
-
 .submit-btn {
   width: 100%; padding: 14px; background: var(--pea-dark); color: white;
   border: none; border-radius: 12px; font-family: var(--body);
@@ -772,21 +738,6 @@ body {
       </div>
     </div>
 
-    <!-- 菜單品項評分彈窗 -->
-    <div class="rate-sheet-bg menu-sheet-bg" id="menuSheetBg">
-      <div class="rate-sheet">
-        <div class="rate-sheet-handle"></div>
-        <div class="rate-sheet-header">
-          <div class="rate-sheet-name" id="menuSheetName"></div>
-          <button class="rate-sheet-close-btn" id="menuSheetClose">✕</button>
-        </div>
-        <div class="rate-sheet-count" id="menuSheetCount"></div>
-        <div class="menu-sheet-list" id="menuSheetList"></div>
-        <input type="text" class="menu-dish-input" id="menuSheetNewDish" placeholder="新增品項，例如：烤鴨">
-        <button type="button" class="submit-btn" id="menuSheetAddBtn">評分這個品項</button>
-      </div>
-    </div>
-
     <!-- 評分底部彈窗 -->
     <div class="rate-sheet-bg" id="rateSheetBg">
       <div class="rate-sheet">
@@ -894,23 +845,13 @@ dayTabBtns.forEach(btn => {
 const SB_URL = 'https://cmwtceczabbszhdgvwcj.supabase.co';
 const SB_KEY = 'sb_publishable_hDrADaLoZfAGDJH1i_JeHw_OSv_oqAu';
 const ITEM_PREFIX = 'hilai2026__';
-
-// 菜單品項評分：不加旅程前綴，同店名會跨旅程合併成同一家店的總分
-const MENU_PREFIX = 'menu__';
-const FOOD_SPOTS = ['島語自助餐廳', '東方樓頂級粵菜', '行政酒廊 貴賓軒'];
-const menuKey = (restaurant, dish) => MENU_PREFIX + restaurant + '__' + dish;
-
 let itemReviews = {};
 
 async function loadItemReviews() {
   try {
-    const [tripRes, menuRes] = await Promise.all([
-      fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.${ITEM_PREFIX}*&order=created_at.desc`, { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }),
-      fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.${MENU_PREFIX}*&order=created_at.desc`, { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
-    ]);
-    const tripData = await tripRes.json();
-    const menuData = await menuRes.json();
-    const data = [...(Array.isArray(tripData) ? tripData : []), ...(Array.isArray(menuData) ? menuData : [])];
+    const res = await fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.${ITEM_PREFIX}*&order=created_at.desc`, { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } });
+    const data = await res.json();
+    if (!Array.isArray(data)) return;
     itemReviews = {};
     data.forEach(r => { if (!itemReviews[r.trip_id]) itemReviews[r.trip_id] = []; itemReviews[r.trip_id].push(r); });
     refreshRateBtns();
@@ -927,20 +868,6 @@ function refreshRateBtns() {
       const avg = (ratings.reduce((a,b) => a+b, 0) / ratings.length).toFixed(1);
       btn.innerHTML = `⭐ ${avg}`; btn.classList.add('has-rating');
     } else { btn.innerHTML = '⭐ 評分'; btn.classList.remove('has-rating'); }
-  });
-
-  document.querySelectorAll('[data-menu-key]').forEach(card => {
-    const prefix = card.dataset.menuKey;
-    const btn = card.querySelector('.rate-btn');
-    if (!btn) return;
-    const ratings = [];
-    Object.keys(itemReviews).forEach(key => {
-      if (key.startsWith(prefix)) itemReviews[key].forEach(r => { if (r.rating) ratings.push(r.rating); });
-    });
-    if (ratings.length > 0) {
-      const avg = (ratings.reduce((a,b) => a+b, 0) / ratings.length).toFixed(1);
-      btn.innerHTML = `⭐ ${avg}・菜單`; btn.classList.add('has-rating');
-    } else { btn.innerHTML = '🍽️ 菜單評分'; btn.classList.remove('has-rating'); }
   });
 }
 
@@ -962,20 +889,12 @@ function injectRateButtons() {
     const nameEl = card.querySelector('.spot-name');
     if (!nameEl) return;
     const name = nameEl.textContent.trim();
+    const itemId = ITEM_PREFIX + name;
+    card.dataset.itemId = itemId;
     const btn = document.createElement('button');
-    btn.className = 'rate-btn'; btn.type = 'button';
+    btn.className = 'rate-btn'; btn.innerHTML = '⭐ 評分'; btn.type = 'button';
     btn.style.marginLeft = '8px';
-
-    if (FOOD_SPOTS.includes(name)) {
-      btn.innerHTML = '🍽️ 菜單評分';
-      card.dataset.menuKey = MENU_PREFIX + name + '__';
-      btn.addEventListener('click', e => { e.stopPropagation(); openMenuSheet(name); });
-    } else {
-      const itemId = ITEM_PREFIX + name;
-      btn.innerHTML = '⭐ 評分';
-      card.dataset.itemId = itemId;
-      btn.addEventListener('click', e => { e.stopPropagation(); openRateSheet(itemId, name); });
-    }
+    btn.addEventListener('click', e => { e.stopPropagation(); openRateSheet(itemId, name); });
     card.appendChild(btn);
   });
   loadItemReviews();
@@ -1023,70 +942,11 @@ rateSheetBtn.addEventListener('click', async () => {
       if (!itemReviews[sheetItemId]) itemReviews[sheetItemId] = [];
       itemReviews[sheetItemId].unshift({ trip_id: sheetItemId, rating: sheetRating, comment, created_at: new Date().toISOString() });
       refreshRateBtns(); rateSheetBtn.textContent = '謝謝你的評分 ✓';
-      if (menuSheetBg.classList.contains('open')) renderMenuSheetList();
       setTimeout(() => rateSheetBg.classList.remove('open'), 1200);
     } else { rateSheetBtn.textContent = '送出失敗，請重試'; rateSheetBtn.disabled = false; }
   } catch { rateSheetBtn.textContent = '送出失敗，請重試'; rateSheetBtn.disabled = false; }
 });
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-// 菜單品項評分 sheet
-let menuRestaurantName = '';
-const menuSheetBg      = document.getElementById('menuSheetBg');
-const menuSheetName    = document.getElementById('menuSheetName');
-const menuSheetCount   = document.getElementById('menuSheetCount');
-const menuSheetList    = document.getElementById('menuSheetList');
-const menuSheetNewDish = document.getElementById('menuSheetNewDish');
-const menuSheetAddBtn  = document.getElementById('menuSheetAddBtn');
-
-function openMenuSheet(name) {
-  menuRestaurantName = name;
-  menuSheetName.textContent = name + '・菜單評分';
-  menuSheetNewDish.value = '';
-  renderMenuSheetList();
-  menuSheetBg.classList.add('open');
-}
-
-function renderMenuSheetList() {
-  const prefix = MENU_PREFIX + menuRestaurantName + '__';
-  const dishes = {};
-  Object.keys(itemReviews).forEach(key => {
-    if (key.startsWith(prefix)) dishes[key.slice(prefix.length)] = itemReviews[key];
-  });
-  const dishNames = Object.keys(dishes);
-  const allRatings = dishNames.flatMap(d => dishes[d].filter(r => r.rating).map(r => r.rating));
-  menuSheetCount.textContent = allRatings.length
-    ? `綜合評分 ⭐ ${(allRatings.reduce((a, b) => a + b, 0) / allRatings.length).toFixed(1)}・共 ${allRatings.length} 則`
-    : '還沒有品項評分，新增第一個吧！';
-  menuSheetList.innerHTML = dishNames.map(dish => {
-    const ratings = dishes[dish].filter(r => r.rating).map(r => r.rating);
-    const avg = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '–';
-    return `<div class="menu-item-row" data-dish="${escHtml(dish)}">
-      <span class="menu-item-name">${escHtml(dish)}</span>
-      <span class="menu-item-score">⭐ ${avg}（${ratings.length}）</span>
-    </div>`;
-  }).join('');
-  menuSheetList.querySelectorAll('.menu-item-row').forEach(row => {
-    row.addEventListener('click', () => {
-      const dish = row.dataset.dish;
-      openRateSheet(menuKey(menuRestaurantName, dish), `${menuRestaurantName}・${dish}`);
-    });
-  });
-}
-
-menuSheetBg.addEventListener('click', e => {
-  if (e.target === menuSheetBg) menuSheetBg.classList.remove('open');
-});
-document.getElementById('menuSheetClose').addEventListener('click', () => {
-  menuSheetBg.classList.remove('open');
-});
-menuSheetAddBtn.addEventListener('click', () => {
-  const dish = menuSheetNewDish.value.trim();
-  if (!dish) return;
-  menuSheetNewDish.value = '';
-  openRateSheet(menuKey(menuRestaurantName, dish), `${menuRestaurantName}・${dish}`);
-});
-
 injectRateButtons();
 </script>
 

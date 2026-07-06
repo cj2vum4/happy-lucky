@@ -942,43 +942,6 @@
   }
   .smd-btn-close:active { background: #E4DAC8; }
 
-  /* 菜單品項選擇（餐廳類 spot 用）：兩步式（店家頁→品項頁） */
-  .smd-view-store { flex: 1; overflow-y: auto; min-height: 0; }
-  .smd-view-item { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-  .smd-item-bar { display: flex; align-items: center; gap: 10px; padding: 12px 20px 0; flex-shrink: 0; }
-  .smd-back-btn {
-    background: #F0EAE0; border: none; border-radius: 14px;
-    padding: 8px 14px; font-size: 13px; font-weight: 700; color: #8C7660;
-    font-family: inherit; cursor: pointer; touch-action: manipulation; flex-shrink: 0;
-  }
-  .smd-back-btn:active { background: #E4DAC8; }
-  .smd-item-name {
-    font-size: 15px; font-weight: 700; color: #3E2A1A;
-    flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .smd-menu-section { padding: 12px 20px 14px; background: #FDFAF5; }
-  .menu-sheet-list { margin-bottom: 10px; }
-  .menu-item-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 4px; border-bottom: 1px solid #EDE4CC; cursor: pointer; touch-action: manipulation; border-radius: 8px; }
-  .menu-item-row:last-child { border-bottom: none; }
-  .menu-item-row:active { opacity: 0.6; }
-  .menu-item-name { font-size: 14px; color: #3E2A1A; }
-  .menu-item-score { font-size: 12px; color: #8C7660; flex-shrink: 0; }
-  .smd-menu-add { display: flex; gap: 8px; }
-  .menu-dish-input {
-    flex: 1; padding: 10px 13px;
-    background: #F5F0E8; border: 1.5px solid #D4C8B0;
-    border-radius: 12px; font-size: 14px; font-family: inherit;
-    color: #3E2A1A; outline: none;
-  }
-  .menu-dish-input:focus { border-color: #8C7660; background: white; }
-  .smd-menu-pick-btn {
-    padding: 10px 14px; background: #8C5A1A; color: white;
-    border: none; border-radius: 12px;
-    font-size: 13px; font-weight: 700; font-family: inherit;
-    cursor: pointer; touch-action: manipulation; flex-shrink: 0;
-  }
-  .smd-menu-pick-btn:active { opacity: 0.8; }
-
   /* ============ 便利商店 FAB ============ */
   .conbini-fab {
     position: fixed;
@@ -1151,43 +1114,24 @@
     <div class="spot-modal-handle"></div>
     <div class="spot-modal-head" id="spot-modal-head"></div>
 
-    <!-- 店家頁：菜單品項清單（餐廳類 spot 專用，跨旅程/記帳以店名合併） -->
-    <div class="smd-view-store" id="smd-view-store" style="display:none">
-      <div class="smd-menu-section">
-        <div class="smd-rate-title">🍽️ 點品項看評價、給評分</div>
-        <div class="menu-sheet-list" id="smd-menu-list"></div>
-        <div class="smd-menu-add">
-          <input type="text" class="menu-dish-input" id="smd-menu-dish-inp" placeholder="新增品項，例如：月亮蝦餅">
-          <button type="button" class="smd-menu-pick-btn" id="smd-menu-pick-btn">新增並評分</button>
-        </div>
+    <!-- 評分輸入 -->
+    <div class="smd-rate-section">
+      <div class="smd-rate-title">我要評分</div>
+      <div class="smd-stars-row" id="smd-stars-row">
+        <button class="smd-star" data-s="1">☆</button>
+        <button class="smd-star" data-s="2">☆</button>
+        <button class="smd-star" data-s="3">☆</button>
+        <button class="smd-star" data-s="4">☆</button>
+        <button class="smd-star" data-s="5">☆</button>
       </div>
+      <textarea class="smd-comment" id="smd-comment-inp" rows="2" placeholder="留下你的想法（選填）"></textarea>
+      <button class="smd-submit" id="smd-submit-btn">送出評分</button>
     </div>
 
-    <!-- 品項頁（餐廳選完品項後）／一般景點評分頁 -->
-    <div class="smd-view-item" id="smd-view-item">
-      <div class="smd-item-bar" id="smd-item-bar" style="display:none">
-        <button type="button" class="smd-back-btn" id="smd-back-btn">‹ 菜單</button>
-        <div class="smd-item-name" id="smd-item-name"></div>
-      </div>
-      <div class="spot-modal-body">
-        <div class="smd-revs-title">評分紀錄</div>
-        <div id="spot-modal-reviews"></div>
-      </div>
-      <!-- 評分輸入 -->
-      <div class="smd-rate-section">
-        <div class="smd-rate-title">我要評分</div>
-        <div class="smd-stars-row" id="smd-stars-row">
-          <button class="smd-star" data-s="1">☆</button>
-          <button class="smd-star" data-s="2">☆</button>
-          <button class="smd-star" data-s="3">☆</button>
-          <button class="smd-star" data-s="4">☆</button>
-          <button class="smd-star" data-s="5">☆</button>
-        </div>
-        <textarea class="smd-comment" id="smd-comment-inp" rows="2" placeholder="留下你的想法（選填）"></textarea>
-        <button class="smd-submit" id="smd-submit-btn">送出評分</button>
-      </div>
+    <div class="spot-modal-body">
+      <div class="smd-revs-title">評分紀錄</div>
+      <div id="spot-modal-reviews"></div>
     </div>
-
     <div class="spot-modal-foot">
       <button class="smd-btn-close" id="spot-modal-close">關閉</button>
       <a class="smd-btn-map" id="spot-modal-map" href="" target="_blank" rel="noopener">🗺 導航</a>
@@ -1583,13 +1527,6 @@ const SB_KEY = 'sb_publishable_hDrADaLoZfAGDJH1i_JeHw_OSv_oqAu';
 let ratingsMap    = {};
 let currentSpots  = [];
 let userFoodSpots = [];
-
-// 菜單品項評分：不加旅程/來源前綴，同店名（無論來自旅程頁還是記帳 #spot）都會合併成同一家店的總分
-const MENU_PREFIX = 'menu__';
-const menuKey = (name, dish) => MENU_PREFIX + name + '__' + dish;
-let menuRawData    = [];
-let currentFoodSpot = null;
-let pickedDishName  = '';
 let activeCategory = 'all';
 let activeRegion    = 'all';
 let searchText      = '';
@@ -1638,39 +1575,14 @@ async function loadAllRatings() {
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
       .then(r => r.json()).then(accumulateRatings).catch(()=>{})
   );
-  // 舊版整店評分（記帳頁 #spot 尚未拆品項前留下的資料），折算進總分避免遺失
+  // Also load ratings for daily food spots
   fetches.push(
     fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.food__*&order=created_at.desc`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
       .then(r => r.json()).then(accumulateRatings).catch(()=>{})
   );
-  // 菜單品項評分：跨旅程頁 / 記帳頁以店名合併
-  fetches.push(
-    fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.${MENU_PREFIX}*&order=created_at.desc`,
-      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
-      .then(r => r.json()).then(data => {
-        if (Array.isArray(data)) menuRawData = data;
-        accumulateRatings(data);
-      }).catch(()=>{})
-  );
   await Promise.all(fetches);
   renderSearch();
-}
-
-// 餐廳類 spot 的總分：品項評分（menu__）+ 舊版整店評分（food__ 或 itemPrefix+name）合併計算
-function foodSpotRating(spot) {
-  const menuPrefix = MENU_PREFIX + spot.name + '__';
-  const rows = menuRawData.filter(r => r.trip_id.startsWith(menuPrefix) && r.rating);
-  let sum = rows.reduce((a, r) => a + r.rating, 0);
-  let count = rows.length;
-  const legacy = ratingsMap[spot.prefix + spot.name];
-  if (legacy) { sum += parseFloat(legacy.avg) * legacy.count; count += legacy.count; }
-  if (!count) return null;
-  return { avg: (sum / count).toFixed(1), count };
-}
-
-function getSpotRating(spot) {
-  return spot.category === '食物' ? foodSpotRating(spot) : ratingsMap[spot.prefix + spot.name];
 }
 
 async function loadUserFoodSpots() {
@@ -1799,8 +1711,8 @@ function renderSearch() {
     filtered = [...filtered].sort((a, b) => (b.sortDate || '').localeCompare(a.sortDate || ''));
   } else {
     filtered = [...filtered].sort((a, b) => {
-      const ra = getSpotRating(a);
-      const rb = getSpotRating(b);
+      const ra = ratingsMap[a.prefix + a.name];
+      const rb = ratingsMap[b.prefix + b.name];
       if (ra && rb)  return parseFloat(rb.avg) - parseFloat(ra.avg);
       if (ra && !rb) return -1;
       if (!ra && rb) return 1;
@@ -1832,7 +1744,7 @@ function renderSearch() {
 
   currentSpots = filtered;
   container.innerHTML = filtered.map((spot, i) => {
-    const ratingData = getSpotRating(spot);
+    const ratingData = ratingsMap[spot.prefix + spot.name];
     const ratingHTML = ratingData
       ? `<span class="spot-rating">⭐ ${ratingData.avg} <span class="rating-count">(${ratingData.count}則)</span></span>`
       : `<span class="spot-rating unrated">尚未評分</span>`;
@@ -1863,9 +1775,6 @@ function closeSpotModal() {
   document.getElementById('smd-comment-inp').value = '';
   document.getElementById('smd-submit-btn').textContent = '送出評分';
   document.getElementById('smd-submit-btn').disabled = false;
-  currentFoodSpot = null;
-  pickedDishName = '';
-  modalSpotKey = '';
 }
 document.getElementById('spot-modal-close').addEventListener('click', closeSpotModal);
 document.getElementById('spot-modal-bg').addEventListener('click', e => {
@@ -1885,12 +1794,9 @@ document.getElementById('smd-stars-row').addEventListener('click', e => {
 });
 
 document.getElementById('smd-submit-btn').addEventListener('click', async () => {
-  if (currentFoodSpot && !modalSpotKey) { alert('請先選擇要評分的品項'); return; }
   if (!modalStarPick) { alert('請先點選星星評分'); return; }
   const submitBtn = document.getElementById('smd-submit-btn');
-  const comment    = document.getElementById('smd-comment-inp').value.trim() || null;
-  const submitKey    = modalSpotKey;
-  const submitRating = modalStarPick;
+  const comment   = document.getElementById('smd-comment-inp').value.trim() || null;
   submitBtn.textContent = '送出中…';
   submitBtn.disabled = true;
   try {
@@ -1900,7 +1806,7 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
         apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
         'Content-Type': 'application/json', Prefer: 'return=minimal',
       },
-      body: JSON.stringify({ trip_id: submitKey, rating: submitRating, comment }),
+      body: JSON.stringify({ trip_id: modalSpotKey, rating: modalStarPick, comment }),
     });
     if (!res.ok && res.status !== 201) throw new Error(await res.text());
 
@@ -1909,15 +1815,8 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
     paintStars(0);
     document.getElementById('smd-comment-inp').value = '';
 
-    if (currentFoodSpot) {
-      menuRawData.push({ trip_id: submitKey, rating: submitRating, comment, created_at: new Date().toISOString() });
-      renderMenuPicker();
-      const avgBox = document.getElementById('smd-avg-box');
-      if (avgBox) avgBox.innerHTML = renderAvgBox(getSpotRating(currentFoodSpot));
-    }
-
     // Refresh this spot's review list + update ratingsMap
-    await loadModalReviews(submitKey);
+    await loadModalReviews(modalSpotKey);
     loadAllRatings(); // async, update search list in background
   } catch(e) {
     alert('評分失敗：' + e.message);
@@ -1929,16 +1828,12 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
 const starsHtml = n => '⭐'.repeat(Math.min(5, Math.round(n)));
 function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
-async function loadModalReviews(keys) {
-  const keyList = Array.isArray(keys) ? keys : [keys];
-  const filter = keyList.length > 1
-    ? `trip_id=in.${encodeURIComponent('(' + keyList.map(k => `"${k}"`).join(',') + ')')}`
-    : `trip_id=eq.${encodeURIComponent(keyList[0])}`;
+async function loadModalReviews(key) {
   document.getElementById('spot-modal-reviews').innerHTML =
     '<div class="smd-loading">載入中…</div>';
   try {
     const res = await fetch(
-      `${SB_URL}/rest/v1/trip_reviews?${filter}&order=created_at.desc`,
+      `${SB_URL}/rest/v1/trip_reviews?trip_id=eq.${encodeURIComponent(key)}&order=created_at.desc`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
     );
     const reviews = await res.json();
@@ -1966,24 +1861,17 @@ async function loadModalReviews(keys) {
   }
 }
 
-function renderAvgBox(rd) {
-  return rd
-    ? `<span class="smd-avg-stars">${starsHtml(rd.avg)}</span>
-       <span class="smd-avg-num">${rd.avg}</span>
-       <span class="smd-avg-count">(${rd.count} 則評分)</span>`
-    : `<span class="smd-unrated">尚未評分</span>`;
-}
-
 async function openSpotModal(i) {
   const spot = currentSpots[i];
-  const isFood = spot.category === '食物';
+  const key  = spot.prefix + spot.name;
+  modalSpotKey = key;
   modalStarPick = 0;
   paintStars(0);
   document.getElementById('smd-comment-inp').value = '';
   document.getElementById('smd-submit-btn').textContent = '送出評分';
   document.getElementById('smd-submit-btn').disabled = false;
 
-  const rd = getSpotRating(spot);
+  const rd = ratingsMap[key];
   document.getElementById('spot-modal-head').innerHTML = `
     <div class="smd-top">
       <div class="smd-emoji">${spot.emoji}</div>
@@ -1993,114 +1881,20 @@ async function openSpotModal(i) {
         <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
       </div>
     </div>
-    <div class="smd-avg" id="smd-avg-box">${renderAvgBox(rd)}</div>`;
+    <div class="smd-avg">
+      ${rd
+        ? `<span class="smd-avg-stars">${starsHtml(rd.avg)}</span>
+           <span class="smd-avg-num">${rd.avg}</span>
+           <span class="smd-avg-count">(${rd.count} 則評分)</span>`
+        : `<span class="smd-unrated">尚未評分</span>`}
+    </div>`;
 
   document.getElementById('spot-modal-go').href = spot.date ? `${spot.tripFile}?date=${spot.date}` : spot.tripFile;
   document.getElementById('spot-modal-map').href =
     spot.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(spot.name + ' ' + spot.region)}`;
-
-  const storeView = document.getElementById('smd-view-store');
-  const itemView  = document.getElementById('smd-view-item');
-  const itemBar   = document.getElementById('smd-item-bar');
-  pickedDishName = '';
-  if (isFood) {
-    // 餐廳：先進店家頁（菜單清單），點品項才進評分頁
-    currentFoodSpot = spot;
-    modalSpotKey = '';
-    renderMenuPicker();
-    storeView.style.display = 'block';
-    itemView.style.display = 'none';
-    itemBar.style.display = 'none';
-  } else {
-    currentFoodSpot = null;
-    modalSpotKey = spot.prefix + spot.name;
-    storeView.style.display = 'none';
-    itemView.style.display = 'flex';
-    itemBar.style.display = 'none';
-    await loadModalReviews(modalSpotKey);
-  }
-
   document.getElementById('spot-modal-bg').classList.add('open');
+  await loadModalReviews(key);
 }
-
-// 「整體評價」是保留品項名：不想拆品項的快速評分入口，跨旅程/記帳一樣以店名合併
-const OVERALL_DISH = '整體';
-
-function renderMenuPicker() {
-  if (!currentFoodSpot) return;
-  const prefix = MENU_PREFIX + currentFoodSpot.name + '__';
-  const dishes = {};
-  menuRawData.forEach(r => {
-    if (r.trip_id.startsWith(prefix)) {
-      const dish = r.trip_id.slice(prefix.length);
-      (dishes[dish] = dishes[dish] || []).push(r);
-    }
-  });
-
-  // 整體評價 = menu__店名__整體 ＋ 舊版整店評分（food__ / itemPrefix key，唯讀併入）
-  const overallRatings = (dishes[OVERALL_DISH] || []).filter(r => r.rating).map(r => r.rating);
-  let oSum = overallRatings.reduce((a, b) => a + b, 0);
-  let oCount = overallRatings.length;
-  const legacy = ratingsMap[currentFoodSpot.prefix + currentFoodSpot.name];
-  if (legacy) { oSum += parseFloat(legacy.avg) * legacy.count; oCount += legacy.count; }
-
-  let rowsHtml = `<div class="menu-item-row" data-dish="${OVERALL_DISH}">
-      <span class="menu-item-name">🏠 整體評價</span>
-      <span class="menu-item-score">⭐ ${oCount ? (oSum / oCount).toFixed(1) : '–'}（${oCount}）</span>
-    </div>`;
-
-  rowsHtml += Object.keys(dishes).filter(d => d !== OVERALL_DISH).map(dish => {
-    const ratings = dishes[dish].filter(r => r.rating).map(r => r.rating);
-    const avg = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '–';
-    return `<div class="menu-item-row" data-dish="${escHtml(dish)}">
-      <span class="menu-item-name">${escHtml(dish)}</span>
-      <span class="menu-item-score">⭐ ${avg}（${ratings.length}）</span>
-    </div>`;
-  }).join('');
-
-  const listEl = document.getElementById('smd-menu-list');
-  listEl.innerHTML = rowsHtml;
-  listEl.querySelectorAll('.menu-item-row').forEach(row => {
-    row.addEventListener('click', () => pickDish(row.dataset.dish));
-  });
-  document.getElementById('smd-menu-dish-inp').value = '';
-}
-
-function pickDish(dish) {
-  if (!dish || !currentFoodSpot) return;
-  pickedDishName = dish;
-  const isOverall = dish === OVERALL_DISH;
-  modalSpotKey = menuKey(currentFoodSpot.name, dish);
-  document.getElementById('smd-item-name').textContent = isOverall ? '🏠 整體評價' : dish;
-  modalStarPick = 0;
-  paintStars(0);
-  document.getElementById('smd-comment-inp').value = '';
-  document.getElementById('smd-submit-btn').textContent = '送出評分';
-  document.getElementById('smd-submit-btn').disabled = false;
-  document.getElementById('smd-view-store').style.display = 'none';
-  document.getElementById('smd-view-item').style.display = 'flex';
-  document.getElementById('smd-item-bar').style.display = 'flex';
-  // 整體評價頁同時列出舊版整店評分的評論文字
-  const keys = isOverall
-    ? [modalSpotKey, currentFoodSpot.prefix + currentFoodSpot.name]
-    : modalSpotKey;
-  loadModalReviews(keys);
-}
-
-document.getElementById('smd-back-btn').addEventListener('click', () => {
-  pickedDishName = '';
-  modalSpotKey = '';
-  renderMenuPicker();
-  document.getElementById('smd-view-item').style.display = 'none';
-  document.getElementById('smd-item-bar').style.display = 'none';
-  document.getElementById('smd-view-store').style.display = 'block';
-});
-
-document.getElementById('smd-menu-pick-btn').addEventListener('click', () => {
-  const dish = document.getElementById('smd-menu-dish-inp').value.trim();
-  if (!dish) return;
-  pickDish(dish);
-});
 
 // 類別 chips
 document.getElementById('cat-chips').querySelectorAll('.chip').forEach(btn => {
