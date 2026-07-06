@@ -63,6 +63,8 @@ git remote set-url origin "http://local_proxy@127.0.0.1:43657/git/cj2vum4/happy-
 ```
 推完後必須還原 remote URL。
 
+**每次變更 commit 後一律自動推到 `main`**（開發分支推完後直接 fast-forward `main` 並推上去，不需另外詢問）；GitHub Pages 部署偶爾會間歇性失敗（deploy 步驟回報 "Deployment failed, try again later."），失敗時推一個空白 commit 重試即可。
+
 ## 資料來源
 - `trips.json`：所有旅程資料（含 photos、spots、itemPrefix）
 - `itemPrefix` + spot name = Supabase `trip_id` rating key
