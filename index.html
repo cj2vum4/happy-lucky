@@ -942,6 +942,111 @@
   }
   .smd-btn-close:active { background: #E4DAC8; }
 
+  /* ============ 想去清單 ============ */
+  .wish-add-card {
+    background: var(--cream);
+    border: 1.5px solid var(--coffee);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .wish-inp {
+    width: 100%;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: var(--body);
+    font-size: 14px;
+    color: var(--coffee);
+    background: var(--paper);
+    outline: none;
+  }
+  .wish-inp:focus { border-color: var(--pea-dark); }
+  .wish-cat-row { display: flex; gap: 7px; }
+  .wish-add-btn {
+    margin-top: 2px;
+    padding: 12px;
+    background: var(--pea-dark);
+    color: var(--paper);
+    border: none;
+    border-radius: 10px;
+    font-family: var(--body);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--coffee);
+  }
+  .wish-add-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--coffee); }
+  .wish-add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .wish-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--paper);
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .wish-card.done { opacity: 0.55; }
+  .wish-card.done .wish-name { text-decoration: line-through; }
+  .wish-check {
+    width: 24px; height: 24px;
+    border: 1.5px solid var(--coffee);
+    border-radius: 7px;
+    background: var(--paper);
+    flex-shrink: 0;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--pea-dark);
+    margin-top: 2px;
+    padding: 0;
+  }
+  .wish-card.done .wish-check { background: var(--pea-light); }
+  .wish-body { flex: 1; min-width: 0; }
+  .wish-name { font-size: 15px; font-weight: 600; color: var(--coffee); line-height: 1.4; }
+  .wish-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; align-items: center; }
+  .wish-badge {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 10px;
+    background: var(--cream);
+    border: 1px solid var(--cream-dark);
+    color: var(--coffee-light);
+  }
+  .wish-badge.cat-food { background: #FDF3E7; color: #8C5A1A; border-color: rgba(212,136,60,0.3); }
+  .wish-ig-link {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 10px;
+    background: #FCE7F0;
+    border: 1px solid rgba(196,82,122,0.3);
+    color: var(--pea-dark);
+    text-decoration: none;
+  }
+  .wish-note { font-size: 12px; color: var(--coffee-light); margin-top: 5px; line-height: 1.5; }
+  .wish-del {
+    background: none; border: none;
+    color: var(--coffee-light);
+    font-size: 15px;
+    cursor: pointer;
+    padding: 2px 4px;
+    flex-shrink: 0;
+    opacity: 0.55;
+  }
+  .wish-del:active { opacity: 1; color: var(--rose-dark); }
+  .wish-empty {
+    text-align: center;
+    padding: 36px 0;
+    font-family: var(--hand-display);
+    font-size: 17px;
+    color: var(--coffee-light);
+  }
+
   /* ============ 便利商店 FAB ============ */
   .conbini-fab {
     position: fixed;
@@ -1008,6 +1113,7 @@
     <button class="tab-btn active" data-tab="home">首頁</button>
     <button class="tab-btn" data-tab="calendar">行事曆</button>
     <button class="tab-btn" data-tab="search">查詢</button>
+    <button class="tab-btn" data-tab="wishlist">想去</button>
   </div>
 
   <!-- 首頁 -->
@@ -1103,6 +1209,32 @@
 
     <div class="search-count" id="search-count"></div>
     <div id="search-results"></div>
+  </div>
+
+  <!-- 想去清單 -->
+  <div id="page-wishlist" class="page">
+    <div class="wish-add-card">
+      <input class="wish-inp" id="wish-name" placeholder="店名／景點名（必填）" maxlength="40" autocomplete="off">
+      <input class="wish-inp" id="wish-city" placeholder="城市，例：台北、東京" maxlength="20" list="wish-city-list" autocomplete="off">
+      <datalist id="wish-city-list"></datalist>
+      <div class="wish-cat-row" id="wish-cat-row">
+        <button class="chip active" data-cat="食物" type="button">🍽 吃的</button>
+        <button class="chip" data-cat="景點" type="button">📍 景點</button>
+      </div>
+      <input class="wish-inp" id="wish-ig" placeholder="IG 連結（選填，貼上網址）" inputmode="url" autocomplete="off">
+      <input class="wish-inp" id="wish-note" placeholder="備註（選填）" maxlength="60" autocomplete="off">
+      <button class="wish-add-btn" id="wish-add-btn" type="button">＋ 加入想去清單</button>
+    </div>
+
+    <div class="search-chips" id="wish-filter-chips" style="margin-top:18px">
+      <button class="chip active" data-f="todo">還沒去</button>
+      <button class="chip" data-f="done">去過了</button>
+      <button class="chip" data-f="all">全部</button>
+    </div>
+    <div class="search-chips" id="wish-city-chips" style="margin-top:8px"></div>
+
+    <div class="search-count" id="wish-count"></div>
+    <div id="wish-list"></div>
   </div>
 
   <div class="footer-note">made with care</div>
@@ -1938,6 +2070,195 @@ document.getElementById('sort-chips').querySelectorAll('.chip').forEach(btn => {
     renderSearch();
   });
 });
+
+// ============ 想去清單 ============
+// 資料存在 Supabase trip_reviews：trip_id = 'wish__{itemId}'、comment = JSON 事件。
+// 採 insert-only 事件流（add / done / del），讀取時依 created_at 順序折疊出最新狀態，
+// 不需要 UPDATE/DELETE 權限，也不用開新資料表。wish__ 開頭的資料不會進任何評分統計。
+const WISH_PREFIX = 'wish__';
+const WISH_CITY_SEEDS = ['台北', '新北', '台中', '台南', '高雄', '東京', '大阪', '京都', '首爾', '曼谷'];
+let wishItems = {};
+let wishFilter = 'todo';
+let wishCityFilter = 'all';
+let wishLoaded = false;
+
+async function loadWishlist() {
+  try {
+    const res = await fetch(
+      `${SB_URL}/rest/v1/trip_reviews?trip_id=like.${WISH_PREFIX}*&order=created_at.asc`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+    );
+    const rows = await res.json();
+    if (!Array.isArray(rows)) return;
+    wishItems = {};
+    rows.forEach(r => {
+      const id = r.trip_id.slice(WISH_PREFIX.length);
+      let ev;
+      try { ev = JSON.parse(r.comment); } catch { return; }
+      if (!ev || typeof ev !== 'object') return;
+      if (ev.t === 'add') {
+        wishItems[id] = {
+          name: String(ev.name || '').slice(0, 40),
+          city: String(ev.city || '').slice(0, 20),
+          cat: ev.cat === '景點' ? '景點' : '食物',
+          ig: typeof ev.ig === 'string' && /^https?:\/\//.test(ev.ig) ? ev.ig : '',
+          note: String(ev.note || '').slice(0, 60),
+          done: false,
+          ts: r.created_at || '',
+        };
+      } else if (ev.t === 'done' && wishItems[id]) {
+        wishItems[id].done = !!ev.v;
+      } else if (ev.t === 'del') {
+        delete wishItems[id];
+      }
+    });
+    wishLoaded = true;
+    renderWishlist();
+  } catch (e) { console.warn('想去清單載入失敗', e); }
+}
+
+async function wishInsert(itemId, payload) {
+  const post = body => fetch(`${SB_URL}/rest/v1/trip_reviews`, {
+    method: 'POST',
+    headers: {
+      apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json', Prefer: 'return=minimal',
+    },
+    body: JSON.stringify(body),
+  });
+  const row = { trip_id: WISH_PREFIX + itemId, comment: JSON.stringify(payload), rating: null };
+  let res = await post(row);
+  if (!res.ok && res.status !== 201) {
+    // 若 rating 欄位不接受 null，改填 1（wish__ 資料不會出現在任何評分統計裡）
+    res = await post({ ...row, rating: 1 });
+  }
+  return res.ok || res.status === 201;
+}
+
+async function addWishItem() {
+  const nameEl = document.getElementById('wish-name');
+  const cityEl = document.getElementById('wish-city');
+  const igEl   = document.getElementById('wish-ig');
+  const noteEl = document.getElementById('wish-note');
+  const btn    = document.getElementById('wish-add-btn');
+  const name = nameEl.value.trim();
+  if (!name) { nameEl.focus(); return; }
+  const ig = igEl.value.trim();
+  if (ig && !/^https?:\/\//.test(ig)) { alert('IG 連結請貼完整網址（https:// 開頭）'); return; }
+  const cat = document.querySelector('#wish-cat-row .chip.active').dataset.cat;
+  const item = { t: 'add', name, city: cityEl.value.trim(), cat, ig, note: noteEl.value.trim() };
+  btn.disabled = true; btn.textContent = '儲存中…';
+  const id = 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const ok = await wishInsert(id, item);
+  btn.disabled = false; btn.textContent = '＋ 加入想去清單';
+  if (!ok) { alert('儲存失敗，請再試一次'); return; }
+  wishItems[id] = { name: item.name, city: item.city, cat, ig, note: item.note, done: false, ts: new Date().toISOString() };
+  nameEl.value = ''; cityEl.value = ''; igEl.value = ''; noteEl.value = '';
+  renderWishlist();
+}
+
+async function toggleWishDone(id) {
+  const item = wishItems[id];
+  if (!item) return;
+  item.done = !item.done;
+  renderWishlist();
+  const ok = await wishInsert(id, { t: 'done', v: item.done });
+  if (!ok) { item.done = !item.done; renderWishlist(); alert('狀態儲存失敗，請再試一次'); }
+}
+
+async function deleteWishItem(id) {
+  const item = wishItems[id];
+  if (!item) return;
+  if (!confirm(`確定刪除「${item.name}」？`)) return;
+  const backup = item;
+  delete wishItems[id];
+  renderWishlist();
+  const ok = await wishInsert(id, { t: 'del' });
+  if (!ok) { wishItems[id] = backup; renderWishlist(); alert('刪除失敗，請再試一次'); }
+}
+
+function renderWishlist() {
+  const entries = Object.entries(wishItems);
+  const cities = [...new Set(entries.map(([, it]) => it.city).filter(Boolean))];
+
+  // 城市快速篩選 chips（有 2 個以上城市才顯示）
+  const cityChipsEl = document.getElementById('wish-city-chips');
+  if (cities.length > 1) {
+    if (wishCityFilter !== 'all' && !cities.includes(wishCityFilter)) wishCityFilter = 'all';
+    cityChipsEl.innerHTML =
+      `<button class="chip ${wishCityFilter === 'all' ? 'active' : ''}" data-c="all">全部城市</button>` +
+      cities.map(c => `<button class="chip ${wishCityFilter === c ? 'active' : ''}" data-c="${escHtml(c)}">${escHtml(c)}</button>`).join('');
+    cityChipsEl.querySelectorAll('.chip').forEach(b => {
+      b.addEventListener('click', () => { wishCityFilter = b.dataset.c; renderWishlist(); });
+    });
+  } else {
+    wishCityFilter = 'all';
+    cityChipsEl.innerHTML = '';
+  }
+
+  // 城市輸入框的自動建議
+  document.getElementById('wish-city-list').innerHTML =
+    [...new Set([...cities, ...WISH_CITY_SEEDS])].map(c => `<option value="${escHtml(c)}">`).join('');
+
+  let list = entries;
+  if (wishFilter === 'todo') list = list.filter(([, it]) => !it.done);
+  if (wishFilter === 'done') list = list.filter(([, it]) => it.done);
+  if (wishCityFilter !== 'all') list = list.filter(([, it]) => it.city === wishCityFilter);
+  // 還沒去的排前面，各自新→舊
+  list.sort(([, a], [, b]) => (a.done - b.done) || (b.ts || '').localeCompare(a.ts || ''));
+
+  const todoCount = entries.filter(([, it]) => !it.done).length;
+  const doneCount = entries.length - todoCount;
+  document.getElementById('wish-count').textContent =
+    entries.length ? `還沒去 ${todoCount} 個・去過了 ${doneCount} 個` : '';
+
+  const listEl = document.getElementById('wish-list');
+  if (!list.length) {
+    listEl.innerHTML = `<div class="wish-empty">${
+      entries.length ? '這個條件下沒有東西 ☁️'
+      : wishLoaded ? '清單空空的，把 IG 上看到的加進來吧 ✨' : '載入中…'
+    }</div>`;
+    return;
+  }
+  listEl.innerHTML = list.map(([id, it]) => `
+    <div class="wish-card ${it.done ? 'done' : ''}" data-id="${escHtml(id)}">
+      <button class="wish-check" type="button" title="${it.done ? '取消打勾' : '去過了打勾'}">${it.done ? '✓' : ''}</button>
+      <div class="wish-body">
+        <div class="wish-name">${it.cat === '食物' ? '🍽' : '📍'} ${escHtml(it.name)}</div>
+        <div class="wish-meta">
+          ${it.city ? `<span class="wish-badge">📍 ${escHtml(it.city)}</span>` : ''}
+          <span class="wish-badge ${it.cat === '食物' ? 'cat-food' : ''}">${escHtml(it.cat)}</span>
+          ${it.ig ? `<a class="wish-ig-link" href="${escHtml(it.ig)}" target="_blank" rel="noopener">📸 IG</a>` : ''}
+        </div>
+        ${it.note ? `<div class="wish-note">${escHtml(it.note)}</div>` : ''}
+      </div>
+      <button class="wish-del" type="button" title="刪除">✕</button>
+    </div>`).join('');
+  listEl.querySelectorAll('.wish-card').forEach(card => {
+    const id = card.dataset.id;
+    card.querySelector('.wish-check').addEventListener('click', () => toggleWishDone(id));
+    card.querySelector('.wish-del').addEventListener('click', () => deleteWishItem(id));
+  });
+}
+
+document.getElementById('wish-add-btn').addEventListener('click', addWishItem);
+document.getElementById('wish-cat-row').querySelectorAll('.chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('wish-cat-row').querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+document.getElementById('wish-filter-chips').querySelectorAll('.chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('wish-filter-chips').querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    wishFilter = btn.dataset.f;
+    renderWishlist();
+  });
+});
+// 切到想去分頁時重新整理一次（同步另一支手機的變更）
+document.querySelector('.tab-btn[data-tab="wishlist"]').addEventListener('click', loadWishlist);
+loadWishlist();
 
 // 啟動
 bootstrap();

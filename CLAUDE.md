@@ -61,3 +61,9 @@ git remote set-url origin "http://local_proxy@127.0.0.1:43657/git/cj2vum4/happy-
 - `trips.json`：所有旅程資料（含 photos、spots、itemPrefix）
 - `itemPrefix` + spot name = Supabase `trip_id` rating key
 - 新增旅程時 trips.json 與對應 HTML 頁面都要同步更新
+
+## 想去清單（index.html「想去」分頁）
+- 資料存在 Supabase `trip_reviews` 表：`trip_id = 'wish__{itemId}'`、`comment` = JSON 事件，**沒有另開資料表**
+- insert-only 事件流：`{t:'add', name, city, cat, ig, note}` / `{t:'done', v:true|false}` / `{t:'del'}`，讀取時依 `created_at` 升冪折疊出最新狀態，不需要 UPDATE/DELETE 權限
+- `wish__` 開頭的資料不會進任何評分統計（評分查詢都用明確前綴或精準名稱比對）
+- `cat` 只有兩種：`食物`（預設）／`景點`；`city` 自由填寫，清單有 2 個以上城市時自動長出城市篩選 chips
