@@ -1215,8 +1215,8 @@
   <div id="page-wishlist" class="page">
     <div class="wish-add-card">
       <input class="wish-inp" id="wish-name" placeholder="店名／景點名（必填）" maxlength="40" autocomplete="off">
-      <input class="wish-inp" id="wish-city" placeholder="城市，例：台北、東京" maxlength="20" list="wish-city-list" autocomplete="off">
-      <datalist id="wish-city-list"></datalist>
+      <select class="wish-inp" id="wish-city-select"></select>
+      <input class="wish-inp" id="wish-city-custom" placeholder="輸入城市名稱" maxlength="20" autocomplete="off" style="display:none">
       <div class="wish-cat-row" id="wish-cat-row">
         <button class="chip active" data-cat="食物" type="button">🍽 吃的</button>
         <button class="chip" data-cat="景點" type="button">📍 景點</button>
@@ -2135,9 +2135,26 @@ async function wishInsert(itemId, payload) {
   return res.ok || res.status === 201;
 }
 
+function getWishCityValue() {
+  const sel = document.getElementById('wish-city-select');
+  if (sel.value === '__custom__') return document.getElementById('wish-city-custom').value.trim();
+  return sel.value;
+}
+
+function refreshWishCitySelect() {
+  const sel = document.getElementById('wish-city-select');
+  const prev = sel.value;
+  const used = [...new Set(Object.values(wishItems).map(it => it.city).filter(Boolean))];
+  const all = [...new Set([...used, ...WISH_CITY_SEEDS])];
+  sel.innerHTML =
+    '<option value="">城市（選填）</option>' +
+    all.map(c => `<option value="${escHtml(c)}">${escHtml(c)}</option>`).join('') +
+    '<option value="__custom__">＋ 自訂城市…</option>';
+  if (prev && (prev === '__custom__' || all.includes(prev))) sel.value = prev;
+}
+
 async function addWishItem() {
   const nameEl = document.getElementById('wish-name');
-  const cityEl = document.getElementById('wish-city');
   const igEl   = document.getElementById('wish-ig');
   const noteEl = document.getElementById('wish-note');
   const btn    = document.getElementById('wish-add-btn');
@@ -2146,14 +2163,17 @@ async function addWishItem() {
   const ig = igEl.value.trim();
   if (ig && !/^https?:\/\//.test(ig)) { alert('IG 連結請貼完整網址（https:// 開頭）'); return; }
   const cat = document.querySelector('#wish-cat-row .chip.active').dataset.cat;
-  const item = { t: 'add', name, city: cityEl.value.trim(), cat, ig, note: noteEl.value.trim() };
+  const item = { t: 'add', name, city: getWishCityValue(), cat, ig, note: noteEl.value.trim() };
   btn.disabled = true; btn.textContent = '儲存中…';
   const id = 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const ok = await wishInsert(id, item);
   btn.disabled = false; btn.textContent = '＋ 加入想去清單';
   if (!ok) { alert('儲存失敗，請再試一次'); return; }
   wishItems[id] = { name: item.name, city: item.city, cat, ig, note: item.note, done: false, ts: new Date().toISOString() };
-  nameEl.value = ''; cityEl.value = ''; igEl.value = ''; noteEl.value = '';
+  nameEl.value = ''; igEl.value = ''; noteEl.value = '';
+  document.getElementById('wish-city-select').value = '';
+  document.getElementById('wish-city-custom').value = '';
+  document.getElementById('wish-city-custom').style.display = 'none';
   renderWishlist();
 }
 
@@ -2196,9 +2216,8 @@ function renderWishlist() {
     cityChipsEl.innerHTML = '';
   }
 
-  // 城市輸入框的自動建議
-  document.getElementById('wish-city-list').innerHTML =
-    [...new Set([...cities, ...WISH_CITY_SEEDS])].map(c => `<option value="${escHtml(c)}">`).join('');
+  // 城市下拉選單（已用過的城市排前面）
+  refreshWishCitySelect();
 
   let list = entries;
   if (wishFilter === 'todo') list = list.filter(([, it]) => !it.done);
@@ -2242,6 +2261,12 @@ function renderWishlist() {
 }
 
 document.getElementById('wish-add-btn').addEventListener('click', addWishItem);
+document.getElementById('wish-city-select').addEventListener('change', function() {
+  const custom = document.getElementById('wish-city-custom');
+  const isCustom = this.value === '__custom__';
+  custom.style.display = isCustom ? '' : 'none';
+  if (isCustom) custom.focus();
+});
 document.getElementById('wish-cat-row').querySelectorAll('.chip').forEach(btn => {
   btn.addEventListener('click', () => {
     document.getElementById('wish-cat-row').querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
@@ -2258,6 +2283,7 @@ document.getElementById('wish-filter-chips').querySelectorAll('.chip').forEach(b
 });
 // 切到想去分頁時重新整理一次（同步另一支手機的變更）
 document.querySelector('.tab-btn[data-tab="wishlist"]').addEventListener('click', loadWishlist);
+refreshWishCitySelect();
 loadWishlist();
 
 // 啟動
