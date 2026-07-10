@@ -1909,6 +1909,7 @@ function renderSearch() {
 // ── Spot rating modal ──────────────────────────────────────────────────────
 let modalSpotKey     = '';
 let modalStarPick    = 0;
+let smdSubmitting    = false;
 
 function closeSpotModal() {
   document.getElementById('spot-modal-bg').classList.remove('open');
@@ -1933,12 +1934,18 @@ document.getElementById('smd-stars-row').addEventListener('click', e => {
   if (!btn) return;
   modalStarPick = +btn.dataset.s;
   paintStars(modalStarPick);
+  if (!smdSubmitting) {
+    const submitBtn = document.getElementById('smd-submit-btn');
+    submitBtn.textContent = '送出評分';
+    submitBtn.disabled = false;
+  }
 });
 
 document.getElementById('smd-submit-btn').addEventListener('click', async () => {
   if (!modalStarPick) { alert('請先點選星星評分'); return; }
   const submitBtn = document.getElementById('smd-submit-btn');
   const comment   = document.getElementById('smd-comment-inp').value.trim() || null;
+  smdSubmitting = true;
   submitBtn.textContent = '送出中…';
   submitBtn.disabled = true;
   try {
@@ -1956,6 +1963,13 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
     modalStarPick = 0;
     paintStars(0);
     document.getElementById('smd-comment-inp').value = '';
+    // 短暫顯示感謝後恢復可再評分的狀態
+    setTimeout(() => {
+      if (!smdSubmitting) {
+        submitBtn.textContent = '送出評分';
+        submitBtn.disabled = false;
+      }
+    }, 1500);
 
     // Refresh this spot's review list + update ratingsMap
     await loadModalReviews(modalSpotKey);
@@ -1964,6 +1978,8 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
     alert('評分失敗：' + e.message);
     submitBtn.textContent = '送出評分';
     submitBtn.disabled = false;
+  } finally {
+    smdSubmitting = false;
   }
 });
 
