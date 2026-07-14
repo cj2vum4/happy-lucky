@@ -1300,7 +1300,7 @@ document.querySelectorAll('.nk').forEach(btn => {
 
 document.getElementById('save-btn').addEventListener('click', async () => {
   const amt = parseFloat(amtStr);
-  if (!amt || amt <= 0) { alert('請輸入金額'); return; }
+  if (isNaN(amt) || amt < 0) { alert('請輸入金額'); return; }
   const btn = document.getElementById('save-btn');
   const origLabel = btn.textContent;
   btn.textContent = '…'; btn.disabled = true;
