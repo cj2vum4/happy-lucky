@@ -1321,6 +1321,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('page-' + tab).classList.add('active');
+    if (tab === 'calendar') {
+      const currentDate = new Date();
+      currentMonth = currentDate.getMonth();
+      currentYear = currentDate.getFullYear();
+      renderCalendar();
+    }
     window.scrollTo(0, 0);
   });
 });
