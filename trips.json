@@ -54,15 +54,15 @@
       ],
       "spots": [
         { "name": "後寮天堂路",         "category": "室外景點", "region": "白沙鄉",   "emoji": "🌊", "desc": "蜿蜒入海堤岸・澎湖 IG 秘境打卡",         "mapUrl": "https://maps.google.com/?q=後寮天堂路+澎湖白沙" },
-        { "name": "通樑古榕",         "category": "室外景點", "region": "白沙鄉",   "emoji": "🌳", "desc": "三百年老榕樹・廟宇融合奇景",            "mapUrl": "https://maps.google.com/?q=通樑古榕+澎湖" },
-        { "name": "澎湖跨海大橋",     "category": "室外景點", "region": "白沙鄉",   "emoji": "🌉", "desc": "台灣第一長橋・橋頭仙人掌冰",            "mapUrl": "https://maps.google.com/?q=澎湖跨海大橋" },
+        { "name": "通樑古榕 保安宮",   "category": "室外景點", "region": "白沙鄉",   "emoji": "🌳", "desc": "三百年老榕樹・廟宇融合奇景",            "mapUrl": "https://maps.google.com/?q=通樑古榕+澎湖" },
+        { "name": "澎湖跨海大橋",     "category": "室外景點", "region": "白沙鄉",   "emoji": "🌉", "desc": "台灣第一長橋・橋頭仙人掌冰必吃",        "mapUrl": "https://maps.google.com/?q=澎湖跨海大橋" },
         { "name": "大菓葉柱狀玄武岩", "category": "室外景點", "region": "西嶼鄉",   "emoji": "🪨", "desc": "整面柱狀玄武岩・雨後積水倒影",          "mapUrl": "https://maps.google.com/?q=大菓葉柱狀玄武岩+西嶼" },
         { "name": "西嶼 二崁聚落",     "category": "室外景點", "region": "西嶼鄉",   "emoji": "🏘️", "desc": "百年咾咕石古厝群・古早味豆花",          "mapUrl": "https://maps.google.com/?q=二崁聚落+西嶼+澎湖" },
         { "name": "鯨魚洞（小門嶼）", "category": "室外景點", "region": "西嶼鄉",   "emoji": "🐋", "desc": "玄武岩海蝕拱門・西嶼最西端",            "mapUrl": "https://maps.google.com/?q=鯨魚洞+小門+西嶼+澎湖" },
         { "name": "奎壁山 摩西分海",   "category": "室外景點", "region": "湖西鄉",   "emoji": "🌊", "desc": "退潮露出礫石路・可走到赤嶼",            "mapUrl": "https://maps.google.com/?q=奎壁山+澎湖" },
         { "name": "很大的馬桶（龍門）", "category": "室外景點", "region": "湖西鄉",   "emoji": "🚽", "desc": "戰車造型廁所・龍門秘密沙灘",            "mapUrl": "https://maps.google.com/?q=龍門+很大的馬桶+澎湖湖西" },
         { "name": "澎湖天后宮",       "category": "室外景點", "region": "馬公市",   "emoji": "🛕", "desc": "全台最古老媽祖廟・中央老街旁",          "mapUrl": "https://maps.google.com/?q=澎湖天后宮" },
-        { "name": "篤行十村",         "category": "室外景點", "region": "馬公市",   "emoji": "🎬", "desc": "全台最老眷村・張雨生潘安邦故事館",      "mapUrl": "https://maps.google.com/?q=篤行十村+馬公" },
+        { "name": "篤行十村",         "category": "室外景點", "region": "馬公市",   "emoji": "🎬", "desc": "全台最老眷村・張雨生/潘安邦故事館",     "mapUrl": "https://maps.google.com/?q=篤行十村+馬公" },
         { "name": "佶肯 GK 美式漢堡炸雞","category": "食物",    "region": "馬公市",   "emoji": "🍔", "desc": "D1 晚餐・在地美式漢堡炸雞",              "mapUrl": "https://maps.google.com/?q=佶肯+GK+漢堡+澎湖馬公" },
         { "name": "藍冉 YUKKURI 日式刨冰","category": "食物",  "region": "馬公市",   "emoji": "🍧", "desc": "治平路・滿屋老件・週二店休",            "mapUrl": "https://maps.google.com/?q=藍冉+YUKKURI+馬公+治平路" },
         { "name": "小島一隅",          "category": "食物",    "region": "馬公市",   "emoji": "🍶", "desc": "D2 晚餐・人氣餐酒海鮮・建議訂位",        "mapUrl": "https://maps.google.com/?q=小島一隅+馬公+澎湖" },
@@ -72,10 +72,10 @@
         { "name": "大池炸粿",          "category": "食物",    "region": "西嶼鄉",   "emoji": "🧆", "desc": "西嶼大池・現炸海菜蝦仁炸粿",            "mapUrl": "https://maps.google.com/?q=大池炸粿+西嶼+澎湖" },
         { "name": "二崁一號（陳家）",   "category": "食物",    "region": "西嶼鄉",   "emoji": "🥤", "desc": "二崁聚落內・消暑古早味飲料",            "mapUrl": "https://maps.google.com/?q=二崁一號+陳家+西嶼+澎湖" },
         { "name": "易家仙人掌冰",     "category": "食物",    "region": "白沙鄉",   "emoji": "🍦", "desc": "跨海大橋旁・夏日消暑必吃",              "mapUrl": "https://maps.google.com/?q=易家仙人掌冰+澎湖" },
-        { "name": "冠軍民宿",            "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/9–10・$937/晚",                       "mapUrl": "https://maps.google.com/?q=冠軍民宿+馬公+澎湖" },
-        { "name": "合興大飯店 SDU Hotel", "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/10–11・$1,263/晚",                    "mapUrl": "https://maps.google.com/?q=合興大飯店+馬公+澎湖" },
-        { "name": "暖居民宿 B&B",        "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/11–12・$1,774/晚",                    "mapUrl": "https://maps.google.com/?q=暖居民宿+馬公+澎湖" },
-        { "name": "葳葳民宿",            "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/12–13・$1,270/晚",                    "mapUrl": "https://maps.google.com/?q=葳葳民宿+澎湖" }
+        { "name": "冠軍民宿",            "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/9–10・$937/晚・馬公市區",             "mapUrl": "https://maps.google.com/?q=冠軍民宿+馬公+澎湖" },
+        { "name": "合興大飯店 SDU Hotel", "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/10–11・$1,263/晚・馬公市區",          "mapUrl": "https://maps.google.com/?q=合興大飯店+馬公+澎湖" },
+        { "name": "暖居民宿 B&B",        "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/11–12・$1,774/晚・馬公市區",          "mapUrl": "https://maps.google.com/?q=暖居民宿+馬公+澎湖" },
+        { "name": "葳葳民宿",            "category": "住宿",    "region": "馬公市",   "emoji": "🏨", "desc": "7/12–13・$1,270/晚・馬公市區",          "mapUrl": "https://maps.google.com/?q=葳葳民宿+澎湖" }
       ]
     },
     {
@@ -146,6 +146,7 @@
         { "name": "台中國家歌劇院",     "category": "室外景點", "region": "西屯區", "emoji": "🎭", "desc": "伊東豊雄建築・勤美誠品商圈",                             "mapUrl": "https://maps.google.com/?q=台中國家歌劇院" },
         { "name": "逢甲夜市",           "category": "食物",    "region": "西屯區", "emoji": "🌙", "desc": "台中最大夜市・必吃大麻花",                               "mapUrl": "https://maps.google.com/?q=逢甲夜市" },
         { "name": "審計新村",           "category": "室外景點", "region": "西區",   "emoji": "🏬", "desc": "眷村文創・假日市集",                                     "mapUrl": "https://maps.google.com/?q=審計新村+台中" },
+        { "name": "自然科學博物館",     "category": "室內景點", "region": "北區",   "emoji": "🦕", "desc": "恐龍・熱帶雨林・科博館",                                 "mapUrl": "https://maps.google.com/?q=國立自然科學博物館+台中" },
         { "name": "三井 Outlet Park 台中港", "category": "室內景點", "region": "梧棲區", "emoji": "🛍️", "desc": "海線大型 Outlet・日系品牌",                        "mapUrl": "https://maps.google.com/?q=三井Outlet+台中港" }
       ]
     },
@@ -208,7 +209,7 @@
         { "name": "18度C 巧克力工坊",          "category": "食物",    "region": "埔里",    "emoji": "🍫", "desc": "生吐司・義式冰淇淋・伴手禮",               "mapUrl": "https://maps.google.com/?q=18度C+巧克力工坊+埔里" },
         { "name": "日月潭遊湖",                "category": "室外景點", "region": "日月潭", "emoji": "⛵", "desc": "早晨薄霧・水社→玄光寺→伊達邵環湖",         "mapUrl": "https://maps.google.com/?q=日月潭水社碼頭" },
         { "name": "發祥國小",                  "category": "室外景點", "region": "仁愛山區","emoji": "🏫", "desc": "部落小學・操場視野極佳",                   "mapUrl": "https://maps.google.com/?q=發祥國小+仁愛" },
-        { "name": "馬累了吧",                  "category": "住宿",    "region": "仁愛山區","emoji": "⛺", "desc": "海拔1300m・無光害觀星",                     "mapUrl": "https://maps.google.com/?q=馬累了吧+仁愛" }
+        { "name": "馬累了吧",                  "category": "住宿",    "region": "仁愛山區","emoji": "⛺", "desc": "D2住宿・海拔1300m・無光害觀星",             "mapUrl": "https://maps.google.com/?q=馬累了吧+仁愛" }
       ]
     }
   ]

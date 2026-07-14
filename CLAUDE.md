@@ -26,14 +26,24 @@
 每個旅程有獨立主題色，核心變數為 `--pea` / `--pea-dark` / `--pea-light` / `--pea-bg`：
 - 範例：南投(綠)、紐西蘭(藍)、台南(琥珀金)、台中(森林綠)、漢來(暖金)
 
+### 共用模組（assets/，六個旅程頁都吃這一份）
+旅程頁的「景點卡片、評分系統、polaroid 照片牆、lightbox」全部由共用模組提供，**不要在各頁複製這些程式碼**：
+- `assets/trip-page.css`：景點卡片/評分按鈕/評分彈窗/照片牆樣式（用 CSS 變數，自動套各頁主題色）
+- `assets/trip-page.js`：讀 `trips.json` → 渲染 `#spotList` 景點卡片、注入評分按鈕與底部彈窗、產生照片牆
+- 頁面只需要：head 放 `<link rel="stylesheet" href="../assets/trip-page.css">`；`#page-spots` 內放標題＋`<div id="spotList"></div>`；`#page-photos` 內放 `<div class="photo-wall" id="photoWall"></div>`；`</body>` 前放 `<script>window.TRIP_ID = '{trips.json 的 id}';</script>` ＋ `<script src="../assets/trip-page.js" defer></script>`
+- 行程（itinerary）時間軸是每頁獨有內容，仍寫在各頁 HTML；共用 JS 會自動幫 `.itinerary-card` 注入評分按鈕
+
 ### Supabase 評分系統
-- `ITEM_PREFIX`：格式為 `{tripkey}__`（例：`tainan2026__`）
-- `injectRateButtons()`：自動為每個 `.itinerary-card` 和 `.spot-card` 注入評分按鈕
-- 評分底部彈窗：`.rate-sheet-bg` + `.rate-sheet`（在 `.pages` 內）
+- `ITEM_PREFIX` 來自 trips.json 的 `itemPrefix`，格式為 `{tripkey}__`（例：`tainan2026__`）
 - 每個景點/行程項目只有單一整體評分（星星＋留言），沒有拆品項或菜單的機制
+- 評分底部彈窗由 `assets/trip-page.js` 動態注入（`.rate-sheet-bg`，在 `.pages` 內）
+
+### PWA
+- `manifest.json`＋`assets/icon-*.png`（💕 奶油底）；index/account/各旅程頁 head 都掛了 manifest 與 theme-color
+- **刻意不用 service worker**（避免更新後吃到舊快取），手機用「加入主畫面」即可全螢幕使用
 
 ### 參考實作
-`20260522_24/260522南投.html`（最完整範本，含照片牆）
+`20260522_24/260522南投.html`（最完整範本，含 bgm 與 Google 地圖）
 
 ---
 
@@ -58,9 +68,10 @@ git remote set-url origin "http://local_proxy@127.0.0.1:43657/git/cj2vum4/happy-
 **每次變更 commit 後一律自動推到 `main`**（開發分支推完後直接 fast-forward `main` 並推上去，不需另外詢問）；GitHub Pages 部署偶爾會間歇性失敗（deploy 步驟回報 "Deployment failed, try again later."），失敗時推一個空白 commit 重試即可。
 
 ## 資料來源
-- `trips.json`：所有旅程資料（含 photos、spots、itemPrefix）
-- `itemPrefix` + spot name = Supabase `trip_id` rating key
-- 新增旅程時 trips.json 與對應 HTML 頁面都要同步更新
+- `trips.json`：**景點（spots）與照片（photos）的唯一資料來源**，旅程頁的景點卡片與照片牆都由它產生，不要再把景點寫死在 HTML 裡
+- `itemPrefix` + spot name = Supabase `trip_id` rating key（改 spot 名稱會讓既有評分變孤兒，改名前先確認）
+- 新增旅程：trips.json 加一筆（含 id/itemPrefix/spots/photos）＋建立行程頁 HTML（referencing 南投頁的結構），頁尾 `window.TRIP_ID` 填 trips.json 的 id
+- 例外：`20260520/260520天使仙境.html` 是舊格式紀念頁，不吃共用模組，維持原樣
 
 ## 想去清單（index.html「想去」分頁）
 - 資料存在 Supabase `trip_reviews` 表：`trip_id = 'wish__{itemId}'`、`comment` = JSON 事件，**沒有另開資料表**

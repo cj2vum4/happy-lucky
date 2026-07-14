@@ -112,62 +112,7 @@ body { font-family: var(--body); color: var(--coffee); background: var(--cream);
 .nav-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--pea-dark); text-decoration: none; background: white; border: 1px solid var(--pea-light); border-radius: 20px; padding: 5px 12px; font-weight: 500; touch-action: manipulation; transition: background 0.12s; }
 .nav-btn:active { background: var(--pea-bg); transform: scale(0.97); }
 
-.spot-card { background: var(--cream); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; transition: transform 0.12s; }
-.spot-card:active { transform: scale(0.98); }
-.spot-emoji-wrap { width: 50px; height: 50px; background: var(--paper); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; border: 1px solid var(--cream-dark); }
-.spot-info { flex: 1; min-width: 0; }
-.spot-name { font-size: 14px; font-weight: 600; color: var(--coffee); margin-bottom: 2px; }
-.spot-desc { font-size: 12px; color: var(--coffee-light); }
-.spot-badge { font-size: 11px; padding: 3px 9px; border-radius: 10px; flex-shrink: 0; font-weight: 500; }
-.badge-out { background: var(--pea-bg); color: var(--pea-dark); }
-.badge-in { background: var(--amber-bg); color: #7A4E1A; }
-
-#page-photos { padding: 0 !important; overflow: hidden !important; }
-.photo-wall { position: relative; width: 100%; height: 100%; background: #c9a87c; background-image: radial-gradient(ellipse 80% 60% at 18% 25%, rgba(210,170,110,0.5) 0%, transparent 55%), radial-gradient(ellipse 60% 70% at 80% 75%, rgba(155,105,55,0.35) 0%, transparent 50%), repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px); display: flex; align-items: center; justify-content: center; }
-.photo-empty { text-align: center; color: rgba(255,255,255,0.75); font-family: var(--hand); font-size: 22px; line-height: 1.6; padding: 20px; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-.polaroid { position: absolute; background: #fefcf8; padding: 8px 8px 30px; box-shadow: 1px 2px 4px rgba(0,0,0,0.1), 2px 8px 20px rgba(0,0,0,0.22); cursor: pointer; user-select: none; touch-action: manipulation; will-change: transform, opacity; }
-.polaroid img { display: block; width: 160px; height: 160px; object-fit: cover; background: var(--cream-dark); }
-#photoOverlay { position: fixed; inset: 0; z-index: 50; pointer-events: none; display: none; }
-#photoOverlay.active { display: block; }
-#photoRefreshBtn { position: fixed; bottom: calc(var(--tab-h) + var(--safe-bottom) + 14px); right: 18px; z-index: 55; width: 46px; height: 46px; border-radius: 50%; background: rgba(248,252,242,0.94); border: 1.5px solid var(--cream-dark); font-size: 22px; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,0.2); display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); touch-action: manipulation; transition: opacity 0.15s; }
-#photoRefreshBtn.visible { display: flex; }
-#photoRefreshBtn:active { opacity: 0.65; }
-.polaroid-caption { font-family: var(--hand); font-size: 13px; color: #777; text-align: center; padding-top: 5px; line-height: 1.2; height: 18px; overflow: hidden; }
-@keyframes placePhoto { 0% { opacity: 0; transform: scale(0.45) rotate(var(--r)) translateY(-60px); } 60% { opacity: 1; transform: scale(1.07) rotate(var(--r)) translateY(6px); } 80% { transform: scale(0.97) rotate(var(--r)) translateY(-2px); } 100% { opacity: 1; transform: scale(1) rotate(var(--r)); } }
-@keyframes removePhoto { 0% { opacity: 1; transform: scale(1) rotate(var(--r)); } 20% { transform: scale(1.1) rotate(calc(var(--r) + 6deg)); } 100% { opacity: 0; transform: scale(0.15) rotate(calc(var(--r) + 30deg)) translateY(80px); } }
-.polaroid.placing { animation: placePhoto 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-.polaroid.removing { animation: removePhoto 0.38s ease-in forwards; pointer-events: none; }
-.lightbox { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.88); align-items: center; justify-content: center; }
-.lightbox.open { display: flex; }
-.lightbox img { max-width: 100%; max-height: 90vh; border-radius: 8px; object-fit: contain; }
-.lightbox-close { position: absolute; top: 16px; right: 20px; font-size: 28px; color: white; background: none; border: none; cursor: pointer; }
-
 .page-section-title { font-family: var(--hand); font-size: 20px; font-weight: 700; color: var(--coffee); margin-bottom: 14px; padding-left: 4px; }
-
-.rate-btn { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; background: var(--amber-bg); border: 1px solid rgba(212,136,60,0.25); border-radius: 16px; padding: 4px 9px; color: #8C5A1A; cursor: pointer; font-family: var(--body); font-weight: 500; touch-action: manipulation; transition: background 0.12s; flex-shrink: 0; line-height: 1; }
-.rate-btn:active { background: #F0DFC8; transform: scale(0.95); }
-.rate-btn.has-rating { border-color: rgba(212,136,60,0.5); }
-
-.rate-sheet-bg { display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.45); }
-.rate-sheet-bg.open { display: block; }
-.rate-sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(430px, 100%); background: var(--paper); border-radius: 20px 20px 0 0; padding: 8px 20px calc(28px + env(safe-area-inset-bottom, 0px)); z-index: 301; box-shadow: 0 -4px 24px rgba(0,0,0,0.15); }
-.rate-sheet-handle { width: 36px; height: 4px; background: var(--cream-dark); border-radius: 2px; margin: 0 auto 14px; }
-.rate-sheet-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
-.rate-sheet-name { font-family: var(--hand); font-size: 20px; font-weight: 700; color: var(--coffee); flex: 1; line-height: 1.2; }
-.rate-sheet-close-btn { background: none; border: none; font-size: 22px; color: var(--coffee-light); cursor: pointer; padding: 0 0 0 10px; line-height: 1; }
-.rate-sheet-count { font-size: 12px; color: var(--coffee-light); margin-bottom: 10px; }
-.rate-sheet-revs { max-height: 100px; overflow-y: auto; margin-bottom: 12px; }
-.sheet-review-item { display: flex; align-items: baseline; gap: 6px; padding: 5px 0; border-bottom: 1px solid var(--cream-dark); font-size: 12px; }
-.sheet-review-item:last-child { border-bottom: none; }
-.sheet-review-text { color: var(--coffee); line-height: 1.4; }
-.star-row { display: flex; gap: 8px; font-size: 30px; margin-bottom: 12px; justify-content: flex-start; }
-.star { cursor: pointer; opacity: 0.22; transition: opacity 0.12s, transform 0.12s; touch-action: manipulation; }
-.star.lit { opacity: 1; }
-.review-textarea { width: 100%; border: 1.5px solid var(--cream-dark); border-radius: 12px; padding: 12px; font-family: var(--body); font-size: 14px; color: var(--coffee); background: var(--paper); resize: none; height: 72px; outline: none; margin-bottom: 10px; display: block; }
-.review-textarea:focus { border-color: var(--pea-dark); }
-.submit-btn { width: 100%; padding: 14px; background: var(--pea-dark); color: white; border: none; border-radius: 12px; font-family: var(--body); font-size: 15px; font-weight: 600; cursor: pointer; touch-action: manipulation; transition: opacity 0.15s; }
-.submit-btn:active { opacity: 0.75; }
-.submit-btn:disabled { background: var(--coffee-faint); cursor: not-allowed; }
 
 /* ===== Google 地圖 ===== */
 .gmap-wrap { background: var(--cream); border-radius: 14px; padding: 10px; margin-bottom: 14px; }
@@ -176,6 +121,9 @@ body { font-family: var(--body); color: var(--coffee); background: var(--cream);
 .gmap-tab.active { background: var(--pea-dark); color: #fff; border-color: var(--pea-dark); }
 .gmap-canvas { width: 100%; height: 340px; border-radius: 12px; overflow: hidden; background: #e8eef0; }
 </style>
+<link rel="stylesheet" href="../assets/trip-page.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#FBF7EC">
 </head>
 <body>
 
@@ -562,91 +510,17 @@ body { font-family: var(--body); color: var(--coffee); background: var(--cream);
     <!-- PAGE: 景點 -->
     <div class="page" id="page-spots">
       <div class="page-section-title">📍 必訪景點</div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">🧚</div>
-        <div class="spot-info"><div class="spot-name">喜鵲方舟 FairyLand</div><div class="spot-desc">天空之鏡・透明獨木舟・梅花鹿・浣熊・水豚・后里仙境</div></div>
-        <span class="spot-badge badge-out">室外</span>
-      </div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">🍦</div>
-        <div class="spot-info"><div class="spot-name">宮原眼科</div><div class="spot-desc">冰淇淋打卡・伴手禮・最台中</div></div>
-        <span class="spot-badge badge-in">室內</span>
-      </div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">🌈</div>
-        <div class="spot-info"><div class="spot-name">彩虹眷村</div><div class="spot-desc">黃爺爺手繪彩色壁畫・免費</div></div>
-        <span class="spot-badge badge-out">室外</span>
-      </div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">⛵</div>
-        <div class="spot-info"><div class="spot-name">高美濕地</div><div class="spot-desc">風車・夕陽・退潮走在水面上</div></div>
-        <span class="spot-badge badge-out">室外</span>
-      </div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">🏫</div>
-        <div class="spot-info"><div class="spot-name">東海大學・路思義教堂</div><div class="spot-desc">最美大學・10月銀杏季</div></div>
-        <span class="spot-badge badge-out">室外</span>
-      </div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">🎭</div>
-        <div class="spot-info"><div class="spot-name">台中國家歌劇院</div><div class="spot-desc">伊東豊雄建築・勤美誠品商圈</div></div>
-        <span class="spot-badge badge-out">室外</span>
-      </div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">🌙</div>
-        <div class="spot-info"><div class="spot-name">逢甲夜市</div><div class="spot-desc">台中最大夜市・必吃大麻花</div></div>
-        <span class="spot-badge badge-out">室外</span>
-      </div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">🏬</div>
-        <div class="spot-info"><div class="spot-name">審計新村</div><div class="spot-desc">眷村文創・假日市集</div></div>
-        <span class="spot-badge badge-out">室外</span>
-      </div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">🦕</div>
-        <div class="spot-info"><div class="spot-name">自然科學博物館</div><div class="spot-desc">恐龍・熱帶雨林・科博館</div></div>
-        <span class="spot-badge badge-in">室內</span>
-      </div>
-      <div class="spot-card">
-        <div class="spot-emoji-wrap">🛍️</div>
-        <div class="spot-info"><div class="spot-name">三井 Outlet Park 台中港</div><div class="spot-desc">海線大型 Outlet・日系品牌</div></div>
-        <span class="spot-badge badge-in">室內</span>
-      </div>
+      <div id="spotList"></div>
     </div>
 
     <!-- PAGE: 照片 -->
     <div class="page" id="page-photos">
-      <div class="photo-wall" id="photoWall">
-        <div class="photo-empty">📷<br>照片規劃中<br><span style="font-size:16px;opacity:0.8">旅行後再來補上♡</span></div>
-      </div>
+      <div class="photo-wall" id="photoWall"></div>
     </div>
 
-    <!-- 評分底部彈窗 -->
-    <div class="rate-sheet-bg" id="rateSheetBg">
-      <div class="rate-sheet">
-        <div class="rate-sheet-handle"></div>
-        <div class="rate-sheet-header">
-          <div class="rate-sheet-name" id="rateSheetName"></div>
-          <button class="rate-sheet-close-btn" id="rateSheetClose">✕</button>
-        </div>
-        <div class="rate-sheet-count" id="rateSheetCount"></div>
-        <div class="rate-sheet-revs" id="rateSheetRevs"></div>
-        <div class="star-row" id="rateSheetStars">
-          <span class="star sheet-star" data-v="1">⭐</span>
-          <span class="star sheet-star" data-v="2">⭐</span>
-          <span class="star sheet-star" data-v="3">⭐</span>
-          <span class="star sheet-star" data-v="4">⭐</span>
-          <span class="star sheet-star" data-v="5">⭐</span>
-        </div>
-        <textarea class="review-textarea" id="rateSheetText" placeholder="寫下感想（選填）…"></textarea>
-        <button class="submit-btn" id="rateSheetBtn" disabled>請先選擇星數</button>
-      </div>
-    </div>
 
-    <div class="lightbox" id="lightbox">
-      <button class="lightbox-close" id="lightboxClose">✕</button>
-      <img id="lightboxImg" src="" alt="">
-    </div>
+
+    
 
   </div><!-- /pages -->
 
@@ -661,7 +535,7 @@ body { font-family: var(--body); color: var(--coffee); background: var(--cream);
 </div>
 
 <div id="photoOverlay"></div>
-<button id="photoRefreshBtn" onclick="resetPhotoWall()">↺</button>
+<button id="photoRefreshBtn">↺</button>
 
 <script>
 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -673,19 +547,9 @@ tabBtns.forEach(btn => {
     pages.forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(target).classList.add('active');
-    const overlay = document.getElementById('photoOverlay');
-    const refreshBtn = document.getElementById('photoRefreshBtn');
-    if (target === 'page-photos') { overlay.classList.add('active'); refreshBtn.classList.add('visible'); }
-    else { overlay.classList.remove('active'); refreshBtn.classList.remove('visible'); }
   });
 });
 
-const photoData = [];
-function initPhotoWall() {}
-function resetPhotoWall() {}
-
-document.getElementById('lightboxClose').addEventListener('click', () => document.getElementById('lightbox').classList.remove('open'));
-document.getElementById('lightbox').addEventListener('click', e => { if (e.target === document.getElementById('lightbox')) document.getElementById('lightbox').classList.remove('open'); });
 
 const dayTabBtns = document.querySelectorAll('.day-tab-btn');
 const dayPanels = document.querySelectorAll('.day-panel');
@@ -699,100 +563,9 @@ dayTabBtns.forEach(btn => {
   });
 });
 
-const SB_URL = 'https://cmwtceczabbszhdgvwcj.supabase.co';
-const SB_KEY = 'sb_publishable_hDrADaLoZfAGDJH1i_JeHw_OSv_oqAu';
-const ITEM_PREFIX = 'taichung2026__';
-let itemReviews = {};
-
-async function loadItemReviews() {
-  try {
-    const res = await fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.${ITEM_PREFIX}*&order=created_at.desc`, { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } });
-    const data = await res.json();
-    if (!Array.isArray(data)) return;
-    itemReviews = {};
-    data.forEach(r => { if (!itemReviews[r.trip_id]) itemReviews[r.trip_id] = []; itemReviews[r.trip_id].push(r); });
-    refreshRateBtns();
-  } catch(e) { console.warn('評分載入失敗', e); }
-}
-
-function refreshRateBtns() {
-  document.querySelectorAll('[data-item-id]').forEach(card => {
-    const revs = itemReviews[card.dataset.itemId] || [];
-    const btn = card.querySelector('.rate-btn'); if (!btn) return;
-    const ratings = revs.filter(r => r.rating).map(r => r.rating);
-    if (ratings.length > 0) { const avg = (ratings.reduce((a,b) => a+b,0)/ratings.length).toFixed(1); btn.innerHTML = `⭐ ${avg}`; btn.classList.add('has-rating'); }
-    else { btn.innerHTML = '⭐ 評分'; btn.classList.remove('has-rating'); }
-  });
-}
-
-function injectRateButtons() {
-  document.querySelectorAll('.itinerary-card').forEach(card => {
-    const nameEl = card.querySelector('.itinerary-name'); if (!nameEl) return;
-    const name = nameEl.textContent.trim(); const itemId = ITEM_PREFIX + name; card.dataset.itemId = itemId;
-    const wrap = document.createElement('div'); wrap.style.cssText = 'display:flex;justify-content:flex-end;margin-top:8px';
-    const btn = document.createElement('button'); btn.className = 'rate-btn'; btn.innerHTML = '⭐ 評分'; btn.type = 'button';
-    btn.addEventListener('click', e => { e.stopPropagation(); openRateSheet(itemId, name); });
-    wrap.appendChild(btn); card.appendChild(wrap);
-  });
-  document.querySelectorAll('.spot-card').forEach(card => {
-    const nameEl = card.querySelector('.spot-name'); if (!nameEl) return;
-    const name = nameEl.textContent.trim(); const itemId = ITEM_PREFIX + name; card.dataset.itemId = itemId;
-    const btn = document.createElement('button'); btn.className = 'rate-btn'; btn.innerHTML = '⭐ 評分'; btn.type = 'button';
-    btn.style.marginLeft = '8px';
-    btn.addEventListener('click', e => { e.stopPropagation(); openRateSheet(itemId, name); });
-    card.appendChild(btn);
-  });
-  loadItemReviews();
-}
-
-let sheetItemId = '', sheetRating = 0;
-const rateSheetBg = document.getElementById('rateSheetBg');
-const rateSheetName = document.getElementById('rateSheetName');
-const rateSheetCount = document.getElementById('rateSheetCount');
-const rateSheetRevs = document.getElementById('rateSheetRevs');
-const rateSheetStars = document.getElementById('rateSheetStars');
-const rateSheetText = document.getElementById('rateSheetText');
-const rateSheetBtn = document.getElementById('rateSheetBtn');
-
-function openRateSheet(itemId, name) {
-  sheetItemId = itemId; sheetRating = 0; rateSheetName.textContent = name; rateSheetText.value = '';
-  rateSheetBtn.disabled = true; rateSheetBtn.textContent = '請先選擇星數';
-  rateSheetStars.querySelectorAll('.sheet-star').forEach(s => s.classList.remove('lit'));
-  const revs = itemReviews[itemId] || [];
-  if (revs.length > 0) {
-    const ratings = revs.filter(r => r.rating).map(r => r.rating);
-    const avg = ratings.length ? (ratings.reduce((a,b) => a+b,0)/ratings.length).toFixed(1) : '–';
-    rateSheetCount.textContent = `平均 ${avg} 分・共 ${revs.length} 則`;
-    rateSheetRevs.innerHTML = revs.slice(0,3).map(r => `<div class="sheet-review-item">${r.rating?`<span>${'⭐'.repeat(r.rating)}</span>`:''}${r.comment?`<span class="sheet-review-text">${escHtml(r.comment)}</span>`:''}</div>`).join('');
-  } else { rateSheetCount.textContent = '還沒有評分，成為第一個吧！'; rateSheetRevs.innerHTML = ''; }
-  rateSheetBg.classList.add('open');
-}
-rateSheetBg.addEventListener('click', e => { if (e.target === rateSheetBg) rateSheetBg.classList.remove('open'); });
-document.getElementById('rateSheetClose').addEventListener('click', () => rateSheetBg.classList.remove('open'));
-rateSheetStars.querySelectorAll('.sheet-star').forEach(star => {
-  star.addEventListener('click', () => {
-    sheetRating = parseInt(star.dataset.v);
-    rateSheetStars.querySelectorAll('.sheet-star').forEach(s => s.classList.toggle('lit', parseInt(s.dataset.v) <= sheetRating));
-    rateSheetBtn.disabled = false; rateSheetBtn.textContent = '送出評分';
-  });
-});
-rateSheetBtn.addEventListener('click', async () => {
-  if (!sheetRating) return;
-  rateSheetBtn.disabled = true; rateSheetBtn.textContent = '送出中…';
-  const comment = rateSheetText.value.trim() || null;
-  try {
-    const res = await fetch(`${SB_URL}/rest/v1/trip_reviews`, { method: 'POST', headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify({ trip_id: sheetItemId, rating: sheetRating, comment }) });
-    if (res.ok || res.status === 201) {
-      if (!itemReviews[sheetItemId]) itemReviews[sheetItemId] = [];
-      itemReviews[sheetItemId].unshift({ trip_id: sheetItemId, rating: sheetRating, comment, created_at: new Date().toISOString() });
-      refreshRateBtns(); rateSheetBtn.textContent = '謝謝你的評分 ✓';
-      setTimeout(() => rateSheetBg.classList.remove('open'), 1200);
-    } else { rateSheetBtn.textContent = '送出失敗，請重試'; rateSheetBtn.disabled = false; }
-  } catch { rateSheetBtn.textContent = '送出失敗，請重試'; rateSheetBtn.disabled = false; }
-});
-function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-injectRateButtons();
 </script>
 
+<script>window.TRIP_ID = 'taichung-2026';</script>
+<script src="../assets/trip-page.js" defer></script>
 </body>
 </html>

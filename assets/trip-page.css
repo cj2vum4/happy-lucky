@@ -1,0 +1,295 @@
+/* ============================================================
+   旅程頁共用樣式（配合 assets/trip-page.js）
+   顏色一律走各頁 :root 的主題變數（--pea / --cream / --coffee…），
+   所以同一份 CSS 在每個旅程頁會自動呈現該頁的主題色。
+   ============================================================ */
+
+/* ===== 景點卡片（由 trips.json 產生） ===== */
+.spot-card {
+  background: var(--cream);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: transform 0.12s;
+}
+.spot-card:active { transform: scale(0.98); }
+.spot-emoji-wrap {
+  width: 50px; height: 50px;
+  background: var(--paper);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  border: 1px solid var(--cream-dark);
+}
+.spot-info { flex: 1; min-width: 0; }
+.spot-name { font-size: 14px; font-weight: 600; color: var(--coffee); margin-bottom: 2px; }
+.spot-desc { font-size: 12px; color: var(--coffee-light); }
+.spot-badge {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+.badge-out  { background: var(--pea-bg, var(--cream)); color: var(--pea-dark); }
+.badge-in   { background: var(--amber-bg, #FDF3E7); color: #7A4E1A; }
+.badge-stay { background: #EEF0F8; color: #4A4F8C; }
+
+/* ===== 評分按鈕 ===== */
+.rate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  background: var(--amber-bg, #FDF3E7);
+  border: 1px solid rgba(212,136,60,0.25);
+  border-radius: 16px;
+  padding: 4px 9px;
+  color: #8C5A1A;
+  cursor: pointer;
+  font-family: var(--body);
+  font-weight: 500;
+  touch-action: manipulation;
+  transition: background 0.12s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.rate-btn:active { background: #F0DFC8; transform: scale(0.95); }
+.rate-btn.has-rating { border-color: rgba(212,136,60,0.5); }
+
+/* ===== 評分底部彈窗 ===== */
+.rate-sheet-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0,0,0,0.45);
+}
+.rate-sheet-bg.open { display: block; }
+.rate-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(430px, 100%);
+  background: var(--paper);
+  border-radius: 20px 20px 0 0;
+  padding: 8px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+  z-index: 301;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
+}
+.rate-sheet-handle {
+  width: 36px; height: 4px;
+  background: var(--cream-dark);
+  border-radius: 2px;
+  margin: 0 auto 14px;
+}
+.rate-sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+.rate-sheet-name {
+  font-family: var(--hand);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--coffee);
+  flex: 1;
+  line-height: 1.2;
+}
+.rate-sheet-close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: var(--coffee-light);
+  cursor: pointer;
+  padding: 0 0 0 10px;
+  line-height: 1;
+}
+.rate-sheet-count { font-size: 12px; color: var(--coffee-light); margin-bottom: 10px; }
+.rate-sheet-revs { max-height: 100px; overflow-y: auto; margin-bottom: 12px; }
+.sheet-review-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--cream-dark);
+  font-size: 12px;
+}
+.sheet-review-item:last-child { border-bottom: none; }
+.sheet-review-text { color: var(--coffee); line-height: 1.4; }
+.rate-sheet .star-row {
+  display: flex;
+  gap: 8px;
+  font-size: 30px;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+.rate-sheet .star {
+  cursor: pointer;
+  opacity: 0.22;
+  transition: opacity 0.12s, transform 0.12s;
+  touch-action: manipulation;
+}
+.rate-sheet .star.lit { opacity: 1; }
+.rate-sheet .star:active { transform: scale(1.25); }
+.rate-sheet .review-textarea {
+  width: 100%;
+  border: 1.5px solid var(--cream-dark);
+  border-radius: 12px;
+  padding: 12px;
+  font-family: var(--body);
+  font-size: 16px;
+  color: var(--coffee);
+  background: var(--paper);
+  resize: none;
+  height: 72px;
+  outline: none;
+  margin-bottom: 10px;
+  display: block;
+}
+.rate-sheet .review-textarea:focus { border-color: var(--pea-dark); }
+.rate-sheet .submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--pea-dark);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: opacity 0.15s;
+}
+.rate-sheet .submit-btn:active { opacity: 0.75; }
+.rate-sheet .submit-btn:disabled { background: var(--coffee-faint, #B0A090); cursor: not-allowed; }
+
+/* ===== Polaroid 照片牆 ===== */
+#page-photos { padding: 0 !important; overflow: hidden !important; }
+.photo-wall {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #c9a87c;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 18% 25%, rgba(210,170,110,0.5) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 70% at 80% 75%, rgba(155,105,55,0.35) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px);
+}
+.photo-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--hand);
+  font-size: 22px;
+  color: rgba(60,40,20,0.55);
+  text-align: center;
+  line-height: 1.6;
+}
+.photo-empty .photo-empty-emoji { font-size: 50px; opacity: 0.6; }
+.photo-empty .photo-empty-sub { font-size: 14px; opacity: 0.75; }
+.polaroid {
+  position: absolute;
+  background: #fefcf8;
+  padding: 8px 8px 30px;
+  box-shadow: 1px 2px 4px rgba(0,0,0,0.1), 2px 8px 20px rgba(0,0,0,0.22);
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform, opacity;
+}
+.polaroid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+  pointer-events: none;
+}
+.polaroid:hover {
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.14), 4px 16px 36px rgba(0,0,0,0.3);
+  z-index: 200 !important;
+}
+.polaroid img {
+  display: block;
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  background: var(--cream-dark);
+}
+.polaroid-caption {
+  font-family: var(--hand);
+  font-size: 13px;
+  color: #777;
+  text-align: center;
+  padding-top: 5px;
+  line-height: 1.2;
+  height: 18px;
+  overflow: hidden;
+}
+@keyframes placePhoto {
+  0%   { opacity: 0; transform: scale(0.45) rotate(var(--r)) translateY(-60px); }
+  60%  { opacity: 1; transform: scale(1.07) rotate(var(--r)) translateY(6px); }
+  80%  { transform: scale(0.97) rotate(var(--r)) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) rotate(var(--r)); }
+}
+@keyframes removePhoto {
+  0%   { opacity: 1; transform: scale(1) rotate(var(--r)); }
+  20%  { transform: scale(1.1) rotate(calc(var(--r) + 6deg)); }
+  100% { opacity: 0; transform: scale(0.15) rotate(calc(var(--r) + 30deg)) translateY(80px); }
+}
+.polaroid.placing  { animation: placePhoto 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.polaroid.removing { animation: removePhoto 0.38s ease-in forwards; pointer-events: none; }
+#photoOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  display: none;
+}
+#photoOverlay.active { display: block; }
+#photoRefreshBtn {
+  position: fixed;
+  bottom: calc(var(--tab-h) + var(--safe-bottom) + 14px);
+  right: 18px;
+  z-index: 55;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: rgba(253,250,243,0.94);
+  border: 1.5px solid var(--cream-dark);
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  display: none;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  touch-action: manipulation;
+  transition: opacity 0.15s;
+}
+#photoRefreshBtn.visible { display: flex; }
+#photoRefreshBtn:active { opacity: 0.65; }
+
+/* ===== Lightbox ===== */
+.lightbox {
+  display: none;
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.88);
+  align-items: center; justify-content: center;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 90vh; border-radius: 8px; object-fit: contain; }
+.lightbox-close {
+  position: absolute; top: 16px; right: 20px;
+  font-size: 28px; color: white; background: none; border: none; cursor: pointer;
+}
