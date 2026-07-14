@@ -1418,9 +1418,11 @@ function renderHome() {
     <div class="stat-card"><span class="stat-num">${togetherDays}</span><span class="stat-label">天戀愛</span></div>
   `;
 
-  const upcoming   = TRIPS.filter(t => t.status === 'planning');
-  const past       = TRIPS.filter(t => t.status === 'done');
-  const withPhotos = TRIPS.filter(t => t.photos && t.photos.length > 0);
+  const byDateDesc = (a, b) => (b.startDate || '').localeCompare(a.startDate || '');
+  const upcoming   = TRIPS.filter(t => t.status === 'planning')
+    .sort((a, b) => (a.startDate || '').localeCompare(b.startDate || ''));
+  const past       = TRIPS.filter(t => t.status === 'done').sort(byDateDesc);
+  const withPhotos = TRIPS.filter(t => t.photos && t.photos.length > 0).sort(byDateDesc);
 
   document.getElementById('upcoming-trips').innerHTML = upcoming.length
     ? upcoming.map(renderTripCard).join('')
