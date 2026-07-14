@@ -35,6 +35,33 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { overflow-x: hidden; }
+  .pull-refresh-indicator {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    left: 50%;
+    z-index: 1000;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--cream-dark);
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--pea-dark);
+    box-shadow: 0 3px 12px rgba(61, 46, 31, 0.16);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -54px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .pull-refresh-indicator.visible { opacity: 1; }
+  .pull-refresh-indicator.ready { color: var(--coffee); }
+  .pull-refresh-indicator.loading {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  .pull-refresh-indicator.loading span { animation: pull-refresh-spin 0.7s linear infinite; }
+  @keyframes pull-refresh-spin { to { transform: rotate(360deg); } }
   body {
     font-family: var(--body);
     color: var(--coffee);
@@ -1088,6 +1115,7 @@
 </head>
 <body>
 
+<div id="pull-refresh-indicator" class="pull-refresh-indicator" aria-hidden="true"><span>↻</span></div>
 <div class="phone-frame">
   <div class="top-bar">
     <h1>我們的旅行手帳</h1>
@@ -2292,6 +2320,61 @@ document.getElementById('wish-filter-chips').querySelectorAll('.chip').forEach(b
 document.querySelector('.tab-btn[data-tab="wishlist"]').addEventListener('click', loadWishlist);
 refreshWishCitySelect();
 loadWishlist();
+
+// Pull down from the top of the page to reload the current data.
+const pullRefreshIndicator = document.getElementById('pull-refresh-indicator');
+const pullRefreshThreshold = 88;
+let pullStartY = 0;
+let pullDistance = 0;
+let isPullingToRefresh = false;
+
+function resetPullRefresh() {
+  pullDistance = 0;
+  pullRefreshIndicator.style.removeProperty('transform');
+  pullRefreshIndicator.classList.remove('visible', 'ready');
+}
+
+window.addEventListener('touchstart', event => {
+  if (window.scrollY > 0 || event.touches.length !== 1) return;
+  pullStartY = event.touches[0].clientY;
+  pullDistance = 0;
+  isPullingToRefresh = true;
+}, { passive: true });
+
+window.addEventListener('touchmove', event => {
+  if (!isPullingToRefresh) return;
+
+  const distance = event.touches[0].clientY - pullStartY;
+  if (distance <= 0) {
+    resetPullRefresh();
+    return;
+  }
+
+  pullDistance = Math.min(distance * 0.45, pullRefreshThreshold + 24);
+  pullRefreshIndicator.style.transform = `translate(-50%, ${pullDistance - 54}px)`;
+  pullRefreshIndicator.classList.add('visible');
+  pullRefreshIndicator.classList.toggle('ready', pullDistance >= pullRefreshThreshold);
+  event.preventDefault();
+}, { passive: false });
+
+window.addEventListener('touchend', () => {
+  if (!isPullingToRefresh) return;
+  isPullingToRefresh = false;
+
+  if (pullDistance >= pullRefreshThreshold) {
+    pullRefreshIndicator.classList.remove('ready');
+    pullRefreshIndicator.classList.add('loading');
+    window.location.reload();
+    return;
+  }
+
+  resetPullRefresh();
+});
+
+window.addEventListener('touchcancel', () => {
+  isPullingToRefresh = false;
+  resetPullRefresh();
+});
 
 // 啟動
 bootstrap();
