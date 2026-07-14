@@ -593,29 +593,82 @@ body {
 .badge-in   { background: var(--amber-bg); color: #7A4E1A; }
 .badge-stay { background: #EEF0F8; color: #4A4F8C; }
 
-/* ===== 照片 ===== */
+/* ===== 照片牆 ===== */
 #page-photos { padding: 0 !important; overflow: hidden !important; }
-.photo-placeholder {
+.photo-wall {
+  position: relative;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  background: #4A9ABD;
+  background: #c9a87c;
   background-image:
-    radial-gradient(ellipse 70% 50% at 20% 30%, rgba(100,190,230,0.45) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 60% at 80% 75%, rgba(10,80,120,0.35) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 60% at 18% 25%, rgba(210,170,110,0.5) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 70% at 80% 75%, rgba(155,105,55,0.35) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px);
 }
-.photo-placeholder-emoji { font-size: 52px; opacity: 0.6; }
-.photo-placeholder-text {
+.polaroid {
+  position: absolute;
+  background: #fefcf8;
+  padding: 8px 8px 30px;
+  box-shadow: 1px 2px 4px rgba(0,0,0,0.1), 2px 8px 20px rgba(0,0,0,0.22);
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform, opacity;
+}
+.polaroid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+  pointer-events: none;
+}
+.polaroid:hover {
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.14), 4px 16px 36px rgba(0,0,0,0.3);
+  z-index: 200 !important;
+}
+.polaroid img {
+  display: block;
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  background: var(--cream-dark);
+}
+.polaroid-caption {
   font-family: var(--hand);
-  font-size: 22px;
-  color: rgba(255,255,255,0.85);
-  font-weight: 600;
+  font-size: 13px;
+  color: #777;
+  text-align: center;
+  padding-top: 5px;
+  line-height: 1.2;
+  height: 18px;
+  overflow: hidden;
 }
-.photo-placeholder-sub { font-size: 13px; color: rgba(255,255,255,0.55); }
+@keyframes placePhoto {
+  0%   { opacity: 0; transform: scale(0.45) rotate(var(--r)) translateY(-60px); }
+  60%  { opacity: 1; transform: scale(1.07) rotate(var(--r)) translateY(6px); }
+  80%  { transform: scale(0.97) rotate(var(--r)) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) rotate(var(--r)); }
+}
+@keyframes removePhoto {
+  0%   { opacity: 1; transform: scale(1) rotate(var(--r)); }
+  20%  { transform: scale(1.1) rotate(calc(var(--r) + 6deg)); }
+  100% { opacity: 0; transform: scale(0.15) rotate(calc(var(--r) + 30deg)) translateY(80px); }
+}
+.polaroid.placing  { animation: placePhoto 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.polaroid.removing { animation: removePhoto 0.38s ease-in forwards; pointer-events: none; }
+.lightbox {
+  display: none;
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.88);
+  align-items: center; justify-content: center;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 90vh; border-radius: 8px; object-fit: contain; }
+.lightbox-close {
+  position: absolute; top: 16px; right: 20px;
+  font-size: 28px; color: white; background: none; border: none; cursor: pointer;
+}
 
 #photoOverlay {
   position: fixed; inset: 0; z-index: 50;
@@ -638,6 +691,7 @@ body {
   touch-action: manipulation; transition: opacity 0.15s;
 }
 #photoRefreshBtn.visible { display: flex; }
+#photoRefreshBtn:active { opacity: 0.65; }
 
 .page-section-title {
   font-family: var(--hand);
@@ -1890,11 +1944,13 @@ body {
 
     <!-- PAGE: 照片 -->
     <div class="page" id="page-photos">
-      <div class="photo-placeholder">
-        <div class="photo-placeholder-emoji">📷</div>
-        <div class="photo-placeholder-text">照片規劃中</div>
-        <div class="photo-placeholder-sub">旅行結束後上傳</div>
-      </div>
+      <div class="photo-wall" id="photoWall"></div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lightboxClose">✕</button>
+      <img id="lightboxImg" src="" alt="">
     </div>
 
     <!-- 評分底部彈窗 -->
@@ -1948,7 +2004,7 @@ body {
 </div>
 
 <div id="photoOverlay"></div>
-<button id="photoRefreshBtn">↺</button>
+<button id="photoRefreshBtn" onclick="resetPhotoWall()">↺</button>
 
 <script>
 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -1961,8 +2017,123 @@ tabBtns.forEach(btn => {
     pages.forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(target).classList.add('active');
+    const overlay = document.getElementById('photoOverlay');
+    const refreshBtn = document.getElementById('photoRefreshBtn');
+    if (target === 'page-photos') {
+      overlay.classList.add('active');
+      refreshBtn.classList.add('visible');
+      setTimeout(initPhotoWall, 80);
+    } else {
+      overlay.classList.remove('active');
+      refreshBtn.classList.remove('visible');
+    }
   });
 });
+
+// ── 照片牆 ──
+const photoData = [
+  { src: 'photo_01.jpg', caption: '西瀛虹橋 快倒了 🌉' },
+  { src: 'photo_02.jpg', caption: '夕陽耍寶時間 🌅' },
+  { src: 'photo_03.jpg', caption: '三哥酒釀雞排 🍗' },
+  { src: 'photo_04.jpg', caption: '澎湖三哥認證 😎' },
+  { src: 'photo_05.jpg', caption: '墨魚義大利麵 🦑' },
+  { src: 'photo_06.jpg', caption: '跨海大橋打卡 🕶️' },
+  { src: 'photo_07.jpg', caption: '跨海大橋 ✌️' },
+  { src: 'photo_08.jpg', caption: '藍冉日式刨冰 🍧' },
+  { src: 'photo_09.jpg', caption: '馬公街頭 🏪' },
+  { src: 'photo_10.jpg', caption: '民宿放空日常 🛋️' },
+  { src: 'photo_11.jpg', caption: '海風與大太陽 ☀️' },
+  { src: 'photo_12.jpg', caption: '鏡子裡的我們 🪞' },
+];
+
+// 12張照片的分區座標（相對viewport比例），讓照片充滿整個螢幕並遮住上下導覽
+const ZONES = [
+  [0.00, -0.03], // 左上角、略超出螢幕頂部
+  [0.38, -0.05], // 頂部中間
+  [0.60,  0.02], // 右上角
+  [-0.08, 0.20], // 左側稍微出血
+  [0.28,  0.22], // 中左
+  [0.58,  0.17], // 中右
+  [0.04,  0.45], // 下左
+  [0.38,  0.47], // 下中
+  [0.60,  0.42], // 下右
+  [-0.03, 0.66], // 底左、遮住 tab bar
+  [0.25,  0.69], // 底中
+  [0.48,  0.69], // 底右、遮住 tab bar
+];
+
+let photoWallReady = false;
+
+function initPhotoWall() {
+  if (photoWallReady) return;
+  const overlay = document.getElementById('photoOverlay');
+  if (!overlay) return;
+  photoWallReady = true;
+
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const PW = 176; // 160px photo + 8px*2 padding
+  const PH = 218; // 160px photo + 8px top + 50px bottom
+
+  photoData.forEach((p, i) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'polaroid';
+
+      const zone = ZONES[i % ZONES.length];
+      const x = zone[0] * W + randBetween(-PW * 0.15, PW * 0.15);
+      const y = zone[1] * H + randBetween(-PH * 0.12, PH * 0.12);
+      const rot = randBetween(-15, 15);
+
+      el.style.cssText = `position:fixed;left:${x}px;top:${y}px;z-index:${50 + i};pointer-events:auto`;
+      el.style.setProperty('--r', rot + 'deg');
+      el.innerHTML = `<img src="${p.src}" alt="${p.caption}" loading="lazy"><div class="polaroid-caption">${p.caption}</div>`;
+
+      // 長按 → lightbox
+      let pressTimer, longPressed = false;
+      const startPress = () => {
+        longPressed = false;
+        pressTimer = setTimeout(() => { longPressed = true; openLightbox(p.src); }, 480);
+      };
+      const cancelPress = () => clearTimeout(pressTimer);
+      el.addEventListener('touchstart', startPress, { passive: true });
+      el.addEventListener('touchend',   cancelPress);
+      el.addEventListener('touchmove',  cancelPress, { passive: true });
+      el.addEventListener('mousedown',  startPress);
+      el.addEventListener('mouseup',    cancelPress);
+      el.addEventListener('mouseleave', cancelPress);
+
+      // 點擊 → 移除（長按後不觸發）
+      el.addEventListener('click', () => {
+        if (longPressed) return;
+        el.classList.remove('placing');
+        void el.offsetWidth;
+        el.classList.add('removing');
+        el.addEventListener('animationend', () => el.remove(), { once: true });
+      });
+
+      overlay.appendChild(el);
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('placing')));
+    }, i * 350 + 150);
+  });
+}
+
+function resetPhotoWall() {
+  const overlay = document.getElementById('photoOverlay');
+  overlay.innerHTML = '';
+  photoWallReady = false;
+  setTimeout(initPhotoWall, 80);
+}
+
+// ── Lightbox ──
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxClose = document.getElementById('lightboxClose');
+lightboxClose.addEventListener('click', () => lightbox.classList.remove('open'));
+lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+function openLightbox(src) { lightboxImg.src = src; lightbox.classList.add('open'); }
+
+function randBetween(a, b) { return a + Math.random() * (b - a); }
 
 document.querySelectorAll('.day-tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
