@@ -1,13 +1,36 @@
 {
+  "id": "./",
   "name": "happy lucky",
   "short_name": "happy lucky",
   "description": "我們的旅行手帳",
-  "start_url": "./index.html",
+  "lang": "zh-TW",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FBF7EC",
   "theme_color": "#FBF7EC",
+  "categories": ["lifestyle", "travel"],
+  "shortcuts": [
+    {
+      "name": "行事曆",
+      "short_name": "行事曆",
+      "url": "./app.html?tab=calendar",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "快速查詢",
+      "short_name": "查詢",
+      "url": "./app.html?tab=search",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "想去清單",
+      "short_name": "想去",
+      "url": "./app.html?tab=wishlist",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
   "icons": [
     { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" },
