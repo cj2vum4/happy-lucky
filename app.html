@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FBF7EC">
+  <title>happy lucky</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
+      background: #FBF7EC;
+      color: #3D2E1F;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif;
+    }
+    main { width: min(320px, 100%); text-align: center; }
+    .mark { font-size: 54px; line-height: 1; }
+    h1 { margin: 14px 0 8px; font-size: 24px; }
+    p { margin: 0; color: #6B5640; line-height: 1.7; font-size: 14px; }
+    .spinner {
+      width: 28px; height: 28px; margin: 22px auto 0;
+      border: 3px solid #F5C2CE; border-top-color: #C4527A; border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+    button {
+      display: none; width: 100%; min-height: 48px; margin-top: 20px;
+      border: 0; border-radius: 14px; background: #C4527A; color: white;
+      font: inherit; font-weight: 700;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="mark">💕</div>
+    <h1>正在打開旅行手帳</h1>
+    <p id="status">準備最新版本與離線資料…</p>
+    <div class="spinner" id="spinner" aria-hidden="true"></div>
+    <button id="retry" type="button">重新嘗試</button>
+  </main>
+  <script>
+    (() => {
+      const status = document.getElementById('status');
+      const retry = document.getElementById('retry');
+      const spinner = document.getElementById('spinner');
+      const target = new URL('./index.html', location.href);
+      target.search = location.search;
+      target.hash = location.hash;
+
+      const go = () => location.replace(target.href);
+      const fail = (message) => {
+        status.textContent = message;
+        spinner.style.display = 'none';
+        retry.style.display = 'block';
+      };
+
+      retry.addEventListener('click', () => location.reload());
+
+      if (!('serviceWorker' in navigator)) {
+        status.textContent = '此瀏覽器不支援離線模式，仍可正常使用。';
+        setTimeout(go, 350);
+        return;
+      }
+
+      navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' })
+        .then(async registration => {
+          registration.update().catch(() => {});
+          await navigator.serviceWorker.ready;
+          go();
+        })
+        .catch(error => {
+          console.error('Service worker registration failed', error);
+          if (navigator.onLine) {
+            status.textContent = '離線功能暫時無法啟用，正在繼續開啟…';
+            setTimeout(go, 500);
+          } else {
+            fail('目前沒有網路，而且尚未完成離線資料準備。');
+          }
+        });
+    })();
+  </script>
+</body>
+</html>
