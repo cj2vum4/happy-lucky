@@ -39,8 +39,9 @@
 - 評分底部彈窗由 `assets/trip-page.js` 動態注入（`.rate-sheet-bg`，在 `.pages` 內）
 
 ### PWA
-- `manifest.json`＋`assets/icon-*.png`（💕 奶油底）；index/account/各旅程頁 head 都掛了 manifest 與 theme-color
-- **刻意不用 service worker**（避免更新後吃到舊快取），手機用「加入主畫面」即可全螢幕使用
+- `manifest.json`＋`assets/icon-*.png`（情侶插畫）；index/account/各旅程頁 head 都掛了 manifest 與 theme-color
+- `icon-512-maskable.png` 必須留安全邊距（內容縮到約 78%），否則 Android 圓形遮罩會裁掉頭髮/帽緣；不可直接複製 `icon-512.png`
+- `sw.js`＋`offline.html`：有 service worker（離線可看＋新版本提示更新），改版時記得同步 sw.js 內的 cache 版本號
 
 ### 參考實作
 `20260522_24/260522南投.html`（最完整範本，含 bgm 與 Google 地圖）
