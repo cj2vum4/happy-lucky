@@ -1,9 +1,9 @@
 :root {
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
-  --mobile-nav-height: 66px;
+  --pwa-safe-top: env(safe-area-inset-top, 0px);
+  --pwa-safe-right: env(safe-area-inset-right, 0px);
+  --pwa-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --pwa-safe-left: env(safe-area-inset-left, 0px);
+  --pwa-nav-height: 66px;
 }
 
 html.pwa-mobile-enhanced,
@@ -13,22 +13,27 @@ html.pwa-mobile-enhanced body {
 }
 
 html.pwa-mobile-enhanced body {
-  min-height: 100dvh;
-  padding-left: var(--safe-left);
-  padding-right: var(--safe-right);
   -webkit-text-size-adjust: 100%;
 }
 
-html.pwa-mobile-enhanced .phone-frame {
+/* 以下版型規則只套用在 index.html（.tabs + .tab-btn[data-tab]）；
+   app-shell 頁（account.html、各旅程頁）自行管理高度與安全區，不要被覆蓋。 */
+html.pwa-layout-index body {
+  min-height: 100dvh;
+  padding-left: var(--pwa-safe-left);
+  padding-right: var(--pwa-safe-right);
+}
+
+html.pwa-layout-index .phone-frame {
   min-height: 100dvh !important;
-  padding-bottom: calc(var(--mobile-nav-height) + var(--safe-bottom) + 24px) !important;
+  padding-bottom: calc(var(--pwa-nav-height) + var(--pwa-safe-bottom) + 24px) !important;
 }
 
-html.pwa-mobile-enhanced .top-bar {
-  padding-top: calc(18px + var(--safe-top)) !important;
+html.pwa-layout-index .top-bar {
+  padding-top: calc(18px + var(--pwa-safe-top)) !important;
 }
 
-html.pwa-mobile-enhanced .tabs {
+html.pwa-layout-index .tabs {
   position: fixed !important;
   z-index: 850 !important;
   left: 50% !important;
@@ -36,12 +41,12 @@ html.pwa-mobile-enhanced .tabs {
   bottom: 0 !important;
   transform: translateX(-50%) !important;
   width: min(430px, 100%) !important;
-  min-height: calc(var(--mobile-nav-height) + var(--safe-bottom)) !important;
+  min-height: calc(var(--pwa-nav-height) + var(--pwa-safe-bottom)) !important;
   display: grid !important;
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   align-items: start !important;
   gap: 0 !important;
-  padding: 7px 8px calc(7px + var(--safe-bottom)) !important;
+  padding: 7px 8px calc(7px + var(--pwa-safe-bottom)) !important;
   border-top: 1px solid rgba(61, 46, 31, 0.12) !important;
   border-bottom: 0 !important;
   background: rgba(251, 247, 236, 0.94) !important;
@@ -50,7 +55,7 @@ html.pwa-mobile-enhanced .tabs {
   -webkit-backdrop-filter: blur(18px) saturate(1.15);
 }
 
-html.pwa-mobile-enhanced .tab-btn {
+html.pwa-layout-index .tab-btn {
   min-width: 0 !important;
   min-height: 50px !important;
   padding: 5px 4px !important;
@@ -65,18 +70,18 @@ html.pwa-mobile-enhanced .tab-btn {
   touch-action: manipulation;
 }
 
-html.pwa-mobile-enhanced .tab-btn.active {
+html.pwa-layout-index .tab-btn.active {
   transform: none !important;
   box-shadow: none !important;
 }
 
-html.pwa-mobile-enhanced .tab-icon {
+html.pwa-layout-index .tab-icon {
   display: block;
   font-size: 20px;
   line-height: 1;
 }
 
-html.pwa-mobile-enhanced .page {
+html.pwa-layout-index .page {
   padding-left: clamp(16px, 5vw, 24px) !important;
   padding-right: clamp(16px, 5vw, 24px) !important;
 }
@@ -89,21 +94,22 @@ html.pwa-mobile-enhanced a.mini-trip-link {
   touch-action: manipulation;
 }
 
-html.pwa-mobile-enhanced button:not(.star):not(.lightbox-close):not(.ix-lightbox-close),
-html.pwa-mobile-enhanced input,
-html.pwa-mobile-enhanced select,
-html.pwa-mobile-enhanced textarea {
+html.pwa-layout-index button:not(.star):not(.lightbox-close):not(.ix-lightbox-close),
+html.pwa-layout-index input,
+html.pwa-layout-index select,
+html.pwa-layout-index textarea {
   min-height: 44px;
 }
 
-html.pwa-mobile-enhanced input,
+/* 避免 iOS 聚焦時自動放大，各頁都需要 */
+html.pwa-mobile-enhanced input:not([type="date"]):not([type="hidden"]),
 html.pwa-mobile-enhanced select,
 html.pwa-mobile-enhanced textarea {
   font-size: 16px !important;
 }
 
-html.pwa-mobile-enhanced .search-chips,
-html.pwa-mobile-enhanced .trip-map-chips {
+html.pwa-layout-index .search-chips,
+html.pwa-layout-index .trip-map-chips {
   overflow-x: auto;
   flex-wrap: nowrap !important;
   margin-left: -4px;
@@ -114,16 +120,16 @@ html.pwa-mobile-enhanced .trip-map-chips {
   -webkit-overflow-scrolling: touch;
 }
 
-html.pwa-mobile-enhanced .search-chips::-webkit-scrollbar,
-html.pwa-mobile-enhanced .trip-map-chips::-webkit-scrollbar { display: none; }
+html.pwa-layout-index .search-chips::-webkit-scrollbar,
+html.pwa-layout-index .trip-map-chips::-webkit-scrollbar { display: none; }
 
-html.pwa-mobile-enhanced .search-chips > *,
-html.pwa-mobile-enhanced .trip-map-chips > * {
+html.pwa-layout-index .search-chips > *,
+html.pwa-layout-index .trip-map-chips > * {
   flex: 0 0 auto;
   scroll-snap-align: start;
 }
 
-html.pwa-mobile-enhanced.keyboard-open .tabs {
+html.pwa-layout-index.keyboard-open .tabs {
   transform: translate(-50%, 110%) !important;
   pointer-events: none;
 }
@@ -131,9 +137,9 @@ html.pwa-mobile-enhanced.keyboard-open .tabs {
 .pwa-status-banner {
   position: fixed;
   z-index: 1100;
-  top: calc(10px + var(--safe-top));
+  top: calc(10px + var(--pwa-safe-top));
   left: 50%;
-  width: min(390px, calc(100% - 28px - var(--safe-left) - var(--safe-right)));
+  width: min(390px, calc(100% - 28px - var(--pwa-safe-left) - var(--pwa-safe-right)));
   transform: translate(-50%, -140%);
   opacity: 0;
   padding: 10px 14px;
@@ -157,8 +163,8 @@ html.pwa-mobile-enhanced.keyboard-open .tabs {
   position: fixed;
   z-index: 1150;
   left: 50%;
-  bottom: calc(var(--mobile-nav-height) + var(--safe-bottom) + 14px);
-  width: min(390px, calc(100% - 28px - var(--safe-left) - var(--safe-right)));
+  bottom: calc(var(--pwa-nav-height) + var(--pwa-safe-bottom) + 14px);
+  width: min(390px, calc(100% - 28px - var(--pwa-safe-left) - var(--pwa-safe-right)));
   transform: translateX(-50%);
   display: grid;
   gap: 8px;
@@ -182,8 +188,8 @@ html.pwa-mobile-enhanced.keyboard-open .tabs {
   position: fixed;
   z-index: 1200;
   left: 50%;
-  bottom: calc(var(--mobile-nav-height) + var(--safe-bottom) + 14px);
-  width: min(390px, calc(100% - 28px - var(--safe-left) - var(--safe-right)));
+  bottom: calc(var(--pwa-nav-height) + var(--pwa-safe-bottom) + 14px);
+  width: min(390px, calc(100% - 28px - var(--pwa-safe-left) - var(--pwa-safe-right)));
   transform: translateX(-50%);
   padding: 14px;
   border: 1px solid rgba(61, 46, 31, .14);
