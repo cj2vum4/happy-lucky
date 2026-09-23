@@ -337,6 +337,18 @@
    "lng": 120.202523,
    "pid": "ChIJrZJc4GJ2bjQRa3BRyIgtRcM",
    "addr": "700台灣臺南市中西區南美里忠義路二段63號"
+  },
+  "歐貝拉洋菓子": {
+   "lat": 22.9825597,
+   "lng": 120.2263899,
+   "pid": "ChIJL0Y98ph2bjQRynWBGUEU9AY",
+   "addr": "701台灣臺南市東區崇信里崇信街12號"
+  },
+  "安平有間旅店": {
+   "lat": 22.9997935,
+   "lng": 120.1621348,
+   "pid": "ChIJA4rH_Sl3bjQR-CwuLcEyiKg",
+   "addr": "708台灣臺南市安平區運河路23巷27號"
   }
  }
 }

@@ -85,25 +85,19 @@
       "endDate": "2026-09-06",
       "destination": "台北・南港",
       "people": 2,
-      "status": "planning",
-      "tags": ["奢華住宿", "無邊際泳池", "自助餐"],
+      "status": "done",
+      "tags": ["奢華住宿"],
       "file": "20260905_06/260905漢來.html",
       "itemPrefix": "hilai2026__",
       "photos": [],
       "spots": [
-        { "name": "室內恆溫泳池",   "category": "室內景點", "region": "南港區", "emoji": "🏊", "desc": "25m 溫水游泳池・全天開放",       "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
-        { "name": "三溫暖 SPA",     "category": "室內景點", "region": "南港區", "emoji": "🧖", "desc": "三溫暖・蒸氣室・放鬆身心",       "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
-        { "name": "島語自助餐廳",   "category": "食物",    "region": "南港區", "emoji": "🍽️", "desc": "多國料理・海鮮・現做甜點",       "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
-        { "name": "東方樓頂級粵菜", "category": "食物",    "region": "南港區", "emoji": "🥢", "desc": "精緻粵式料理・飲茶早午餐",       "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
-        { "name": "行政酒廊 貴賓軒","category": "食物",    "region": "南港區", "emoji": "🍾", "desc": "25F 全景・Happy Hour・專屬禮遇", "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
-        { "name": "24H 健身中心",   "category": "室內景點", "region": "南港區", "emoji": "💪", "desc": "完整器材・不限時間",           "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" },
-        { "name": "LaLaport 台北南港", "category": "室內景點", "region": "南港區", "emoji": "🛍️", "desc": "200+ 品牌・日本進口・美食廣場", "mapUrl": "https://maps.google.com/?q=LaLaport+台北南港" }
+        { "name": "台北漢來大飯店", "category": "住宿", "region": "南港區", "emoji": "🏨", "desc": "9/5 入住一晚", "mapUrl": "https://maps.google.com/?q=台北漢來大飯店+南港" }
       ]
     },
     {
       "id": "tainan-2026",
       "title": "台南行",
-      "startDate": "2026-09-25",
+      "startDate": "2026-09-24",
       "endDate": "2026-09-27",
       "destination": "台南",
       "people": 2,
@@ -113,6 +107,8 @@
       "itemPrefix": "tainan2026__",
       "photos": [],
       "spots": [
+        { "name": "歐貝拉洋菓子（崇信門市）", "category": "食物", "region": "東區", "emoji": "🍰", "desc": "9/24 晚餐後・藍莓乳酪 4吋蛋糕", "mapUrl": "https://maps.google.com/?q=歐貝拉洋菓子+崇信門市+台南" },
+        { "name": "安平有間旅店", "category": "住宿", "region": "安平區", "emoji": "🏨", "desc": "9/24 住宿・$1,280 − 國旅補助 $800 = $480", "mapUrl": "https://maps.google.com/?q=安平有間旅店+台南" },
         { "name": "赤崁樓",           "category": "室內景點", "region": "中西區", "emoji": "🏯", "desc": "荷蘭古堡・台南地標・門票 NT$50",   "mapUrl": "https://maps.google.com/?q=赤崁樓+台南" },
         { "name": "安平古堡",         "category": "室外景點", "region": "安平區", "emoji": "🏰", "desc": "荷治時代第一座城堡・周氏蝦捲",     "mapUrl": "https://maps.google.com/?q=安平古堡+台南" },
         { "name": "四草綠色隧道",     "category": "室外景點", "region": "安南區", "emoji": "🚣", "desc": "竹筏遊紅樹林・台版亞馬遜",         "mapUrl": "https://maps.google.com/?q=四草綠色隧道+台南" },

@@ -190,7 +190,7 @@ body {
   <header class="app-header">
     <a href="../index.html" class="back-btn">‹</a>
     <div class="header-title">台南行</div>
-    <div class="header-meta">9/25–27<br>3天2夜</div>
+    <div class="header-meta">9/24–27<br>4天3夜</div>
   </header>
 
   <div class="pages">
@@ -199,7 +199,7 @@ body {
     <div class="page active" id="page-home">
       <div class="cover-card">
         <h1>古都・美食・巷弄漫遊</h1>
-        <div class="dates">2026年9月25日（五）— 9月27日（日）・2人同遊</div>
+        <div class="dates">2026年9月24日（四）— 9月27日（日）・2人同遊</div>
         <div class="cover-tags">
           <span class="cover-tag">古蹟</span>
           <span class="cover-tag">美食</span>
@@ -210,7 +210,7 @@ body {
 
       <div class="page-section-title">💰 預算概覽</div>
       <div class="budget-hero">
-        <span class="budget-amount">NT$ 16,000</span>
+        <span class="budget-amount">NT$ 16,480</span>
         <div class="budget-label">2人預估總花費</div>
       </div>
       <div class="budget-row">
@@ -220,7 +220,12 @@ body {
       </div>
       <div class="budget-row">
         <div class="budget-row-icon">🏨</div>
-        <div class="budget-row-name">住宿 2晚</div>
+        <div class="budget-row-name">安平有間旅店 9/24（$1,280 − 國旅補助 $800）</div>
+        <div class="budget-row-price">$480</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-row-icon">🏨</div>
+        <div class="budget-row-name">住宿 9/25、9/26 共2晚</div>
         <div class="budget-row-price">$7,000</div>
       </div>
       <div class="budget-row">
@@ -242,7 +247,7 @@ body {
         <div class="transport-icon-wrap">🚄</div>
         <div class="transport-body">
           <div class="transport-title">台北→台南（去程）</div>
-          <div class="transport-sub">約 1小時45分・票價約 NT$1,350/人・建議搭早班車</div>
+          <div class="transport-sub">9/24 出發・約 1小時45分・票價約 NT$1,350/人</div>
         </div>
       </div>
       <div class="transport-card">
@@ -274,13 +279,14 @@ body {
           <button class="gmap-tab" data-day="1" type="button">D1</button>
           <button class="gmap-tab" data-day="2" type="button">D2</button>
           <button class="gmap-tab" data-day="3" type="button">D3</button>
+          <button class="gmap-tab" data-day="4" type="button">D4</button>
         </div>
         <div id="gmap" class="gmap-canvas"></div>
       </div>
       <!--TRIPGMAP-->
 <script>
 (function () {
-  const SPOTS = [{"n":"赤崁樓","lat":22.997478,"lng":120.202543,"t":"spot","d":[1],"pid":"ChIJbYl7d2F2bjQRnFdvyMBuZfI"},{"n":"國華街美食","lat":22.99755,"lng":120.199,"t":"food","d":[1],"pid":"ChIJezCwC8p3bjQRDdtipPr_yZQ"},{"n":"孔廟文化園區","lat":22.990246,"lng":120.204066,"t":"spot","d":[1],"pid":"ChIJYw4RTH12bjQRKS6hu0HiVMY"},{"n":"藍晒圖文創園區","lat":22.987102,"lng":120.197345,"t":"spot","d":[1],"pid":"ChIJtbdB0Xt2bjQR1IE4qcWD-lg"},{"n":"花園夜市","lat":23.011239,"lng":120.200227,"t":"food","d":[1],"pid":"ChIJx7B27Vl2bjQRXNQQFasKOKI"},{"n":"六千牛肉湯","lat":22.98922,"lng":120.194848,"t":"food","d":[2],"pid":"ChIJuSIMDFR2bjQRO5xlAsCglKA"},{"n":"安平古堡","lat":23.001509,"lng":120.160624,"t":"spot","d":[2],"pid":"ChIJZ-TjeHN2bjQR8a3Jat0VHps"},{"n":"四草綠色隧道","lat":23.01964,"lng":120.136146,"t":"spot","d":[2],"pid":"ChIJt0-ISOvYbTQRhg3rUteyQIw"},{"n":"奇美博物館","lat":22.934561,"lng":120.226027,"t":"spot","d":[2],"pid":"ChIJq6qqqnp0bjQRpvTHZeYTjKg"},{"n":"十鼓仁糖文創","lat":22.938363,"lng":120.229616,"t":"spot","d":[2],"pid":"ChIJA0P9eml0bjQRAFSV5Tjabuc"},{"n":"豆奶宗早餐","lat":22.991328,"lng":120.193075,"t":"food","d":[3],"pid":"ChIJW1n1cnB2bjQRkayQ2G4XQbY"},{"n":"漁光島","lat":22.980987,"lng":120.155832,"t":"spot","d":[3],"pid":"ChIJ87qwKf11bjQRMuEmcom6RX8"},{"n":"方舟咖啡","lat":23.001779,"lng":120.198115,"t":"food","d":[3],"pid":"ChIJmXLbXGd2bjQRaN3rdWVRKeY"},{"n":"林百貨","lat":22.991792,"lng":120.202523,"t":"spot","d":[3],"pid":"ChIJrZJc4GJ2bjQRa3BRyIgtRcM"}], ROUTES = {"1":["赤崁樓","國華街美食","孔廟文化園區","藍晒圖文創園區","花園夜市"],"2":["六千牛肉湯","安平古堡","四草綠色隧道","奇美博物館","十鼓仁糖文創"],"3":["豆奶宗早餐","漁光島","方舟咖啡","林百貨"]}, DCOL = {"1":"#e8913c","2":"#18a0b0","3":"#c0567a"}, KEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo', REGION = '台南';
+  const SPOTS = [{"n":"歐貝拉洋菓子","lat":22.9825597,"lng":120.2263899,"t":"food","d":[1],"pid":"ChIJL0Y98ph2bjQRynWBGUEU9AY"},{"n":"安平有間旅店","lat":22.9997935,"lng":120.1621348,"t":"stay","d":[1],"pid":"ChIJA4rH_Sl3bjQR-CwuLcEyiKg"},{"n":"赤崁樓","lat":22.997478,"lng":120.202543,"t":"spot","d":[2],"pid":"ChIJbYl7d2F2bjQRnFdvyMBuZfI"},{"n":"國華街美食","lat":22.99755,"lng":120.199,"t":"food","d":[2],"pid":"ChIJezCwC8p3bjQRDdtipPr_yZQ"},{"n":"孔廟文化園區","lat":22.990246,"lng":120.204066,"t":"spot","d":[2],"pid":"ChIJYw4RTH12bjQRKS6hu0HiVMY"},{"n":"藍晒圖文創園區","lat":22.987102,"lng":120.197345,"t":"spot","d":[2],"pid":"ChIJtbdB0Xt2bjQR1IE4qcWD-lg"},{"n":"花園夜市","lat":23.011239,"lng":120.200227,"t":"food","d":[2],"pid":"ChIJx7B27Vl2bjQRXNQQFasKOKI"},{"n":"六千牛肉湯","lat":22.98922,"lng":120.194848,"t":"food","d":[3],"pid":"ChIJuSIMDFR2bjQRO5xlAsCglKA"},{"n":"安平古堡","lat":23.001509,"lng":120.160624,"t":"spot","d":[3],"pid":"ChIJZ-TjeHN2bjQR8a3Jat0VHps"},{"n":"四草綠色隧道","lat":23.01964,"lng":120.136146,"t":"spot","d":[3],"pid":"ChIJt0-ISOvYbTQRhg3rUteyQIw"},{"n":"奇美博物館","lat":22.934561,"lng":120.226027,"t":"spot","d":[3],"pid":"ChIJq6qqqnp0bjQRpvTHZeYTjKg"},{"n":"十鼓仁糖文創","lat":22.938363,"lng":120.229616,"t":"spot","d":[3],"pid":"ChIJA0P9eml0bjQRAFSV5Tjabuc"},{"n":"豆奶宗早餐","lat":22.991328,"lng":120.193075,"t":"food","d":[4],"pid":"ChIJW1n1cnB2bjQRkayQ2G4XQbY"},{"n":"漁光島","lat":22.980987,"lng":120.155832,"t":"spot","d":[4],"pid":"ChIJ87qwKf11bjQRMuEmcom6RX8"},{"n":"方舟咖啡","lat":23.001779,"lng":120.198115,"t":"food","d":[4],"pid":"ChIJmXLbXGd2bjQRaN3rdWVRKeY"},{"n":"林百貨","lat":22.991792,"lng":120.202523,"t":"spot","d":[4],"pid":"ChIJrZJc4GJ2bjQRa3BRyIgtRcM"}], ROUTES = {"1":["歐貝拉洋菓子","安平有間旅店"],"2":["赤崁樓","國華街美食","孔廟文化園區","藍晒圖文創園區","花園夜市"],"3":["六千牛肉湯","安平古堡","四草綠色隧道","奇美博物館","十鼓仁糖文創"],"4":["豆奶宗早餐","漁光島","方舟咖啡","林百貨"]}, DCOL = {"1":"#8b6bb1","2":"#e8913c","3":"#18a0b0","4":"#c0567a"}, KEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo', REGION = '台南';
   const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
   let map, info, bounds, markers = [], lines = {}, loaded = false, loading = false;
 
@@ -365,9 +371,10 @@ body {
     <!-- PAGE: 行程 -->
     <div class="page" id="page-itinerary">
       <div class="day-tabs" id="dayTabs">
-        <button class="day-tab-btn active" data-day="d1">D1 9/25</button>
-        <button class="day-tab-btn" data-day="d2">D2 9/26</button>
-        <button class="day-tab-btn" data-day="d3">D3 9/27</button>
+        <button class="day-tab-btn active" data-day="d1">D1 9/24</button>
+        <button class="day-tab-btn" data-day="d2">D2 9/25</button>
+        <button class="day-tab-btn" data-day="d3">D3 9/26</button>
+        <button class="day-tab-btn" data-day="d4">D4 9/27</button>
       </div>
 
       <!-- D1 -->
@@ -375,18 +382,48 @@ body {
         <div class="day-banner">
           <div class="day-banner-num">D1</div>
           <div class="day-banner-info">
+            <div class="day-banner-title">歐貝拉蛋糕 · 入住安平</div>
+            <div class="day-banner-date">9月24日（四）</div>
+          </div>
+        </div>
+        <div class="itinerary-list">
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">餐後</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">歐貝拉洋菓子（崇信門市）</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">買藍莓乳酪 4吋蛋糕 🫐・東區崇信街12號</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E6%AD%90%E8%B2%9D%E6%8B%89%E6%B4%8B%E8%8F%93%E5%AD%90&destination_place_id=ChIJL0Y98ph2bjQRynWBGUEU9AY" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">夜宿</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">安平有間旅店</div><span class="itype itype-宿">宿</span></div>
+              <div class="itinerary-desc">Check in・安平區運河路23巷27號・$1,280，國旅補助 $800 後實付 $480</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E5%AE%89%E5%B9%B3%E6%9C%89%E9%96%93%E6%97%85%E5%BA%97&destination_place_id=ChIJA4rH_Sl3bjQR-CwuLcEyiKg" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- D2 -->
+      <div class="day-panel" id="day-d2">
+        <div class="day-banner">
+          <div class="day-banner-num">D2</div>
+          <div class="day-banner-info">
             <div class="day-banner-title">古蹟巡禮 · 國華街覓食</div>
             <div class="day-banner-date">9月25日（五）</div>
           </div>
         </div>
         <div class="itinerary-list">
           <div class="itinerary-item">
-            <div class="itinerary-time-col"><div class="itinerary-time">09:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-time-col"><div class="itinerary-time">10:30</div><div class="itinerary-line"></div></div>
             <div class="itinerary-dot"></div>
             <div class="itinerary-card">
-              <div class="itinerary-card-top"><div class="itinerary-name">搭高鐵出發</div><span class="itype itype-動">動</span></div>
-              <div class="itinerary-desc">台北→台南約 1小時45分，抵達後搭 Uber 進市區</div>
-              <a class="nav-btn" href="https://www.thsrc.com.tw" target="_blank" rel="noopener">🚄 高鐵訂票</a>
+              <div class="itinerary-card-top"><div class="itinerary-name">安平有間旅店 退房</div><span class="itype itype-宿">宿</span></div>
+              <div class="itinerary-desc">從安平出發進市區・搭 Uber 約 15 分鐘</div>
             </div>
           </div>
           <div class="itinerary-item">
@@ -437,10 +474,10 @@ body {
         </div>
       </div>
 
-      <!-- D2 -->
-      <div class="day-panel" id="day-d2">
+      <!-- D3 -->
+      <div class="day-panel" id="day-d3">
         <div class="day-banner">
-          <div class="day-banner-num">D2</div>
+          <div class="day-banner-num">D3</div>
           <div class="day-banner-info">
             <div class="day-banner-title">安平 · 四草 · 奇美博物館</div>
             <div class="day-banner-date">9月26日（六）</div>
@@ -503,10 +540,10 @@ body {
         </div>
       </div>
 
-      <!-- D3 -->
-      <div class="day-panel" id="day-d3">
+      <!-- D4 -->
+      <div class="day-panel" id="day-d4">
         <div class="day-banner">
-          <div class="day-banner-num">D3</div>
+          <div class="day-banner-num">D4</div>
           <div class="day-banner-info">
             <div class="day-banner-title">漁光島 · 方舟咖啡 · 返程</div>
             <div class="day-banner-date">9月27日（日）</div>
