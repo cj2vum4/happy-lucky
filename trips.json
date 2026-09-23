@@ -98,12 +98,12 @@
       "id": "tainan-2026",
       "title": "台南行",
       "startDate": "2026-09-24",
-      "endDate": "2026-09-27",
+      "endDate": "2026-09-25",
       "destination": "台南",
       "people": 2,
       "status": "planning",
-      "tags": ["古蹟", "美食", "海線", "文創"],
-      "file": "20260925_27/260925台南.html",
+      "tags": ["古蹟", "美食", "海線", "機車趴趴走"],
+      "file": "20260924_25/260924台南.html",
       "itemPrefix": "tainan2026__",
       "photos": [],
       "spots": [
@@ -112,13 +112,13 @@
         { "name": "赤崁樓",           "category": "室內景點", "region": "中西區", "emoji": "🏯", "desc": "荷蘭古堡・台南地標・門票 NT$50",   "mapUrl": "https://maps.google.com/?q=赤崁樓+台南" },
         { "name": "安平古堡",         "category": "室外景點", "region": "安平區", "emoji": "🏰", "desc": "荷治時代第一座城堡・周氏蝦捲",     "mapUrl": "https://maps.google.com/?q=安平古堡+台南" },
         { "name": "四草綠色隧道",     "category": "室外景點", "region": "安南區", "emoji": "🚣", "desc": "竹筏遊紅樹林・台版亞馬遜",         "mapUrl": "https://maps.google.com/?q=四草綠色隧道+台南" },
-        { "name": "奇美博物館",       "category": "室內景點", "region": "仁德區", "emoji": "🏛️", "desc": "歐風宮殿・藝術典藏・門票 NT$200",  "mapUrl": "https://maps.google.com/?q=奇美博物館" },
         { "name": "國華街美食一條街", "category": "食物",    "region": "中西區", "emoji": "🥢", "desc": "碗粿・春捲・刨冰・巷弄小吃",       "mapUrl": "https://maps.google.com/?q=國華街+台南" },
         { "name": "六千牛肉湯",       "category": "食物",    "region": "中西區", "emoji": "🥛", "desc": "台南早餐王道・現宰溫體牛",         "mapUrl": "https://maps.google.com/?q=六千牛肉湯+台南" },
         { "name": "漁光島",           "category": "室外景點", "region": "安平區", "emoji": "🌊", "desc": "白沙灘・木麻黃林道・台南祕境",     "mapUrl": "https://maps.google.com/?q=漁光島+台南" },
         { "name": "藍晒圖文創園區",   "category": "室外景點", "region": "南區",   "emoji": "🟦", "desc": "藍色建築意象・文創市集・免費",     "mapUrl": "https://maps.google.com/?q=藍晒圖文創園區+台南" },
-        { "name": "十鼓仁糖文創園區", "category": "室外景點", "region": "仁德區", "emoji": "🥁", "desc": "擊樂秀・溜索・夜間必玩",           "mapUrl": "https://maps.google.com/?q=十鼓仁糖文創園區" },
-        { "name": "花園夜市",         "category": "食物",    "region": "北區",   "emoji": "🌙", "desc": "台南必訪夜市・碳烤牛排・鹹豆漿",   "mapUrl": "https://maps.google.com/?q=花園夜市+台南" }
+        { "name": "花園夜市",         "category": "食物",    "region": "北區",   "emoji": "🌙", "desc": "台南必訪夜市・碳烤牛排・鹹豆漿",   "mapUrl": "https://maps.google.com/?q=花園夜市+台南" },
+        { "name": "周氏蝦捲",         "category": "食物",    "region": "安平區", "emoji": "🍤", "desc": "安平總店・蝦捲＋擔仔麵",           "mapUrl": "https://maps.google.com/?q=周氏蝦捲+安平總店" },
+        { "name": "大東夜市",         "category": "食物",    "region": "東區",   "emoji": "🏮", "desc": "週五有開・回程前最後一餐",         "mapUrl": "https://maps.google.com/?q=大東夜市+台南" }
       ]
     },
     {

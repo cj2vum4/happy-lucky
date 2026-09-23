@@ -349,6 +349,30 @@
    "lng": 120.1621348,
    "pid": "ChIJA4rH_Sl3bjQR-CwuLcEyiKg",
    "addr": "708台灣臺南市安平區運河路23巷27號"
+  },
+  "見昌租車": {
+   "lat": 23.001449,
+   "lng": 120.2087867,
+   "pid": "ChIJAVz8PjZ3bjQRy2nJv6CfJRE",
+   "addr": "704台灣臺南市北區公園路287之2號"
+  },
+  "大東夜市": {
+   "lat": 22.9826132,
+   "lng": 120.2193412,
+   "pid": "ChIJPUnSeZt2bjQRbdloDIos_Po",
+   "addr": "701台灣臺南市東區德光里林森路一段276號"
+  },
+  "周氏蝦捲": {
+   "lat": 22.9982363,
+   "lng": 120.1746838,
+   "pid": "ChIJa7BtvxF2bjQRLe7lWvAbqMU",
+   "addr": "708台灣臺南市安平區平安里安平路408-1號"
+  },
+  "神農街": {
+   "lat": 22.9975171,
+   "lng": 120.1964949,
+   "pid": "ChIJqctagGZ2bjQRGlAjSFrC5hE",
+   "addr": "700台灣臺南市中西區神農街"
   }
  }
 }
