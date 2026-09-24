@@ -1853,29 +1853,25 @@ async function loadAllRatings() {
   if (noPrefixNames.length) {
     fetches.push(get(`trip_id=in.(${noPrefixNames.map(n => encodeURIComponent(n)).join(',')})`));
   }
-  // 記帳支出評分：旅行期間的支出 exp__{id}、舊版 #spot 記帳 food__{name}
+  // 記帳時勾選加入查詢的支出：food__{name}
   fetches.push(get('trip_id=like.food__*'));
-  fetches.push(get('trip_id=like.exp__*'));
   await Promise.all(fetches);
   ratingsMap = next;
   renderSearch();
 }
 
-// 可評分項目 = 旅行期間的所有記帳支出（＋舊版手動勾「加入景點」的日常記帳）
-// 只讀取記帳資料，評論另存 trip_reviews，不會回頭改動記帳
+// 查詢頁只收「記帳時主動勾選加入查詢（#spot）」的支出，旅行期間的記帳不會自動加入
+// 落在旅行日期內的，評分視窗可選擇跳到行程頁或記帳頁；評論另存 trip_reviews，不會回頭改動記帳
 async function loadUserFoodSpots() {
   try {
-    const entries = await HLReviews.fetchExpenses();
-    const TODAY = ymd(new Date());
+    const entries = (await HLReviews.fetchExpenses()).reverse(); // 新 → 舊，同名店家以最近一次為準
     const seen = new Set();
     userFoodSpots = [];
     for (const e of entries) {
       const it = HLReviews.entryItem(e);
-      const trip = TRIPS.find(t => t.startDate && t.endDate && e.date >= t.startDate && e.date <= t.endDate && t.startDate <= TODAY);
-      if (it.isSpot) {
-        if (!it.hasName || seen.has(it.name)) continue;
-        seen.add(it.name);
-      } else if (!trip) continue;
+      if (!it.isSpot || !it.hasName || seen.has(it.name)) continue;
+      seen.add(it.name);
+      const trip = TRIPS.find(t => t.startDate && t.endDate && e.date >= t.startDate && e.date <= t.endDate);
       const d = new Date(e.date + 'T00:00:00');
       userFoodSpots.push({
         name: it.name, key: it.key, category: it.category, emoji: it.emoji, noMap: !it.hasName,
@@ -2004,7 +2000,7 @@ function renderSearch() {
   }
   countEl.textContent = parts.length
     ? `${parts.join(' · ')} · ${filtered.length} 筆`
-    : `共 ${filtered.length} 筆（旅行期間的記帳會自動出現）`;
+    : `共 ${filtered.length} 筆`;
 
   const container = document.getElementById('search-results');
   if (filtered.length === 0) {

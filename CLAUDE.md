@@ -35,9 +35,10 @@
 
 ### 評分系統（記帳支出連動）
 - **可評分的是「旅行期間的記帳支出」，景點（spots）與行程時間軸都不能評分**（不要再替 `.itinerary-card` / `.spot-card` 加評分按鈕）
-- 旅程頁「景點」分頁上方的「💸 旅途開支評分」由 `assets/trip-page.js` 讀 `ledger_entries`（日期落在 trip 的 startDate–endDate）產生；首頁「查詢」列出所有旅行期間支出＋舊版手動勾「加入查詢」的 `#spot` 日常記帳
-- 旅程頁／記帳頁只互相連結（查詢彈窗有「行程頁」「記帳頁 ?date=」兩個按鈕），評論存在 `trip_reviews`，**不會改動記帳資料**，刪改記帳也不會動到評論
-- 評論 key：一般支出 `exp__{ledger id}`；舊版 `#spot` 記帳沿用 `food__{name}`；舊景點評分 `{itemPrefix}{spot name}` 只在已有評論時於查詢頁顯示
+- 旅程頁「景點」分頁上方的「💸 旅途開支評分」由 `assets/trip-page.js` 讀 `ledger_entries`（日期落在 trip 的 startDate–endDate）產生
+- 首頁「查詢」**只收記帳時主動勾「加入查詢評分」（note 以 `#spot` 結尾）的支出**，旅行期間的記帳不會自動加入
+- 查詢彈窗：記帳日期落在某趟旅行內 → 同時有「行程頁」「記帳頁 ?date=」可選；否則只有記帳頁。評論存在 `trip_reviews`，**不會改動記帳資料**
+- 評論 key：旅程頁的一般支出 `exp__{ledger id}`；勾選加入查詢的支出 `food__{name}`（同名合併）；舊景點評分 `{itemPrefix}{spot name}` 只在已有評論時於查詢頁顯示
 - 角色 H / L：存在 comment 開頭 `[H] ` / `[L] `，送出前必選（預設帶入該裝置上次選的角色）
 - 長按評論刪除：先嘗試 DELETE，權限不足時寫入刪除標記 `comment = '#del:{被刪那筆 id}'`；讀取一律經 `HLReviews.fold()` 過濾
 - 共用邏輯在 `assets/reviews.js`（`window.HLReviews`），index 與旅程頁都用它，不要各自重寫
