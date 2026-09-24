@@ -112,7 +112,7 @@
   line-height: 1;
 }
 .rate-sheet-count { font-size: 12px; color: var(--coffee-light); margin-bottom: 10px; }
-.rate-sheet-revs { max-height: 100px; overflow-y: auto; margin-bottom: 12px; }
+.rate-sheet-revs { max-height: 180px; overflow-y: auto; margin-bottom: 12px; }
 .sheet-review-item {
   display: flex;
   align-items: baseline;
@@ -293,3 +293,28 @@
   position: absolute; top: 16px; right: 20px;
   font-size: 28px; color: white; background: none; border: none; cursor: pointer;
 }
+
+/* ── 旅途開支評分（記帳連動） ───────────────────────────── */
+.exp-section { margin-bottom: 22px; }
+.exp-hint { font-size: 11px; color: var(--coffee-light); margin: -8px 4px 10px; line-height: 1.5; }
+.exp-date { font-size: 12px; font-weight: 600; color: var(--pea-dark); margin: 12px 4px 6px; }
+.exp-card { display: flex; align-items: center; gap: 12px; background: var(--cream); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; touch-action: manipulation; }
+.exp-card:active { transform: scale(0.98); }
+.exp-emoji { width: 36px; height: 36px; border-radius: 10px; background: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+.exp-info { flex: 1; min-width: 0; }
+.exp-name { font-size: 14px; font-weight: 600; color: var(--coffee); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.exp-name.unnamed { color: var(--coffee-light); font-weight: 500; }
+.exp-meta { font-size: 11px; color: var(--coffee-light); margin-top: 2px; }
+.exp-empty { font-size: 13px; color: var(--coffee-light); text-align: center; padding: 18px 0; }
+
+/* 角色 H / L */
+.role-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0 4px; }
+.role-label { font-size: 13px; color: var(--coffee-mid); }
+.role-btn { width: 52px; height: 36px; border-radius: 18px; border: 1.5px solid var(--cream-dark); background: var(--paper); font-size: 16px; font-weight: 700; color: var(--coffee-mid); cursor: pointer; touch-action: manipulation; }
+.role-btn.role-H.active { background: #D9776B; border-color: #D9776B; color: #fff; }
+.role-btn.role-L.active { background: #5B8FC9; border-color: #5B8FC9; color: #fff; }
+.role-tag { display: inline-block; min-width: 20px; padding: 1px 6px; border-radius: 9px; font-size: 11px; font-weight: 700; color: #fff; text-align: center; margin-right: 4px; }
+.role-tag.role-H { background: #D9776B; }
+.role-tag.role-L { background: #5B8FC9; }
+.sheet-review-item { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; transition: background 0.2s, transform 0.2s; border-radius: 8px; }
+.sheet-review-item.pressing { background: rgba(217,119,107,0.15); transform: scale(0.98); }

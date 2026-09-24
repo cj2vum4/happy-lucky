@@ -743,7 +743,7 @@ body.is-anniversary {
     <div class="cat-grid" id="cat-grid"></div>
     <input class="note-inp" id="note-inp" placeholder="✏️ 備註（選填）" maxlength="50" autocomplete="off">
     <label class="spot-toggle-row" id="spot-toggle-row">
-      <span class="spot-toggle-label">📍 加入景點（可在查詢頁評分）</span>
+      <span class="spot-toggle-label">📍 加入查詢評分（旅行期間會自動加入）</span>
       <div class="spot-toggle-wrap">
         <input type="checkbox" id="spot-toggle" class="spot-toggle-inp">
         <div class="spot-toggle-track"><div class="spot-toggle-thumb"></div></div>
@@ -1326,7 +1326,7 @@ document.getElementById('save-btn').addEventListener('click', async () => {
       await updateEntry(editingId, data);
     } else {
       await saveEntry({ ...data, date: ymd(viewDate) });
-      if (isSpot && noteRaw) showToast('📍 已加入景點，可在查詢頁評分 ✓');
+      if (isSpot && noteRaw) showToast('📍 已加入查詢，可以評分 ✓');
     }
     closeSheet();
   } catch(e) {

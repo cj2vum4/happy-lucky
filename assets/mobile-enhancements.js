@@ -3,8 +3,8 @@
 
   const TAB_KEY = 'happy-lucky:last-tab';
   const SCROLL_KEY = 'happy-lucky:scroll:';
-  const icons = { home: '🏠', calendar: '🗓️', search: '🔎', wishlist: '💗' };
-  const labels = { home: '首頁', calendar: '行事曆', search: '查詢', wishlist: '想去' };
+  const icons = { home: '🏠', calendar: '🗓️', search: '🔎', wishlist: '💗', trips: '🧳', album: '📷' };
+  const labels = { home: '首頁', calendar: '行事曆', search: '查詢', wishlist: '想去', trips: '行程', album: '相簿' };
   let activeTab = 'home';
   let bannerTimer = 0;
 

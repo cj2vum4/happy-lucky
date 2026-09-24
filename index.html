@@ -946,7 +946,7 @@
   .spot-modal-foot {
     flex-shrink: 0; padding: 12px 20px 4px;
     border-top: 1px solid #EDE4CC;
-    display: flex; gap: 10px;
+    display: flex; gap: 8px;
   }
   .smd-btn-go {
     flex: 1; padding: 13px 10px;
@@ -958,6 +958,8 @@
     touch-action: manipulation;
   }
   .smd-btn-go:active { opacity: 0.85; }
+  .smd-btn-ledger { background: #C9A227; }
+  .spot-modal-foot .smd-btn-go, .spot-modal-foot .smd-btn-map, .spot-modal-foot .smd-btn-close { font-size: 13px; padding-left: 6px; padding-right: 6px; }
   .smd-btn-map {
     flex: 1; padding: 13px 10px;
     background: #E8F0FE; color: #1A73E8;
@@ -1111,7 +1113,41 @@
   .trip-pin .sub { color: #cbd5df; font-weight: 400; font-size: 12px; }
   .trip-pin:hover { border-color: #fff; }
 
+
+  /* ============ 行程 / 相簿 模式 ============ */
+  html body .tabs.tabs-off { display: none !important; }
+  html body #tabs-trips { grid-template-columns: 64px 1fr 1fr !important; }
+  .tab-back { color: var(--coffee-mid); }
+  .stat-card.clickable { cursor: pointer; position: relative; touch-action: manipulation; transition: transform 0.15s; }
+  .stat-card.clickable:active { transform: scale(0.96); }
+  .stat-card.clickable .stat-go { display: block; font-size: 10px; color: var(--rose, #D9776B); margin-top: 3px; letter-spacing: 1px; }
+  .done-trip { display: flex; gap: 12px; align-items: stretch; background: var(--cream); border: 1.5px solid var(--coffee); border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: 2px 2px 0 var(--pea-light); }
+  .done-trip .dt-date { flex-shrink: 0; width: 52px; text-align: center; font-family: var(--serif-display); color: var(--pea-dark); border-right: 1.5px dashed var(--pea-light); padding-right: 10px; display: flex; flex-direction: column; justify-content: center; }
+  .done-trip .dt-date b { font-size: 20px; line-height: 1.1; display: block; }
+  .done-trip .dt-date span { font-size: 11px; color: var(--coffee-light); }
+  .done-trip .dt-body { flex: 1; min-width: 0; }
+  .done-trip .dt-title { font-size: 15px; font-weight: 600; color: var(--coffee); margin-bottom: 3px; }
+  .done-trip .dt-meta { font-size: 12px; color: var(--coffee-light); margin-bottom: 6px; }
+  .done-trip .dt-intro { font-size: 12px; color: var(--coffee-mid); line-height: 1.5; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .done-trip .dt-go { align-self: center; flex-shrink: 0; background: var(--pea-dark); color: var(--paper); text-decoration: none; font-size: 12px; padding: 7px 12px; border-radius: 16px; box-shadow: 2px 2px 0 var(--coffee); white-space: nowrap; }
+  .done-trip .dt-go:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--coffee); }
+
+  /* 評論角色 H / L ＋ 長按刪除 */
+  .smd-role-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 4px 0 10px; }
+  .smd-role-label { font-size: 13px; color: #8B7355; }
+  .smd-role-btn { width: 52px; height: 34px; border-radius: 17px; border: 1.5px solid #E8DCC8; background: #fff; font-size: 16px; font-weight: 700; color: #8B7355; cursor: pointer; touch-action: manipulation; }
+  .smd-role-btn.role-H.active { background: #D9776B; border-color: #D9776B; color: #fff; }
+  .smd-role-btn.role-L.active { background: #5B8FC9; border-color: #5B8FC9; color: #fff; }
+  .role-tag { display: inline-block; min-width: 20px; padding: 1px 6px; border-radius: 9px; font-size: 11px; font-weight: 700; color: #fff; text-align: center; margin-right: 6px; vertical-align: 2px; }
+  .role-tag.role-H { background: #D9776B; }
+  .role-tag.role-L { background: #5B8FC9; }
+  .smd-revs-hint { font-size: 11px; color: #B0A090; font-weight: 400; margin-left: 6px; }
+  .smd-review { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; transition: background 0.2s, transform 0.2s; border-radius: 8px; }
+  .smd-review.pressing { background: rgba(217,119,107,0.15); transform: scale(0.98); }
+  .spot-cat-badge.交通 { background: #F3E5F5; color: #8E24AA; border-color: rgba(142,36,170,0.3); }
+  .spot-cat-badge.其他 { background: #ECEFF1; color: #607D8B; border-color: rgba(96,125,139,0.3); }
 </style>
+<script src="assets/reviews.js"></script>
 </head>
 <body>
 
@@ -1127,6 +1163,11 @@
     <button class="tab-btn" data-tab="calendar">行事曆</button>
     <button class="tab-btn" data-tab="search">查詢</button>
     <button class="tab-btn" data-tab="wishlist">想去</button>
+  </div>
+  <div class="tabs tabs-off" id="tabs-trips">
+    <button class="tab-btn tab-back" id="trips-back" type="button"><span class="tab-icon" aria-hidden="true">‹</span><span>返回</span></button>
+    <button class="tab-btn" data-tab="trips">行程</button>
+    <button class="tab-btn" data-tab="album">相簿</button>
   </div>
 
   <!-- 首頁 -->
@@ -1156,7 +1197,21 @@
       <div id="tripMap" class="trip-map"></div>
     </div>
     <div id="past-trips-list" style="display:none"></div>
+  </div>
 
+  <!-- 行程（點「N 趟旅行」進入） -->
+  <div id="page-trips" class="page">
+    <div class="welcome-card">
+      <h2>Happy與Lucky約會記錄</h2>
+      <div class="greeting">welcome back to your journal</div>
+    </div>
+    <div class="stats-grid" id="stats-grid-trips"></div>
+    <div class="section-title" id="done-trips-title">已去行程</div>
+    <div id="done-trips-list"></div>
+  </div>
+
+  <!-- 相簿（原「回憶相簿」） -->
+  <div id="page-album" class="page">
     <div class="section-title">回憶相簿</div>
     <div id="past-trips"></div>
   </div>
@@ -1191,7 +1246,7 @@
     <div class="filter-row">
       <div class="search-input-wrap">
         <span class="search-icon">🔍</span>
-        <input type="text" id="search-text" class="search-input" placeholder="搜尋景點名稱、關鍵字…" autocomplete="off">
+        <input type="text" id="search-text" class="search-input" placeholder="搜尋店家、備註、地區…" autocomplete="off">
         <button class="search-clear" id="search-clear-btn" style="display:none">✕</button>
       </div>
     </div>
@@ -1204,6 +1259,8 @@
         <button class="chip" data-cat="室內景點">🏛️ 室內景點</button>
         <button class="chip" data-cat="室外景點">🌿 室外景點</button>
         <button class="chip" data-cat="住宿">🏨 住宿</button>
+        <button class="chip" data-cat="交通">🚗 交通</button>
+        <button class="chip" data-cat="其他">📦 其他</button>
       </div>
     </div>
 
@@ -1262,6 +1319,11 @@
     <!-- 評分輸入 -->
     <div class="smd-rate-section">
       <div class="smd-rate-title">我要評分</div>
+      <div class="smd-role-row" id="smd-role-row">
+        <span class="smd-role-label">我是</span>
+        <button class="smd-role-btn role-H" data-role="H" type="button">H</button>
+        <button class="smd-role-btn role-L" data-role="L" type="button">L</button>
+      </div>
       <div class="smd-stars-row" id="smd-stars-row">
         <button class="smd-star" data-s="1">☆</button>
         <button class="smd-star" data-s="2">☆</button>
@@ -1274,13 +1336,14 @@
     </div>
 
     <div class="spot-modal-body">
-      <div class="smd-revs-title">評分紀錄</div>
+      <div class="smd-revs-title">評分紀錄 <span class="smd-revs-hint">長按可刪除</span></div>
       <div id="spot-modal-reviews"></div>
     </div>
     <div class="spot-modal-foot">
       <button class="smd-btn-close" id="spot-modal-close">關閉</button>
       <a class="smd-btn-map" id="spot-modal-map" href="" target="_blank" rel="noopener">🗺 導航</a>
       <a class="smd-btn-go" id="spot-modal-go" href="">行程頁 →</a>
+      <a class="smd-btn-go smd-btn-ledger" id="spot-modal-ledger" href="">記帳頁 →</a>
     </div>
   </div>
 </div>
@@ -1341,10 +1404,35 @@ function showLoadError(msg) {
     </div>`;
 }
 
-// 分頁切換
-document.querySelectorAll('.tab-btn').forEach(btn => {
+// 分頁切換（兩組分頁：首頁/行事曆/查詢/想去 ↔ 行程/相簿）
+const TRIP_MODE_TABS = ['trips', 'album'];
+function setTabMode(trips) {
+  document.querySelector('.tabs:not(#tabs-trips)').classList.toggle('tabs-off', trips);
+  document.getElementById('tabs-trips').classList.toggle('tabs-off', !trips);
+}
+// 進入行程模式時多推一筆 history，讓手機返回鍵回到首頁而不是離開 App
+// （mobile-enhancements.js 切分頁時會 replaceState，所以用變數記錄而不是 history.state）
+let tripsHistoryPushed = false;
+function enterTripsMode() {
+  if (!tripsHistoryPushed) { history.pushState(null, '', location.href); tripsHistoryPushed = true; }
+  document.querySelector('.tab-btn[data-tab="trips"]').click();
+}
+function leaveTripsMode() {
+  setTabMode(false);
+  document.querySelector('.tab-btn[data-tab="home"]').click();
+}
+document.getElementById('trips-back').addEventListener('click', () => {
+  if (tripsHistoryPushed) history.back(); else leaveTripsMode();
+});
+window.addEventListener('popstate', () => {
+  if (!tripsHistoryPushed) return;
+  tripsHistoryPushed = false;
+  if (!document.getElementById('tabs-trips').classList.contains('tabs-off')) leaveTripsMode();
+});
+document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => {
     const tab = btn.dataset.tab;
+    setTabMode(TRIP_MODE_TABS.includes(tab));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
@@ -1454,11 +1542,13 @@ function renderHome() {
   }, 0);
   const togetherDays = Math.floor((new Date() - new Date('2026-05-20T00:00:00')) / 86400000) + 1;
 
-  document.getElementById('stats-grid').innerHTML = `
-    <div class="stat-card"><span class="stat-num">${totalTrips}</span><span class="stat-label">趟旅行</span></div>
+  const statsHtml = `
+    <div class="stat-card clickable" onclick="enterTripsMode()"><span class="stat-num">${totalTrips}</span><span class="stat-label">趟旅行</span><span class="stat-go">點我看行程 ›</span></div>
     <div class="stat-card"><span class="stat-num">${totalDays}</span><span class="stat-label">天足跡</span></div>
     <div class="stat-card"><span class="stat-num">${togetherDays}</span><span class="stat-label">天戀愛</span></div>
   `;
+  document.getElementById('stats-grid').innerHTML = statsHtml;
+  document.getElementById('stats-grid-trips').innerHTML = statsHtml;
 
   const byDateDesc = (a, b) => (b.startDate || '').localeCompare(a.startDate || '');
   const upcoming   = TRIPS.filter(t => t.status === 'planning')
@@ -1473,6 +1563,11 @@ function renderHome() {
   document.getElementById('past-trips-list').innerHTML = past.length
     ? past.map(renderPastRow).join('')
     : `<div class="empty-state"><div class="icon">🗺️</div><h4>還沒有過往旅行</h4><p>旅行結束後把 status 改成 done</p></div>`;
+
+  document.getElementById('done-trips-title').textContent = `已去行程（${past.length}）`;
+  document.getElementById('done-trips-list').innerHTML = past.length
+    ? past.map(renderDoneTrip).join('')
+    : `<div class="empty-state"><div class="icon">🧳</div><h4>還沒有去過的行程</h4><p>旅行結束後把 status 改成 done</p></div>`;
 
   document.getElementById('past-trips').innerHTML = withPhotos.length
     ? withPhotos.map(renderAlbumBlock).join('')
@@ -1495,6 +1590,26 @@ function renderPastRow(trip) {
       </div>
       <div class="arrow">→</div>
     </a>`;
+}
+
+function renderDoneTrip(trip) {
+  const s = new Date(trip.startDate + 'T00:00:00');
+  const e = new Date(trip.endDate + 'T00:00:00');
+  const days = Math.round((e - s) / 86400000) + 1;
+  const spots = (trip.spots || []).map(x => x.name);
+  const intro = [(trip.tags || []).join('・'), spots.length ? '去了 ' + spots.slice(0, 3).join('、') + (spots.length > 3 ? ` 等 ${spots.length} 處` : '') : '']
+    .filter(Boolean).join('｜');
+  const photos = (trip.photos || []).length;
+  return `
+    <div class="done-trip">
+      <div class="dt-date"><b>${s.getMonth() + 1}/${s.getDate()}</b><span>${s.getFullYear()}</span></div>
+      <div class="dt-body">
+        <div class="dt-title">${escHtml(trip.title)}</div>
+        <div class="dt-meta">📍 ${escHtml(trip.destination)}・${days === 1 ? '一日' : days + '天' + (days - 1) + '夜'}${photos ? `・📷 ${photos}` : ''}</div>
+        <div class="dt-intro">${escHtml(intro)}</div>
+      </div>
+      <a class="dt-go" href="${trip.file}">進入 →</a>
+    </div>`;
 }
 
 function renderAlbumBlock(trip) {
@@ -1707,10 +1822,10 @@ const REGION_HIERARCHY = [
   { key: '金門縣', label: '金門', emoji: '🏝️', regions: ['金城鎮','金湖鎮','金沙鎮','金寧鄉','烈嶼鄉'] },
 ];
 
+// 評分統計：一律先經過 HLReviews.fold 去掉已刪除的評論
 function accumulateRatings(data) {
-  if (!Array.isArray(data)) return;
   const acc = {};
-  data.forEach(r => {
+  HLReviews.fold(data).forEach(r => {
     if (!r.rating) return;
     if (!acc[r.trip_id]) acc[r.trip_id] = { sum: 0, count: 0 };
     acc[r.trip_id].sum   += r.rating;
@@ -1722,69 +1837,54 @@ function accumulateRatings(data) {
 }
 
 async function loadAllRatings() {
-  const fetches = TRIPS.filter(t => t.itemPrefix).map(trip =>
-    fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.${trip.itemPrefix}*&order=created_at.desc`,
+  const next = {};
+  const collect = rows => { const keep = ratingsMap; ratingsMap = next; accumulateRatings(rows); ratingsMap = keep; };
+  const get = q => fetch(`${SB_URL}/rest/v1/trip_reviews?${q}&order=created_at.desc`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
-      .then(r => r.json()).then(accumulateRatings).catch(()=>{})
-  );
-  // 沒有 itemPrefix 的旅程（例如單店家行程）：spot 名稱本身就是 key，沒有共同前綴可以用 like 查，改成精準比對
+      .then(r => r.json()).then(collect).catch(() => {});
+  // 舊版：景點名稱評分（只用來顯示已有評論的舊景點，不再開放新景點評分）
+  const fetches = TRIPS.filter(t => t.itemPrefix).map(t => get(`trip_id=like.${t.itemPrefix}*`));
   const noPrefixNames = TRIPS.filter(t => !t.itemPrefix).flatMap(t => (t.spots || []).map(s => s.name));
   if (noPrefixNames.length) {
-    const inList = noPrefixNames.map(n => encodeURIComponent(n)).join(',');
-    fetches.push(
-      fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=in.(${inList})&order=created_at.desc`,
-        { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
-        .then(r => r.json()).then(accumulateRatings).catch(()=>{})
-    );
+    fetches.push(get(`trip_id=in.(${noPrefixNames.map(n => encodeURIComponent(n)).join(',')})`));
   }
-  // Also load ratings for daily food spots
-  fetches.push(
-    fetch(`${SB_URL}/rest/v1/trip_reviews?trip_id=like.food__*&order=created_at.desc`,
-      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
-      .then(r => r.json()).then(accumulateRatings).catch(()=>{})
-  );
+  // 記帳支出評分：旅行期間的支出 exp__{id}、舊版 #spot 記帳 food__{name}
+  fetches.push(get('trip_id=like.food__*'));
+  fetches.push(get('trip_id=like.exp__*'));
   await Promise.all(fetches);
+  ratingsMap = next;
   renderSearch();
 }
 
+// 可評分項目 = 旅行期間的所有記帳支出（＋舊版手動勾「加入景點」的日常記帳）
+// 只讀取記帳資料，評論另存 trip_reviews，不會回頭改動記帳
 async function loadUserFoodSpots() {
   try {
-    const res = await fetch(
-      `${SB_URL}/rest/v1/ledger_entries?type=eq.expense&note=like.*%23spot&select=note,date,amount,category&order=date.desc`,
-      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
-    );
-    const entries = await res.json();
-    if (!Array.isArray(entries)) return;
-
-    const existingNames = new Set(TRIPS.flatMap(t => (t.spots || []).map(s => s.name)));
+    const entries = await HLReviews.fetchExpenses();
+    const TODAY = ymd(new Date());
     const seen = new Set();
     userFoodSpots = [];
-
     for (const e of entries) {
-      const raw      = e.note?.trim();
-      if (!raw) continue;
-      const spotBody = raw.endsWith('#spot') ? raw.slice(0, -5) : raw;
-      const pipeIdx  = raw.endsWith('#spot') ? spotBody.lastIndexOf('|') : -1;
-      const name     = pipeIdx >= 0 ? spotBody.slice(0, pipeIdx) : spotBody;
-      const noteRegion = pipeIdx >= 0 ? spotBody.slice(pipeIdx + 1).trim() : null;
-      if (!name || seen.has(name) || existingNames.has(name)) continue;
-      seen.add(name);
-      const trip   = TRIPS.find(t => t.startDate && t.endDate && e.date >= t.startDate && e.date <= t.endDate);
-      const region = noteRegion || (trip ? trip.destination : '未分類');
-      const CAT_MAP = { '食': ['食物','🍽️'], '住': ['住宿','🏨'], '行': ['室外景點','🚗'],
-                        '育': ['室內景點','🎓'], '樂': ['室外景點','🎡'] };
-      const [category, emoji] = CAT_MAP[e.category] || ['室外景點','📍'];
+      const it = HLReviews.entryItem(e);
+      const trip = TRIPS.find(t => t.startDate && t.endDate && e.date >= t.startDate && e.date <= t.endDate && t.startDate <= TODAY);
+      if (it.isSpot) {
+        if (!it.hasName || seen.has(it.name)) continue;
+        seen.add(it.name);
+      } else if (!trip) continue;
+      const d = new Date(e.date + 'T00:00:00');
       userFoodSpots.push({
-        name, category, region, emoji,
-        desc: '日常記錄',
-        prefix: 'food__', tripFile: 'account.html', mapUrl: null,
-        date: e.date, sortDate: e.date,
+        name: it.name, key: it.key, category: it.category, emoji: it.emoji, noMap: !it.hasName,
+        region: it.noteRegion || (trip ? trip.destination : '未分類'),
+        desc: `${trip ? trip.title + '・' : ''}${d.getMonth() + 1}/${d.getDate()}・${e.category} $${fmtNum(e.amount)}`,
+        tripFile: trip ? trip.file : null, ledgerDate: e.date,
+        mapUrl: null, sortDate: e.date,
       });
     }
     renderRegionSelector();
     renderSearch();
-  } catch(e) { console.warn('食物景點載入失敗', e); }
+  } catch(e) { console.warn('記帳支出載入失敗', e); }
 }
+const fmtNum = n => Number(n).toLocaleString('zh-TW');
 
 function getAllUsedRegions() {
   return new Set([
@@ -1844,7 +1944,10 @@ function renderSearch() {
   TRIPS.forEach(trip => {
     if (trip.startDate && trip.startDate > TODAY) return;
     (trip.spots || []).forEach(spot => {
-      allSpots.push({ ...spot, tripFile: trip.file, prefix: trip.itemPrefix || '', sortDate: trip.startDate || '' });
+      // 景點本身不再是評分對象；只保留以前已經有評論的舊景點，免得回憶消失
+      const key = (trip.itemPrefix || '') + spot.name;
+      if (!ratingsMap[key]) return;
+      allSpots.push({ ...spot, key, legacy: true, tripFile: trip.file, sortDate: trip.startDate || '' });
     });
   });
   allSpots.push(...userFoodSpots);
@@ -1873,8 +1976,8 @@ function renderSearch() {
     filtered = [...filtered].sort((a, b) => (b.sortDate || '').localeCompare(a.sortDate || ''));
   } else {
     filtered = [...filtered].sort((a, b) => {
-      const ra = ratingsMap[a.prefix + a.name];
-      const rb = ratingsMap[b.prefix + b.name];
+      const ra = ratingsMap[a.key];
+      const rb = ratingsMap[b.key];
       if (ra && rb)  return parseFloat(rb.avg) - parseFloat(ra.avg);
       if (ra && !rb) return -1;
       if (!ra && rb) return 1;
@@ -1895,18 +1998,18 @@ function renderSearch() {
     }
   }
   countEl.textContent = parts.length
-    ? `${parts.join(' · ')} · ${filtered.length} 個地點`
-    : `共 ${filtered.length} 個地點`;
+    ? `${parts.join(' · ')} · ${filtered.length} 筆`
+    : `共 ${filtered.length} 筆（旅行期間的記帳會自動出現）`;
 
   const container = document.getElementById('search-results');
   if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h4>沒有符合的地點</h4><p>試試其他條件</p></div>`;
+    container.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h4>沒有符合的紀錄</h4><p>試試其他條件</p></div>`;
     return;
   }
 
   currentSpots = filtered;
   container.innerHTML = filtered.map((spot, i) => {
-    const ratingData = ratingsMap[spot.prefix + spot.name];
+    const ratingData = ratingsMap[spot.key];
     const ratingHTML = ratingData
       ? `<span class="spot-rating">⭐ ${ratingData.avg} <span class="rating-count">(${ratingData.count}則)</span></span>`
       : `<span class="spot-rating unrated">尚未評分</span>`;
@@ -1926,18 +2029,31 @@ function renderSearch() {
   }).join('');
 }
 
-// ── Spot rating modal ──────────────────────────────────────────────────────
+// ── 評分彈窗（H / L 角色、長按刪除）─────────────────────────────────────
 let modalSpotKey     = '';
 let modalStarPick    = 0;
+let modalRole        = '';
 let smdSubmitting    = false;
+
+function syncSmdSubmit() {
+  const btn = document.getElementById('smd-submit-btn');
+  if (smdSubmitting) return;
+  btn.disabled = false;
+  btn.textContent = !modalRole ? '請先選擇 H 或 L' : `以 ${modalRole} 送出評分`;
+}
+function paintRoles() {
+  document.querySelectorAll('.smd-role-btn').forEach(b => b.classList.toggle('active', b.dataset.role === modalRole));
+  syncSmdSubmit();
+}
+document.querySelectorAll('.smd-role-btn').forEach(b => b.addEventListener('click', () => {
+  modalRole = b.dataset.role; paintRoles();
+}));
 
 function closeSpotModal() {
   document.getElementById('spot-modal-bg').classList.remove('open');
   modalStarPick = 0;
   paintStars(0);
   document.getElementById('smd-comment-inp').value = '';
-  document.getElementById('smd-submit-btn').textContent = '送出評分';
-  document.getElementById('smd-submit-btn').disabled = false;
 }
 document.getElementById('spot-modal-close').addEventListener('click', closeSpotModal);
 document.getElementById('spot-modal-bg').addEventListener('click', e => {
@@ -1954,52 +2070,30 @@ document.getElementById('smd-stars-row').addEventListener('click', e => {
   if (!btn) return;
   modalStarPick = +btn.dataset.s;
   paintStars(modalStarPick);
-  if (!smdSubmitting) {
-    const submitBtn = document.getElementById('smd-submit-btn');
-    submitBtn.textContent = '送出評分';
-    submitBtn.disabled = false;
-  }
+  syncSmdSubmit();
 });
 
 document.getElementById('smd-submit-btn').addEventListener('click', async () => {
+  if (!modalRole) { alert('請先選擇你是 H 還是 L'); return; }
   if (!modalStarPick) { alert('請先點選星星評分'); return; }
   const submitBtn = document.getElementById('smd-submit-btn');
-  const comment   = document.getElementById('smd-comment-inp').value.trim() || null;
+  const comment   = document.getElementById('smd-comment-inp').value.trim();
   smdSubmitting = true;
   submitBtn.textContent = '送出中…';
   submitBtn.disabled = true;
   try {
-    const res = await fetch(`${SB_URL}/rest/v1/trip_reviews`, {
-      method: 'POST',
-      headers: {
-        apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
-        'Content-Type': 'application/json', Prefer: 'return=minimal',
-      },
-      body: JSON.stringify({ trip_id: modalSpotKey, rating: modalStarPick, comment }),
-    });
-    if (!res.ok && res.status !== 201) throw new Error(await res.text());
-
+    await HLReviews.post(modalSpotKey, modalStarPick, modalRole, comment);
     submitBtn.textContent = '謝謝你的評分 ✓';
     modalStarPick = 0;
     paintStars(0);
     document.getElementById('smd-comment-inp').value = '';
-    // 短暫顯示感謝後恢復可再評分的狀態
-    setTimeout(() => {
-      if (!smdSubmitting) {
-        submitBtn.textContent = '送出評分';
-        submitBtn.disabled = false;
-      }
-    }, 1500);
-
-    // Refresh this spot's review list + update ratingsMap
+    setTimeout(() => { smdSubmitting = false; syncSmdSubmit(); }, 1500);
     await loadModalReviews(modalSpotKey);
-    loadAllRatings(); // async, update search list in background
+    loadAllRatings();
   } catch(e) {
     alert('評分失敗：' + e.message);
-    submitBtn.textContent = '送出評分';
-    submitBtn.disabled = false;
-  } finally {
     smdSubmitting = false;
+    syncSmdSubmit();
   }
 });
 
@@ -2007,47 +2101,54 @@ const starsHtml = n => '⭐'.repeat(Math.min(5, Math.round(n)));
 function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
 async function loadModalReviews(key) {
-  document.getElementById('spot-modal-reviews').innerHTML =
-    '<div class="smd-loading">載入中…</div>';
+  const box = document.getElementById('spot-modal-reviews');
+  box.innerHTML = '<div class="smd-loading">載入中…</div>';
   try {
-    const res = await fetch(
-      `${SB_URL}/rest/v1/trip_reviews?trip_id=eq.${encodeURIComponent(key)}&order=created_at.desc`,
-      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
-    );
-    const reviews = await res.json();
-    if (!Array.isArray(reviews) || reviews.length === 0) {
-      document.getElementById('spot-modal-reviews').innerHTML =
-        '<div class="smd-empty">還沒有評分紀錄</div>';
+    const reviews = await HLReviews.fetchByKeys([key]);
+    if (key !== modalSpotKey) return;
+    if (!reviews.length) {
+      box.innerHTML = '<div class="smd-empty">還沒有評分紀錄</div>';
       return;
     }
-    document.getElementById('spot-modal-reviews').innerHTML = reviews.map(r => {
+    box.innerHTML = reviews.map((r, i) => {
+      const { role, text } = HLReviews.parse(r);
       const date = r.created_at
         ? new Date(r.created_at).toLocaleDateString('zh-TW', { month:'numeric', day:'numeric' })
         : '';
       return `
-        <div class="smd-review">
+        <div class="smd-review" data-i="${i}">
           <div class="smd-rev-top">
-            <span class="smd-rev-stars">${starsHtml(r.rating)}</span>
+            <span class="smd-rev-stars">${role ? `<span class="role-tag role-${role}">${role}</span>` : ''}${starsHtml(r.rating)}</span>
             <span class="smd-rev-date">${date}</span>
           </div>
-          ${r.comment ? `<div class="smd-rev-comment">${escHtml(r.comment)}</div>` : ''}
+          ${text ? `<div class="smd-rev-comment">${escHtml(text)}</div>` : ''}
         </div>`;
     }).join('');
+    box.querySelectorAll('.smd-review').forEach(el => {
+      const r = reviews[+el.dataset.i];
+      HLReviews.onLongPress(el, async () => {
+        if (!confirm('刪除這則評論？')) return;
+        try {
+          await HLReviews.remove(r);
+          await loadModalReviews(key);
+          loadAllRatings();
+        } catch (e) { alert('刪除失敗，請再試一次'); }
+      });
+    });
   } catch(e) {
-    document.getElementById('spot-modal-reviews').innerHTML =
-      '<div class="smd-error">⚠️ 載入失敗</div>';
+    box.innerHTML = '<div class="smd-error">⚠️ 載入失敗</div>';
   }
 }
 
 async function openSpotModal(i) {
   const spot = currentSpots[i];
-  const key  = spot.prefix + spot.name;
+  const key  = spot.key;
   modalSpotKey = key;
   modalStarPick = 0;
+  modalRole = HLReviews.lastRole();
   paintStars(0);
+  paintRoles();
   document.getElementById('smd-comment-inp').value = '';
-  document.getElementById('smd-submit-btn').textContent = '送出評分';
-  document.getElementById('smd-submit-btn').disabled = false;
 
   const rd = ratingsMap[key];
   document.getElementById('spot-modal-head').innerHTML = `
@@ -2055,7 +2156,7 @@ async function openSpotModal(i) {
       <div class="smd-emoji">${spot.emoji}</div>
       <div>
         <div class="smd-name">${escHtml(spot.name)}</div>
-        <div class="smd-trip">📍 ${escHtml(spot.region)}</div>
+        <div class="smd-trip">📍 ${escHtml(spot.region)}${spot.desc ? '・' + escHtml(spot.desc) : ''}</div>
         <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
       </div>
     </div>
@@ -2067,9 +2168,16 @@ async function openSpotModal(i) {
         : `<span class="smd-unrated">尚未評分</span>`}
     </div>`;
 
-  document.getElementById('spot-modal-go').href = spot.date ? `${spot.tripFile}?date=${spot.date}` : spot.tripFile;
-  document.getElementById('spot-modal-map').href =
-    spot.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(spot.name + ' ' + spot.region)}`;
+  // 同一筆支出同時可以跳到旅行頁與記帳頁（只是連結，兩邊資料互不影響）
+  const go = document.getElementById('spot-modal-go');
+  go.style.display = spot.tripFile ? '' : 'none';
+  if (spot.tripFile) go.href = spot.tripFile;
+  const ledger = document.getElementById('spot-modal-ledger');
+  ledger.style.display = spot.ledgerDate ? '' : 'none';
+  if (spot.ledgerDate) ledger.href = `account.html?date=${spot.ledgerDate}`;
+  const map = document.getElementById('spot-modal-map');
+  map.style.display = spot.noMap ? 'none' : '';
+  map.href = spot.mapUrl || `https://maps.google.com/?q=${encodeURIComponent(spot.name + ' ' + spot.region)}`;
   document.getElementById('spot-modal-bg').classList.add('open');
   await loadModalReviews(key);
 }

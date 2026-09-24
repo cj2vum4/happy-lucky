@@ -1,7 +1,7 @@
 /* ============================================================
    旅程頁共用模組
    功能：1) 從 trips.json 產生景點卡片（單一資料來源）
-        2) 景點/行程項目評分（Supabase trip_reviews）
+        2) 旅途開支評分：旅行期間的記帳支出（ledger_entries）＋評論（trip_reviews）
         3) Polaroid 照片牆＋lightbox（照片同樣來自 trips.json）
    使用方式（旅程頁 </body> 前）：
      <script>window.TRIP_ID = 'penghu-2026';</script>
@@ -48,11 +48,34 @@ function renderSpots(trip) {
   }).join('');
 }
 
-/* ── 2) 評分系統 ─────────────────────────────────────────── */
-function setupRating(ITEM_PREFIX) {
-  if (!ITEM_PREFIX) return;
+/* ── 2) 旅途開支評分 ─────────────────────────────────────
+   可評分的是「旅行期間的記帳支出」，不是景點/行程。
+   這裡只讀取記帳資料來顯示，評論另存 trip_reviews，兩邊互不影響。 */
+function loadScript(src) {
+  return new Promise((ok, fail) => {
+    if (window.HLReviews) return ok();
+    const s = document.createElement('script');
+    s.src = src; s.onload = ok; s.onerror = fail;
+    document.head.appendChild(s);
+  });
+}
 
-  // 注入底部彈窗（依 CLAUDE.md 慣例放在 .pages 內）
+async function setupExpenseReviews(trip) {
+  const page = document.getElementById('page-spots');
+  if (!page || !trip.startDate) return;
+  try { await loadScript('../assets/reviews.js'); } catch (e) { console.warn('reviews.js 載入失敗', e); return; }
+  const R = window.HLReviews;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'exp-section';
+  wrap.innerHTML = `
+    <div class="page-section-title">💸 旅途開支評分</div>
+    <div class="exp-hint">旅行期間的記帳會自動出現在這裡，點一下就能評分・長按評論可刪除</div>
+    <div id="expList"><div class="exp-empty">載入中…</div></div>`;
+  page.insertBefore(wrap, page.firstChild);
+  const listEl = wrap.querySelector('#expList');
+
+  // 底部彈窗（依 CLAUDE.md 慣例放在 .pages 內）
   const host = document.querySelector('.pages') || document.body;
   const sheetBg = document.createElement('div');
   sheetBg.className = 'rate-sheet-bg';
@@ -66,6 +89,11 @@ function setupRating(ITEM_PREFIX) {
       </div>
       <div class="rate-sheet-count" id="rateSheetCount"></div>
       <div class="rate-sheet-revs" id="rateSheetRevs"></div>
+      <div class="role-row" id="rateSheetRoles">
+        <span class="role-label">我是</span>
+        <button class="role-btn role-H" data-role="H" type="button">H</button>
+        <button class="role-btn role-L" data-role="L" type="button">L</button>
+      </div>
       <div class="star-row" id="rateSheetStars">
         <span class="star sheet-star" data-v="1">⭐</span>
         <span class="star sheet-star" data-v="2">⭐</span>
@@ -74,167 +102,125 @@ function setupRating(ITEM_PREFIX) {
         <span class="star sheet-star" data-v="5">⭐</span>
       </div>
       <textarea class="review-textarea" id="rateSheetText" placeholder="寫下感想（選填）…"></textarea>
-      <button class="submit-btn" id="rateSheetBtn" type="button" disabled>請先選擇星數</button>
+      <button class="submit-btn" id="rateSheetBtn" type="button" disabled>請先選擇角色與星數</button>
     </div>`;
   host.appendChild(sheetBg);
 
-  let itemReviews = {};
-  let sheetItemId = '';
-  let sheetRating = 0;
+  const $ = id => document.getElementById(id);
+  const nameEl = $('rateSheetName'), countEl = $('rateSheetCount'), revsEl = $('rateSheetRevs');
+  const starsEl = $('rateSheetStars'), textEl = $('rateSheetText'), btn = $('rateSheetBtn');
+  let items = [], reviews = {}, cur = null, rating = 0, role = '';
 
-  const rateSheetName  = document.getElementById('rateSheetName');
-  const rateSheetCount = document.getElementById('rateSheetCount');
-  const rateSheetRevs  = document.getElementById('rateSheetRevs');
-  const rateSheetStars = document.getElementById('rateSheetStars');
-  const rateSheetText  = document.getElementById('rateSheetText');
-  const rateSheetBtn   = document.getElementById('rateSheetBtn');
-
-  async function loadItemReviews() {
-    try {
-      const res = await fetch(
-        `${SB_URL}/rest/v1/trip_reviews?trip_id=like.${ITEM_PREFIX}*&order=created_at.desc`,
-        { headers: SB_HEADERS }
-      );
-      const data = await res.json();
-      if (!Array.isArray(data)) return;
-      itemReviews = {};
-      data.forEach(r => {
-        if (!itemReviews[r.trip_id]) itemReviews[r.trip_id] = [];
-        itemReviews[r.trip_id].push(r);
-      });
-      refreshRateBtns();
-    } catch (e) { console.warn('評分載入失敗', e); }
+  function group(rows) {
+    reviews = {};
+    rows.forEach(r => { (reviews[r.trip_id] ??= []).push(r); });
   }
 
-  function refreshRateBtns() {
-    document.querySelectorAll('[data-item-id]').forEach(card => {
-      const revs = itemReviews[card.dataset.itemId] || [];
-      const btn = card.querySelector('.rate-btn');
-      if (!btn) return;
-      const ratings = revs.filter(r => r.rating).map(r => r.rating);
-      if (ratings.length > 0) {
-        const avg = (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1);
-        btn.innerHTML = `⭐ ${avg}`;
-        btn.classList.add('has-rating');
-      } else {
-        btn.innerHTML = '⭐ 評分';
-        btn.classList.remove('has-rating');
-      }
-    });
+  function syncBtn() {
+    btn.disabled = !(rating && role);
+    btn.textContent = !role ? '請先選擇角色' : !rating ? '請先選擇星數' : `以 ${role} 送出評分`;
   }
 
-  function makeBtn(itemId, name) {
-    const btn = document.createElement('button');
-    btn.className = 'rate-btn';
-    btn.innerHTML = '⭐ 評分';
-    btn.type = 'button';
-    btn.addEventListener('click', e => { e.stopPropagation(); openRateSheet(itemId, name); });
-    return btn;
-  }
-
-  function injectRateButtons() {
-    document.querySelectorAll('.itinerary-card').forEach(card => {
-      const nameEl = card.querySelector('.itinerary-name');
-      if (!nameEl) return;
-      const name = nameEl.textContent.trim();
-      const itemId = ITEM_PREFIX + name;
-      card.dataset.itemId = itemId;
-      const wrap = document.createElement('div');
-      wrap.style.cssText = 'display:flex;justify-content:flex-end;margin-top:8px';
-      wrap.appendChild(makeBtn(itemId, name));
-      card.appendChild(wrap);
-    });
-
-    document.querySelectorAll('.spot-card').forEach(card => {
-      const nameEl = card.querySelector('.spot-name');
-      if (!nameEl) return;
-      const name = nameEl.textContent.trim();
-      const itemId = ITEM_PREFIX + name;
-      card.dataset.itemId = itemId;
-      const btn = makeBtn(itemId, name);
-      btn.style.marginLeft = '8px';
-      card.appendChild(btn);
-    });
-
-    loadItemReviews();
-  }
-
-  function openRateSheet(itemId, name) {
-    sheetItemId = itemId;
-    sheetRating = 0;
-    rateSheetName.textContent = name;
-    rateSheetText.value = '';
-    rateSheetBtn.disabled = true;
-    rateSheetBtn.textContent = '請先選擇星數';
-    rateSheetStars.querySelectorAll('.sheet-star').forEach(s => s.classList.remove('lit'));
-
-    const revs = itemReviews[itemId] || [];
-    if (revs.length > 0) {
-      const ratings = revs.filter(r => r.rating).map(r => r.rating);
-      const avg = ratings.length
-        ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
-        : '–';
-      rateSheetCount.textContent = `平均 ${avg} 分・共 ${revs.length} 則`;
-      rateSheetRevs.innerHTML = revs.slice(0, 3).map(r => `
-        <div class="sheet-review-item">
-          ${r.rating ? `<span>${'⭐'.repeat(r.rating)}</span>` : ''}
-          ${r.comment ? `<span class="sheet-review-text">${escHtml(r.comment)}</span>` : ''}
-        </div>`).join('');
-    } else {
-      rateSheetCount.textContent = '還沒有評分，成為第一個吧！';
-      rateSheetRevs.innerHTML = '';
+  function renderList() {
+    if (!items.length) {
+      listEl.innerHTML = '<div class="exp-empty">旅行期間還沒有記帳紀錄</div>';
+      return;
     }
+    let lastDate = '';
+    listEl.innerHTML = items.map((it, i) => {
+      const st = R.stats(reviews[it.key] || []);
+      const d = new Date(it.date + 'T00:00:00');
+      const head = it.date !== lastDate
+        ? `<div class="exp-date">${d.getMonth() + 1}/${d.getDate()}（${'日一二三四五六'[d.getDay()]}）</div>` : '';
+      lastDate = it.date;
+      return `${head}
+        <div class="exp-card" data-i="${i}">
+          <div class="exp-emoji">${it.emoji}</div>
+          <div class="exp-info">
+            <div class="exp-name${it.hasName ? '' : ' unnamed'}">${escHtml(it.name)}</div>
+            <div class="exp-meta">${it.hasName ? `${escHtml(it.ledgerCat)}・$${it.amount.toLocaleString('zh-TW')}` : '沒寫備註・可到記帳頁補上'}</div>
+          </div>
+          <button class="rate-btn${st ? ' has-rating' : ''}" type="button">${st ? '⭐ ' + st.avg : '⭐ 評分'}</button>
+        </div>`;
+    }).join('');
+    listEl.querySelectorAll('.exp-card').forEach(card =>
+      card.addEventListener('click', () => openSheet(items[+card.dataset.i])));
+  }
+
+  function renderRevs() {
+    const revs = reviews[cur.key] || [];
+    const st = R.stats(revs);
+    countEl.textContent = revs.length
+      ? `平均 ${st ? st.avg : '–'} 分・共 ${revs.length} 則・長按可刪除`
+      : '還沒有評分，成為第一個吧！';
+    revsEl.innerHTML = revs.map((r, i) => {
+      const { role: rr, text } = R.parse(r);
+      return `<div class="sheet-review-item" data-i="${i}">
+          ${rr ? `<span class="role-tag role-${rr}">${rr}</span>` : ''}
+          ${r.rating ? `<span>${'⭐'.repeat(r.rating)}</span>` : ''}
+          ${text ? `<span class="sheet-review-text">${escHtml(text)}</span>` : ''}
+        </div>`;
+    }).join('');
+    revsEl.querySelectorAll('.sheet-review-item').forEach(el => {
+      const r = revs[+el.dataset.i];
+      R.onLongPress(el, async () => {
+        if (!confirm('刪除這則評論？')) return;
+        try {
+          await R.remove(r);
+          reviews[cur.key] = (reviews[cur.key] || []).filter(x => x !== r);
+          renderRevs(); renderList();
+        } catch (e) { alert('刪除失敗，請再試一次'); }
+      });
+    });
+  }
+
+  function paintRoles() {
+    $('rateSheetRoles').querySelectorAll('.role-btn').forEach(b => b.classList.toggle('active', b.dataset.role === role));
+  }
+
+  function openSheet(it) {
+    cur = it; rating = 0; role = R.lastRole();
+    nameEl.textContent = it.name;
+    textEl.value = '';
+    starsEl.querySelectorAll('.sheet-star').forEach(s => s.classList.remove('lit'));
+    paintRoles(); syncBtn(); renderRevs();
     sheetBg.classList.add('open');
   }
 
-  sheetBg.addEventListener('click', e => {
-    if (e.target === sheetBg) sheetBg.classList.remove('open');
-  });
-  document.getElementById('rateSheetClose').addEventListener('click', () => {
-    sheetBg.classList.remove('open');
-  });
-
-  rateSheetStars.querySelectorAll('.sheet-star').forEach(star => {
-    star.addEventListener('click', () => {
-      sheetRating = parseInt(star.dataset.v);
-      rateSheetStars.querySelectorAll('.sheet-star')
-        .forEach(s => s.classList.toggle('lit', parseInt(s.dataset.v) <= sheetRating));
-      rateSheetBtn.disabled = false;
-      rateSheetBtn.textContent = '送出評分';
-    });
-  });
-
-  rateSheetBtn.addEventListener('click', async () => {
-    if (!sheetRating) return;
-    rateSheetBtn.disabled = true;
-    rateSheetBtn.textContent = '送出中…';
-    const comment = rateSheetText.value.trim() || null;
+  sheetBg.addEventListener('click', e => { if (e.target === sheetBg) sheetBg.classList.remove('open'); });
+  $('rateSheetClose').addEventListener('click', () => sheetBg.classList.remove('open'));
+  $('rateSheetRoles').querySelectorAll('.role-btn').forEach(b => b.addEventListener('click', () => {
+    role = b.dataset.role; paintRoles(); syncBtn();
+  }));
+  starsEl.querySelectorAll('.sheet-star').forEach(star => star.addEventListener('click', () => {
+    rating = parseInt(star.dataset.v);
+    starsEl.querySelectorAll('.sheet-star').forEach(s => s.classList.toggle('lit', parseInt(s.dataset.v) <= rating));
+    syncBtn();
+  }));
+  btn.addEventListener('click', async () => {
+    if (!rating || !role) return;
+    btn.disabled = true; btn.textContent = '送出中…';
     try {
-      const res = await fetch(`${SB_URL}/rest/v1/trip_reviews`, {
-        method: 'POST',
-        headers: { ...SB_HEADERS, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-        body: JSON.stringify({ trip_id: sheetItemId, rating: sheetRating, comment })
-      });
-      if (res.ok || res.status === 201) {
-        if (!itemReviews[sheetItemId]) itemReviews[sheetItemId] = [];
-        itemReviews[sheetItemId].unshift({
-          trip_id: sheetItemId, rating: sheetRating, comment,
-          created_at: new Date().toISOString()
-        });
-        refreshRateBtns();
-        rateSheetBtn.textContent = '謝謝你的評分 ✓';
-        setTimeout(() => sheetBg.classList.remove('open'), 1200);
-      } else {
-        rateSheetBtn.textContent = '送出失敗，請重試';
-        rateSheetBtn.disabled = false;
-      }
-    } catch {
-      rateSheetBtn.textContent = '送出失敗，請重試';
-      rateSheetBtn.disabled = false;
+      await R.post(cur.key, rating, role, textEl.value.trim());
+      group(await R.fetchByKeys(items.map(x => x.key)));
+      renderRevs(); renderList();
+      rating = 0; textEl.value = '';
+      starsEl.querySelectorAll('.sheet-star').forEach(s => s.classList.remove('lit'));
+      btn.textContent = '謝謝你的評分 ✓';
+      setTimeout(syncBtn, 1200);
+    } catch (e) {
+      btn.textContent = '送出失敗，請重試'; btn.disabled = false;
     }
   });
 
-  injectRateButtons();
+  try {
+    items = (await R.fetchExpenses(trip.startDate, trip.endDate || trip.startDate)).map(R.entryItem);
+    group(await R.fetchByKeys([...new Set(items.map(x => x.key))]));
+    renderList();
+  } catch (e) {
+    console.warn('旅途開支載入失敗', e);
+    listEl.innerHTML = '<div class="exp-empty">⚠️ 記帳資料載入失敗</div>';
+  }
 }
 
 /* ── 3) Polaroid 照片牆＋Lightbox ────────────────────────── */
@@ -397,7 +383,7 @@ async function boot() {
 
   if (trip) renderSpots(trip);
   setupPhotoWall(trip ? (trip.photos || []) : []);
-  setupRating(trip ? (trip.itemPrefix || '') : '');
+  if (trip) setupExpenseReviews(trip);
 }
 
 if (document.readyState === 'loading') {

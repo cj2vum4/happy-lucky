@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = '2026-09-24.1';
+const VERSION = '2026-09-24.2';
 const CORE_CACHE = `happy-lucky-core-${VERSION}`;
 const RUNTIME_CACHE = `happy-lucky-runtime-${VERSION}`;
 const IMAGE_CACHE = `happy-lucky-images-${VERSION}`;
@@ -18,6 +18,7 @@ const CORE_ASSETS = [
   './trips.json',
   './assets/mobile-enhancements.css',
   './assets/mobile-enhancements.js',
+  './assets/reviews.js',
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/icon-512-maskable.png',

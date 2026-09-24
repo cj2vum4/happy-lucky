@@ -16,7 +16,7 @@
 | 總覽 | `page-home` | cover-card、warn-card（注意事項）、budget 預算 |
 | 交通 | `page-traffic` | transport-card 交通方式 |
 | 行程 | `page-itinerary` | day-tab-btn + day-panel + itinerary-list |
-| 景點 | `page-spots` | spot-card（含 Supabase 評分按鈕） |
+| 景點 | `page-spots` | 旅途開支評分（記帳連動）＋ spot-card 景點介紹 |
 | 照片 | `page-photos` | polaroid 軟木板（無照片時顯示「照片規劃中」提示） |
 
 ### 行程項目類型 badge
@@ -29,14 +29,22 @@
 ### 共用模組（assets/，六個旅程頁都吃這一份）
 旅程頁的「景點卡片、評分系統、polaroid 照片牆、lightbox」全部由共用模組提供，**不要在各頁複製這些程式碼**：
 - `assets/trip-page.css`：景點卡片/評分按鈕/評分彈窗/照片牆樣式（用 CSS 變數，自動套各頁主題色）
-- `assets/trip-page.js`：讀 `trips.json` → 渲染 `#spotList` 景點卡片、注入評分按鈕與底部彈窗、產生照片牆
+- `assets/trip-page.js`：讀 `trips.json` → 渲染 `#spotList` 景點卡片（不可評分）、旅途開支評分清單與底部彈窗、產生照片牆
 - 頁面只需要：head 放 `<link rel="stylesheet" href="../assets/trip-page.css">`；`#page-spots` 內放標題＋`<div id="spotList"></div>`；`#page-photos` 內放 `<div class="photo-wall" id="photoWall"></div>`；`</body>` 前放 `<script>window.TRIP_ID = '{trips.json 的 id}';</script>` ＋ `<script src="../assets/trip-page.js" defer></script>`
-- 行程（itinerary）時間軸是每頁獨有內容，仍寫在各頁 HTML；共用 JS 會自動幫 `.itinerary-card` 注入評分按鈕
+- 行程（itinerary）時間軸是每頁獨有內容，仍寫在各頁 HTML（不可評分）
 
-### Supabase 評分系統
-- `ITEM_PREFIX` 來自 trips.json 的 `itemPrefix`，格式為 `{tripkey}__`（例：`tainan2026__`）
-- 每個景點/行程項目只有單一整體評分（星星＋留言），沒有拆品項或菜單的機制
-- 評分底部彈窗由 `assets/trip-page.js` 動態注入（`.rate-sheet-bg`，在 `.pages` 內）
+### 評分系統（記帳支出連動）
+- **可評分的是「旅行期間的記帳支出」，景點（spots）與行程時間軸都不能評分**（不要再替 `.itinerary-card` / `.spot-card` 加評分按鈕）
+- 旅程頁「景點」分頁上方的「💸 旅途開支評分」由 `assets/trip-page.js` 讀 `ledger_entries`（日期落在 trip 的 startDate–endDate）產生；首頁「查詢」列出所有旅行期間支出＋舊版手動勾「加入查詢」的 `#spot` 日常記帳
+- 旅程頁／記帳頁只互相連結（查詢彈窗有「行程頁」「記帳頁 ?date=」兩個按鈕），評論存在 `trip_reviews`，**不會改動記帳資料**，刪改記帳也不會動到評論
+- 評論 key：一般支出 `exp__{ledger id}`；舊版 `#spot` 記帳沿用 `food__{name}`；舊景點評分 `{itemPrefix}{spot name}` 只在已有評論時於查詢頁顯示
+- 角色 H / L：存在 comment 開頭 `[H] ` / `[L] `，送出前必選（預設帶入該裝置上次選的角色）
+- 長按評論刪除：先嘗試 DELETE，權限不足時寫入刪除標記 `comment = '#del:{被刪那筆 id}'`；讀取一律經 `HLReviews.fold()` 過濾
+- 共用邏輯在 `assets/reviews.js`（`window.HLReviews`），index 與旅程頁都用它，不要各自重寫
+
+### 首頁分頁
+- 一般模式：首頁／行事曆／查詢／想去；首頁不再顯示回憶相簿
+- 點「N 趟旅行」統計卡 → 切換成「返回／行程／相簿」：行程＝已去行程（status done）條列＋進入按鈕；相簿＝原回憶相簿
 
 ### PWA
 - `manifest.json`＋`assets/icon-*.png`（情侶插畫）；index/account/各旅程頁 head 都掛了 manifest 與 theme-color
@@ -70,7 +78,7 @@ git remote set-url origin "http://local_proxy@127.0.0.1:43657/git/cj2vum4/happy-
 
 ## 資料來源
 - `trips.json`：**景點（spots）與照片（photos）的唯一資料來源**，旅程頁的景點卡片與照片牆都由它產生，不要再把景點寫死在 HTML 裡
-- `itemPrefix` + spot name = Supabase `trip_id` rating key（改 spot 名稱會讓既有評分變孤兒，改名前先確認）
+- `itemPrefix` + spot name = 舊版景點評分 key（僅保留顯示既有評論；改 spot 名稱會讓舊評論變孤兒）
 - 新增旅程：trips.json 加一筆（含 id/itemPrefix/spots/photos）＋建立行程頁 HTML（referencing 南投頁的結構），頁尾 `window.TRIP_ID` 填 trips.json 的 id
 - 例外：`20260520/260520天使仙境.html` 是舊格式紀念頁，不吃共用模組，維持原樣
 
