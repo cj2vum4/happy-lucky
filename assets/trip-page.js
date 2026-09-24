@@ -285,13 +285,18 @@ function setupPhotoWall(photos) {
   lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
   function openLightbox(src) { lightboxImg.src = src; lightbox.classList.add('open'); }
 
-  // 相對 viewport 的散落分區，鋪滿螢幕並遮住上下導覽
-  const ZONES = [
-    [0.00, -0.03], [0.38, -0.05], [0.60, 0.02],
-    [-0.08, 0.20], [0.28, 0.22],  [0.58, 0.17],
-    [0.04, 0.45],  [0.38, 0.47],  [0.60, 0.42],
-    [-0.03, 0.66], [0.25, 0.69],  [0.48, 0.69],
-  ];
+  function scatterPos(i, n, W, H, PW, PH) {
+    // 以畫面中心為核心向外散開（向日葵螺旋）；先放外圈、最後一張落在正中間最上層
+    const k = n - 1 - i;
+    const t = n <= 1 ? 0 : Math.sqrt((k + 0.5) / n);
+    const a = k * 2.39996 + randBetween(-0.3, 0.3);
+    const rx = Math.min((W - PW) / 2 + PW * 0.15, 260);
+    const ry = Math.min((H - PH) / 2, 330);
+    return {
+      x: W / 2 + Math.cos(a) * rx * t - PW / 2 + randBetween(-12, 12),
+      y: H / 2 + Math.sin(a) * ry * t - PH / 2 + randBetween(-12, 12),
+    };
+  }
 
   let photoWallReady = false;
 
@@ -309,9 +314,7 @@ function setupPhotoWall(photos) {
         const el = document.createElement('div');
         el.className = 'polaroid';
 
-        const zone = ZONES[i % ZONES.length];
-        const x = zone[0] * W + randBetween(-PW * 0.15, PW * 0.15);
-        const y = zone[1] * H + randBetween(-PH * 0.12, PH * 0.12);
+        const { x, y } = scatterPos(i, photoData.length, W, H, PW, PH);
         const rot = randBetween(-15, 15);
 
         el.style.cssText = `position:fixed;left:${x}px;top:${y}px;z-index:${50 + i};pointer-events:auto`;

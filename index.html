@@ -1120,7 +1120,6 @@
   .tab-back { color: var(--coffee-mid); }
   .stat-card.clickable { cursor: pointer; position: relative; touch-action: manipulation; transition: transform 0.15s; }
   .stat-card.clickable:active { transform: scale(0.96); }
-  .stat-card.clickable .stat-go { display: block; font-size: 10px; color: var(--rose, #D9776B); margin-top: 3px; letter-spacing: 1px; }
   .done-trip { display: flex; gap: 12px; align-items: stretch; background: var(--cream); border: 1.5px solid var(--coffee); border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: 2px 2px 0 var(--pea-light); }
   .done-trip .dt-date { flex-shrink: 0; width: 52px; text-align: center; font-family: var(--serif-display); color: var(--pea-dark); border-right: 1.5px dashed var(--pea-light); padding-right: 10px; display: flex; flex-direction: column; justify-content: center; }
   .done-trip .dt-date b { font-size: 20px; line-height: 1.1; display: block; }
@@ -1410,28 +1409,34 @@ function setTabMode(trips) {
   document.querySelector('.tabs:not(#tabs-trips)').classList.toggle('tabs-off', trips);
   document.getElementById('tabs-trips').classList.toggle('tabs-off', !trips);
 }
-// 進入行程模式時多推一筆 history，讓手機返回鍵回到首頁而不是離開 App
-// （mobile-enhancements.js 切分頁時會 replaceState，所以用變數記錄而不是 history.state）
-let tripsHistoryPushed = false;
+// 行程模式內的每次切換都推一筆 history，「返回」與手機返回鍵都回到上一頁（相簿 → 行程 → 原本的分頁）
+// （mobile-enhancements.js 切分頁時會 replaceState，所以用 navStack 記錄而不是 history.state）
+let currentTab = 'home';
+const navStack = [];
+let navSilent = false;
+function showTabSilently(tab) {
+  navSilent = true;
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).click();
+  navSilent = false;
+}
 function enterTripsMode() {
-  if (!tripsHistoryPushed) { history.pushState(null, '', location.href); tripsHistoryPushed = true; }
   document.querySelector('.tab-btn[data-tab="trips"]').click();
 }
-function leaveTripsMode() {
-  setTabMode(false);
-  document.querySelector('.tab-btn[data-tab="home"]').click();
-}
 document.getElementById('trips-back').addEventListener('click', () => {
-  if (tripsHistoryPushed) history.back(); else leaveTripsMode();
+  if (navStack.length) history.back();
+  else showTabSilently('home');
 });
 window.addEventListener('popstate', () => {
-  if (!tripsHistoryPushed) return;
-  tripsHistoryPushed = false;
-  if (!document.getElementById('tabs-trips').classList.contains('tabs-off')) leaveTripsMode();
+  if (navStack.length) showTabSilently(navStack.pop());
 });
 document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => {
     const tab = btn.dataset.tab;
+    if (!navSilent && tab !== currentTab && TRIP_MODE_TABS.includes(tab)) {
+      history.pushState(null, '', location.href);
+      navStack.push(currentTab);
+    }
+    currentTab = tab;
     setTabMode(TRIP_MODE_TABS.includes(tab));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1543,7 +1548,7 @@ function renderHome() {
   const togetherDays = Math.floor((new Date() - new Date('2026-05-20T00:00:00')) / 86400000) + 1;
 
   const statsHtml = `
-    <div class="stat-card clickable" onclick="enterTripsMode()"><span class="stat-num">${totalTrips}</span><span class="stat-label">趟旅行</span><span class="stat-go">點我看行程 ›</span></div>
+    <div class="stat-card clickable" onclick="enterTripsMode()"><span class="stat-num">${totalTrips}</span><span class="stat-label">趟旅行</span></div>
     <div class="stat-card"><span class="stat-num">${totalDays}</span><span class="stat-label">天足跡</span></div>
     <div class="stat-card"><span class="stat-num">${togetherDays}</span><span class="stat-label">天戀愛</span></div>
   `;
