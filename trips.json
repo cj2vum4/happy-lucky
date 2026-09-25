@@ -109,14 +109,12 @@
       "spots": [
         { "name": "歐貝拉洋菓子（崇信門市）", "category": "食物", "region": "東區", "emoji": "🍰", "desc": "9/24 晚餐後・藍莓乳酪 4吋蛋糕", "mapUrl": "https://maps.google.com/?q=歐貝拉洋菓子+崇信門市+台南" },
         { "name": "安平有間旅店", "category": "住宿", "region": "安平區", "emoji": "🏨", "desc": "9/24 住宿・$1,280 − 國旅補助 $800 = $480", "mapUrl": "https://maps.google.com/?q=安平有間旅店+台南" },
-        { "name": "西羅殿牛肉湯", "category": "食物", "region": "北區", "emoji": "🥣", "desc": "04:30–13:00・下客運第一站", "mapUrl": "https://maps.google.com/?q=西羅殿牛肉湯+台南" },
-        { "name": "裏厝 Home Vibes Coffee", "category": "食物", "region": "安平區", "emoji": "☕", "desc": "低消 $300/人・營業到 18:00", "mapUrl": "https://maps.google.com/?q=裏厝+Home+Vibes+Coffee+台南" },
-        { "name": "觀夕平臺", "category": "室外景點", "region": "安平區", "emoji": "🌅", "desc": "安平看夕陽・9 月底日落約 17:50", "mapUrl": "https://maps.google.com/?q=觀夕平臺+安平" },
+        { "name": "裏厝 Home Vibes Coffee", "category": "食物", "region": "安平區", "emoji": "☕", "desc": "9/24 在這裡上班・低消 $300/人", "mapUrl": "https://maps.google.com/?q=裏厝+Home+Vibes+Coffee+台南" },
+        { "name": "林義豐冬瓜茶", "category": "食物", "region": "安平區", "emoji": "🧋", "desc": "9/24・不好喝 😝", "mapUrl": "https://maps.google.com/?q=林義豐冬瓜茶+安平" },
+        { "name": "觀夕平臺", "category": "室外景點", "region": "安平區", "emoji": "🌅", "desc": "9/24 晚上吃蛋糕拍照・很多人在放煙火", "mapUrl": "https://maps.google.com/?q=觀夕平臺+安平" },
+        { "name": "台灣第一家鹽酥雞", "category": "食物", "region": "東區", "emoji": "🍗", "desc": "9/24 宵夜", "mapUrl": "https://maps.google.com/?q=台灣第一家鹽酥雞+台南" },
         { "name": "文章牛肉湯 安平總店", "category": "食物", "region": "安平區", "emoji": "🥣", "desc": "11:00–01:30・晚餐牛肉湯", "mapUrl": "https://maps.google.com/?q=文章牛肉湯+安平總店" },
-        { "name": "巧食雞 碳烤雞排", "category": "食物", "region": "安平區", "emoji": "🍗", "desc": "安平店・17:00 開賣", "mapUrl": "https://maps.google.com/?q=巧食雞+碳烤雞排+安平" },
-        { "name": "同記安平豆花", "category": "食物", "region": "安平區", "emoji": "🍮", "desc": "安平總店・09:00–23:00", "mapUrl": "https://maps.google.com/?q=同記安平豆花+安平總店" },
         { "name": "樹屋咖啡館", "category": "食物", "region": "安平區", "emoji": "🌳", "desc": "安平樹屋園區內・10:00–17:00", "mapUrl": "https://maps.google.com/?q=樹屋咖啡館+安平" },
-        { "name": "安平出張所", "category": "室內景點", "region": "安平區", "emoji": "🏛️", "desc": "日式木造老建築・10:00–18:00", "mapUrl": "https://maps.google.com/?q=安平出張所" },
         { "name": "阿財牛肉湯", "category": "食物", "region": "安平區", "emoji": "🥣", "desc": "12:00 開門・古堡街", "mapUrl": "https://maps.google.com/?q=阿財牛肉湯+安平" },
         { "name": "安平老街", "category": "室外景點", "region": "安平區", "emoji": "🏮", "desc": "延平街・蝦餅・劍獅", "mapUrl": "https://maps.google.com/?q=安平老街" },
         { "name": "劉記韭菜盒子", "category": "食物", "region": "安平區", "emoji": "🥟", "desc": "14:30–18:30", "mapUrl": "https://maps.google.com/?q=劉記韭菜盒子+安平" },
@@ -124,7 +122,6 @@
         { "name": "神農街", "category": "室外景點", "region": "中西區", "emoji": "🏚️", "desc": "老屋巷弄・文青小店", "mapUrl": "https://maps.google.com/?q=神農街+台南" },
         { "name": "揣茶", "category": "食物", "region": "北區", "emoji": "🧋", "desc": "週五 10:00–17:00・週四休", "mapUrl": "https://maps.google.com/?q=揣茶+台南" },
         { "name": "丹丹漢堡 成功店", "category": "食物", "region": "北區", "emoji": "🍔", "desc": "台南限定速食・麵線羹＋炸雞", "mapUrl": "https://maps.google.com/?q=丹丹漢堡+成功店+台南" },
-        { "name": "藍晒圖文創園區", "category": "室外景點", "region": "南區", "emoji": "🟦", "desc": "傍晚點燈拍照", "mapUrl": "https://maps.google.com/?q=藍晒圖文創園區+台南" },
         { "name": "武聖夜市", "category": "食物", "region": "中西區", "emoji": "🌙", "desc": "週三、五、六營業", "mapUrl": "https://maps.google.com/?q=武聖夜市+台南" }
       ]
     },
