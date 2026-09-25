@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = '2026-09-25.3';
+const VERSION = '2026-09-25.4';
 const CORE_CACHE = `happy-lucky-core-${VERSION}`;
 const RUNTIME_CACHE = `happy-lucky-runtime-${VERSION}`;
 const IMAGE_CACHE = `happy-lucky-images-${VERSION}`;

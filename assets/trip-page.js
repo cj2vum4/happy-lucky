@@ -213,8 +213,35 @@ async function setupExpenseReviews(trip) {
     }
   });
 
+  // 總覽頁若放了 <div id="ledgerBudget"></div>，直接用記帳紀錄算實際花費（只讀，不改記帳）
+  function renderLedgerBudget(list) {
+    const box = document.getElementById('ledgerBudget');
+    if (!box) return;
+    if (!list.length) {
+      box.innerHTML = '<div class="budget-hero"><span class="budget-amount">NT$ 0</span><div class="budget-label">這段期間還沒有記帳紀錄</div></div>';
+      return;
+    }
+    const EMOJI = { '食': '🍜', '衣': '👗', '住': '🏨', '行': '🚗', '育': '📚', '樂': '🎡', '醫': '💊', '其他': '📦' };
+    const fmt = n => '$' + Math.round(n).toLocaleString('zh-TW');
+    const total = list.reduce((t, x) => t + x.amount, 0);
+    const byCat = {};
+    list.forEach(x => { (byCat[x.ledgerCat] ??= []).push(x); });
+    const rows = Object.entries(byCat).sort((a, b) => b[1].reduce((t, x) => t + x.amount, 0) - a[1].reduce((t, x) => t + x.amount, 0));
+    box.innerHTML = `
+      <div class="budget-hero">
+        <span class="budget-amount">NT$ ${Math.round(total).toLocaleString('zh-TW')}</span>
+        <div class="budget-label">2人實際花費・來自記帳（${list.length} 筆）</div>
+      </div>` + rows.map(([cat, xs]) => `
+      <div class="budget-row">
+        <div class="budget-row-icon">${EMOJI[cat] || '📦'}</div>
+        <div class="budget-row-name">${escHtml(cat)}<div style="font-size:11px;color:var(--coffee-light);margin-top:2px">${escHtml(xs.filter(x => x.hasName).map(x => x.name).join('・') || '未填備註')}</div></div>
+        <div class="budget-row-price">${fmt(xs.reduce((t, x) => t + x.amount, 0))}</div>
+      </div>`).join('');
+  }
+
   try {
     items = (await R.fetchExpenses(trip.startDate, trip.endDate || trip.startDate)).map(R.entryItem);
+    renderLedgerBudget(items);
     group(await R.fetchByKeys([...new Set(items.map(x => x.key))]));
     renderList();
   } catch (e) {

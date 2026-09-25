@@ -32,6 +32,7 @@
 - `assets/trip-page.js`：讀 `trips.json` → 渲染 `#spotList` 景點卡片（不可評分）、旅途開支評分清單與底部彈窗、產生照片牆
 - 頁面只需要：head 放 `<link rel="stylesheet" href="../assets/trip-page.css">`；`#page-spots` 內放標題＋`<div id="spotList"></div>`；`#page-photos` 內放 `<div class="photo-wall" id="photoWall"></div>`；`</body>` 前放 `<script>window.TRIP_ID = '{trips.json 的 id}';</script>` ＋ `<script src="../assets/trip-page.js" defer></script>`
 - 行程（itinerary）時間軸是每頁獨有內容，仍寫在各頁 HTML（不可評分）
+- 總覽頁若放 `<div id="ledgerBudget"></div>`，共用 JS 會用旅行日期內的記帳自動算「實際花費」（總額＋依分類列出，只讀不改記帳）；已結束的旅程建議用這個取代手寫預算
 
 ### 評分系統（記帳支出連動）
 - **可評分的是「旅行期間的記帳支出」，景點（spots）與行程時間軸都不能評分**（不要再替 `.itinerary-card` / `.spot-card` 加評分按鈕）

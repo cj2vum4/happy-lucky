@@ -108,7 +108,7 @@
       "photos": [],
       "spots": [
         { "name": "國立陽明交通大學", "category": "室內景點", "region": "東區", "emoji": "🎭", "desc": "主持劇本殺《極目2：九爺我想給你養老》・打水槍", "mapUrl": "https://maps.google.com/?q=國立陽明交通大學+光復校區" },
-        { "name": "永和豆漿大王（食品路）", "category": "食物", "region": "東區", "emoji": "🥛", "desc": "半夜兩點的宵夜", "mapUrl": "https://maps.google.com/?q=永和豆漿大王+新竹+食品路" },
+        { "name": "永和豆漿大王（光復路）", "category": "食物", "region": "東區", "emoji": "🥛", "desc": "半夜兩點的宵夜", "mapUrl": "https://maps.google.com/?q=永和豆漿大王+新竹+光復路一段450號" },
         { "name": "賓城大飯店", "category": "住宿", "region": "東區", "emoji": "🏨", "desc": "9/11 住宿・凌晨兩點半入住", "mapUrl": "https://maps.google.com/?q=賓城大飯店+新竹" },
         { "name": "國立聯合大學", "category": "室外景點", "region": "苗栗市", "emoji": "🎓", "desc": "找表弟", "mapUrl": "https://maps.google.com/?q=國立聯合大學+二坪山校區" },
         { "name": "烏色咖啡", "category": "食物", "region": "苗栗市", "emoji": "☕", "desc": "和表弟一起吃", "mapUrl": "https://maps.google.com/?q=烏色咖啡+苗栗" },
