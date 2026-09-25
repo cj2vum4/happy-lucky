@@ -105,7 +105,15 @@
       "tags": ["劇本殺", "找表弟", "舊山線", "鐵道自行車"],
       "file": "20260911_12/260911新竹苗栗.html",
       "itemPrefix": "hsmiaoli2026__",
-      "photos": [],
+      "photos": [
+        { "src": "20260911_12/photo_01.jpg", "caption": "極目2 全員水槍 🔫" },
+        { "src": "20260911_12/photo_02.jpg", "caption": "勝興老街敬個禮 🫡" },
+        { "src": "20260911_12/photo_03.jpg", "caption": "笑到停不下來 😆" },
+        { "src": "20260911_12/photo_04.jpg", "caption": "情侶裝出動 👕" },
+        { "src": "20260911_12/photo_05.jpg", "caption": "舊山線自行車出發 🚲" },
+        { "src": "20260911_12/photo_06.jpg", "caption": "點燈的舊山線 🌈" },
+        { "src": "20260911_12/photo_07.jpg", "caption": "沒電了…踩不動 😂" }
+      ],
       "spots": [
         { "name": "國立陽明交通大學", "category": "室內景點", "region": "東區", "emoji": "🎭", "desc": "主持劇本殺《極目2：九爺我想給你養老》・打水槍", "mapUrl": "https://maps.google.com/?q=國立陽明交通大學+光復校區" },
         { "name": "永和豆漿大王（光復路）", "category": "食物", "region": "東區", "emoji": "🥛", "desc": "半夜兩點的宵夜", "mapUrl": "https://maps.google.com/?q=永和豆漿大王+新竹+光復路一段450號" },
