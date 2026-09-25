@@ -476,5 +476,43 @@
    "pid": "ChIJq6qqqsF2bjQRbVcIlL5BnHQ",
    "addr": "701台灣臺南市東區莊敬里東光路二段108號"
   }
+ },
+ "hsinchumiaoli": {
+  "交大劇本殺": {
+   "lat": 24.786886,
+   "lng": 120.997497,
+   "pid": "ChIJMV8k71c2aDQRmj5yOn_aKTk",
+   "addr": "30010台灣新竹市東區光明里大學路1001號"
+  },
+  "永和豆漿": {
+   "lat": 24.794501,
+   "lng": 120.972301,
+   "pid": "ChIJz3ur8e41aDQRYRZcuptSadw",
+   "addr": "300台灣新竹市東區南大里食品路309號"
+  },
+  "賓城大飯店": {
+   "lat": 24.802965,
+   "lng": 120.971141,
+   "pid": "ChIJE4GPD8I1aDQRzTphehEN1dc",
+   "addr": "300台灣新竹市東區榮光里中正路13號5樓"
+  },
+  "聯合大學": {
+   "lat": 24.545827,
+   "lng": 120.812365,
+   "pid": "ChIJm5eOLeSraTQRT0jM49NKbZ0",
+   "addr": "36003台灣苗栗縣苗栗市聯大1號"
+  },
+  "烏色咖啡": {
+   "lat": 24.565044,
+   "lng": 120.820091,
+   "pid": "ChIJYVXwoBKtaTQRWCbgGBLXqZE",
+   "addr": "360台灣苗栗縣苗栗市建功里縣府路102號"
+  },
+  "勝興車站・舊山線自行車": {
+   "lat": 24.388216,
+   "lng": 120.781987,
+   "pid": "ChIJf5hiYY4FaTQRwPcak944Lys",
+   "addr": "367台灣苗栗縣三義鄉勝興村八十八號"
+  }
  }
 }

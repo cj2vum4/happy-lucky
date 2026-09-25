@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>新竹苗栗行</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pea: #B5654A;
+  --pea-dark: #8C4632;
+  --pea-light: #EFC9B8;
+  --pea-bg: #FBEFE9;
+  --cream: #FAF5E8;
+  --cream-dark: #EED9CC;
+  --paper: #FDFBF2;
+  --rose: #C97A6E;
+  --rose-dark: #A45448;
+  --rose-bg: #FAF0EE;
+  --coffee: #3A2A10;
+  --coffee-mid: #6A4E28;
+  --coffee-light: #9A7A50;
+  --coffee-faint: #C4A878;
+  --amber: #D4883C;
+  --amber-bg: #FDF3E7;
+  --ink: #1A1208;
+  --hand: 'Caveat', cursive;
+  --body: 'Noto Serif TC', serif;
+  --tab-h: 72px;
+  --header-h: 60px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; }
+body {
+  font-family: var(--body);
+  color: var(--coffee);
+  background: var(--cream);
+  height: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.app {
+  max-width: 430px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,0,0,0.12);
+  overflow: hidden;
+}
+
+.app-header {
+  height: var(--header-h);
+  background: var(--paper);
+  border-bottom: 1px solid var(--cream-dark);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.back-btn { font-family: var(--hand); font-size: 26px; color: var(--coffee-light); text-decoration: none; margin-right: 10px; line-height: 1; }
+.header-title { font-family: var(--hand); font-size: 26px; font-weight: 700; color: var(--coffee); flex: 1; line-height: 1; }
+.header-meta { font-size: 11px; color: var(--coffee-light); font-family: var(--body); text-align: right; line-height: 1.4; }
+
+.pages { flex: 1; overflow: hidden; position: relative; }
+.page {
+  position: absolute; inset: 0;
+  overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+  padding: 20px 16px calc(20px + var(--safe-bottom));
+  opacity: 0; pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.page.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+.tab-bar {
+  height: calc(var(--tab-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: rgba(253,251,242,0.97);
+  border-top: 1px solid var(--cream-dark);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  display: flex; align-items: stretch; flex-shrink: 0; z-index: 20;
+}
+.tab-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; border: none; background: transparent; color: var(--coffee-faint);
+  font-family: var(--body); font-size: 10px; cursor: pointer; touch-action: manipulation;
+  transition: color 0.15s; padding: 8px 4px 6px; position: relative;
+}
+.tab-btn.active { color: var(--pea-dark); }
+.tab-icon { font-size: 22px; line-height: 1; transition: transform 0.15s; }
+.tab-btn.active .tab-icon { transform: scale(1.1); }
+.tab-label { font-size: 10px; font-weight: 500; letter-spacing: 0.02em; }
+.tab-btn.active::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 28px; height: 2.5px; background: var(--pea-dark); border-radius: 0 0 3px 3px; }
+.tab-btn:active .tab-icon { transform: scale(0.92); }
+
+.cover-card {
+  background: linear-gradient(145deg, var(--pea-light) 0%, #F5D9CB 50%, var(--cream-dark) 100%);
+  border-radius: 16px; padding: 28px 22px 22px; margin-bottom: 16px; position: relative; overflow: hidden;
+}
+.cover-card::before { content: '🚂'; position: absolute; right: 16px; top: 16px; font-size: 48px; opacity: 0.25; transform: rotate(10deg); }
+.cover-card h1 { font-family: var(--hand); font-size: 32px; font-weight: 700; color: var(--coffee); line-height: 1.1; margin-bottom: 8px; }
+.cover-card .dates { font-size: 13px; color: var(--coffee-mid); margin-bottom: 16px; }
+.cover-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.cover-tag { background: rgba(255,255,255,0.65); border: 1px solid rgba(140,70,50,0.25); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--pea-dark); font-weight: 500; }
+
+.warn-card { background: var(--rose-bg); border: 1px solid rgba(201,122,110,0.3); border-left: 3px solid var(--rose); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+.warn-card-title { font-family: var(--hand); font-size: 18px; color: var(--rose-dark); margin-bottom: 10px; font-weight: 700; }
+.warn-list { list-style: none; }
+.warn-list li { font-size: 13px; color: var(--coffee); padding: 5px 0 5px 20px; position: relative; border-bottom: 1px solid rgba(201,122,110,0.12); line-height: 1.5; }
+.warn-list li:last-child { border-bottom: none; }
+.warn-list li::before { content: '⚠'; position: absolute; left: 0; font-size: 11px; top: 6px; color: var(--rose); }
+
+.budget-hero { background: var(--pea-bg); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 16px; border: 1px solid rgba(140,70,50,0.15); }
+.budget-amount { font-family: var(--hand); font-size: 52px; font-weight: 700; color: var(--pea-dark); line-height: 1; display: block; }
+.budget-label { font-size: 12px; color: var(--coffee-light); margin-top: 4px; }
+.budget-row { display: flex; align-items: center; padding: 14px 16px; background: var(--cream); border-radius: 12px; margin-bottom: 8px; gap: 12px; }
+.budget-row-icon { font-size: 22px; width: 36px; text-align: center; flex-shrink: 0; }
+.budget-row-name { flex: 1; font-size: 14px; color: var(--coffee); }
+.budget-row-price { font-family: var(--hand); font-size: 20px; color: var(--coffee); font-weight: 600; }
+
+.transport-card { background: var(--cream); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px; }
+.transport-icon-wrap { width: 44px; height: 44px; background: var(--paper); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; border: 1px solid var(--cream-dark); }
+.transport-body { flex: 1; min-width: 0; }
+.transport-title { font-size: 14px; font-weight: 600; color: var(--coffee); margin-bottom: 3px; }
+.transport-sub { font-size: 12px; color: var(--coffee-light); }
+
+.day-tabs { display: flex; gap: 6px; margin-bottom: 18px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.day-tabs::-webkit-scrollbar { display: none; }
+.day-tab-btn { flex-shrink: 0; border: 1.5px solid var(--cream-dark); background: var(--paper); border-radius: 22px; padding: 6px 16px; font-family: var(--body); font-size: 13px; color: var(--coffee-mid); cursor: pointer; touch-action: manipulation; white-space: nowrap; transition: all 0.15s; }
+.day-tab-btn.active { background: var(--pea-dark); border-color: var(--pea-dark); color: white; }
+.day-tab-btn:active { transform: scale(0.95); }
+.day-panel { display: none; }
+.day-panel.active { display: block; }
+
+.day-banner { background: linear-gradient(120deg, var(--pea-dark) 0%, #6A3322 100%); border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
+.day-banner-num { font-family: var(--hand); font-size: 42px; font-weight: 700; color: rgba(255,255,255,0.9); line-height: 1; flex-shrink: 0; }
+.day-banner-info { flex: 1; }
+.day-banner-title { font-family: var(--hand); font-size: 17px; color: white; font-weight: 600; margin-bottom: 2px; }
+.day-banner-date { font-size: 11px; color: rgba(255,255,255,0.65); }
+
+.itinerary-list { display: flex; flex-direction: column; gap: 0; }
+.itinerary-item { display: flex; gap: 0; position: relative; }
+.itinerary-time-col { width: 52px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding-top: 14px; }
+.itinerary-time { font-family: var(--hand); font-size: 15px; color: var(--rose-dark); font-weight: 600; line-height: 1; text-align: center; }
+.itinerary-line { width: 2px; flex: 1; background: var(--pea-light); margin-top: 6px; min-height: 20px; }
+.itinerary-item:last-child .itinerary-line { display: none; }
+.itinerary-dot { position: absolute; left: 44px; top: 17px; width: 10px; height: 10px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--pea-dark); z-index: 1; }
+.itinerary-card { flex: 1; background: var(--cream); border-radius: 12px; padding: 12px 14px; margin: 8px 0 8px 12px; }
+.itinerary-card-top { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+.itinerary-name { font-size: 14px; font-weight: 600; color: var(--coffee); flex: 1; line-height: 1.3; }
+.itype { font-size: 10px; padding: 2px 7px; border-radius: 10px; flex-shrink: 0; font-weight: 600; letter-spacing: 0.02em; margin-top: 1px; }
+.itype-食 { background: var(--rose-bg); color: var(--rose-dark); }
+.itype-動 { background: var(--amber-bg); color: #8C5A1A; }
+.itype-宿 { background: #EEF0F8; color: #4A4F8C; }
+.itinerary-desc { font-size: 12px; color: var(--coffee-light); line-height: 1.5; margin-bottom: 8px; }
+.nav-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--pea-dark); text-decoration: none; background: white; border: 1px solid var(--pea-light); border-radius: 20px; padding: 5px 12px; font-weight: 500; touch-action: manipulation; transition: background 0.12s; }
+.nav-btn:active { background: var(--pea-bg); transform: scale(0.97); }
+
+.page-section-title { font-family: var(--hand); font-size: 20px; font-weight: 700; color: var(--coffee); margin-bottom: 14px; padding-left: 4px; }
+
+/* ===== Google 地圖 ===== */
+.gmap-wrap { background: var(--cream); border-radius: 14px; padding: 10px; margin-bottom: 14px; }
+.gmap-tabs { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.gmap-tab { flex: 1; min-width: 52px; border: 1.5px solid var(--pea); background: var(--paper); border-radius: 18px; padding: 6px 4px; font-family: var(--body); font-size: 13px; color: var(--pea-dark); cursor: pointer; touch-action: manipulation; }
+.gmap-tab.active { background: var(--pea-dark); color: #fff; border-color: var(--pea-dark); }
+.gmap-canvas { width: 100%; height: 340px; border-radius: 12px; overflow: hidden; background: #e8eef0; }
+</style>
+<link rel="stylesheet" href="../assets/trip-page.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#FBF7EC">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="app-header">
+    <a href="../index.html" class="back-btn">‹</a>
+    <div class="header-title">新竹苗栗行</div>
+    <div class="header-meta">9/11–12<br>2天1夜</div>
+  </header>
+
+  <div class="pages">
+
+    <!-- PAGE: 總覽 -->
+    <div class="page active" id="page-home">
+      <div class="cover-card">
+        <h1>劇本殺・舊山線・自行車</h1>
+        <div class="dates">2026年9月11日（五）— 9月12日（六）・2人同遊</div>
+        <div class="cover-tags">
+          <span class="cover-tag">劇本殺</span>
+          <span class="cover-tag">熬夜</span>
+          <span class="cover-tag">找表弟</span>
+          <span class="cover-tag">舊山線</span>
+        </div>
+      </div>
+
+      <div class="warn-card">
+        <div class="warn-card-title">📝 旅途小插曲</div>
+        <div style="font-size:13px;color:var(--coffee-mid);line-height:1.7">
+          主持劇本殺到半夜兩點，還跟大家打了水槍 🔫<br>
+          舊山線自行車騎到一半沒電，四個人一起踩也踩不太動，最後靠後面的車幫忙推 😂
+        </div>
+      </div>
+
+      <div class="page-section-title">💰 花費</div>
+      <div class="budget-hero">
+        <span class="budget-amount">NT$ —</span>
+        <div class="budget-label">花費待補</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-row-icon">🏨</div>
+        <div class="budget-row-name">賓城大飯店 1晚</div>
+        <div class="budget-row-price">待補</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-row-icon">🚲</div>
+        <div class="budget-row-name">舊山線鐵道自行車</div>
+        <div class="budget-row-price">待補</div>
+      </div>
+      <div class="budget-row">
+        <div class="budget-row-icon">🍽️</div>
+        <div class="budget-row-name">永和豆漿・烏色咖啡・燒烤</div>
+        <div class="budget-row-price">待補</div>
+      </div>
+    </div>
+
+    <!-- PAGE: 交通 -->
+    <div class="page" id="page-traffic">
+      <div class="page-section-title">🧭 移動路線</div>
+      <div class="transport-card">
+        <div class="transport-icon-wrap">🎭</div>
+        <div class="transport-body">
+          <div class="transport-title">9/11（五）台北 → 新竹交大</div>
+          <div class="transport-sub">19:30 前抵達・主持劇本殺</div>
+        </div>
+      </div>
+      <div class="transport-card">
+        <div class="transport-icon-wrap">🏨</div>
+        <div class="transport-body">
+          <div class="transport-title">9/12 02:10 交大 → 永和豆漿 → 賓城大飯店</div>
+          <div class="transport-sub">半夜吃完宵夜，02:30 入住</div>
+        </div>
+      </div>
+      <div class="transport-card">
+        <div class="transport-icon-wrap">🎓</div>
+        <div class="transport-body">
+          <div class="transport-title">9/12 新竹 → 苗栗聯合大學 → 烏色咖啡</div>
+          <div class="transport-sub">12:00 出門找表弟</div>
+        </div>
+      </div>
+      <div class="transport-card">
+        <div class="transport-icon-wrap">🚂</div>
+        <div class="transport-body">
+          <div class="transport-title">苗栗 → 三義勝興車站</div>
+          <div class="transport-sub">16:30 抵達・騎舊山線自行車</div>
+        </div>
+      </div>
+      <div class="transport-card">
+        <div class="transport-icon-wrap">🏠</div>
+        <div class="transport-body">
+          <div class="transport-title">9/12 21:00 三義 → 台北</div>
+          <div class="transport-sub">22:00 到台北・買燒烤回家吃</div>
+        </div>
+      </div>
+      <div class="section-label" style="margin-top:24px">🌐 行程地圖</div>
+      <div class="gmap-wrap">
+        <div class="gmap-tabs" id="gmapTabs">
+          <button class="gmap-tab active" data-day="all" type="button">全部</button>
+          <button class="gmap-tab" data-day="1" type="button">D1</button>
+          <button class="gmap-tab" data-day="2" type="button">D2</button>
+        </div>
+        <div id="gmap" class="gmap-canvas"></div>
+      </div>
+      <!--TRIPGMAP-->
+<script>
+(function () {
+  const SPOTS = [{"n":"交大劇本殺","lat":24.786886,"lng":120.997497,"t":"spot","d":[1],"pid":"ChIJMV8k71c2aDQRmj5yOn_aKTk"},{"n":"永和豆漿","lat":24.794501,"lng":120.972301,"t":"food","d":[1],"pid":"ChIJz3ur8e41aDQRYRZcuptSadw"},{"n":"賓城大飯店","lat":24.802965,"lng":120.971141,"t":"stay","d":[1,2],"pid":"ChIJE4GPD8I1aDQRzTphehEN1dc"},{"n":"聯合大學","lat":24.545827,"lng":120.812365,"t":"spot","d":[2],"pid":"ChIJm5eOLeSraTQRT0jM49NKbZ0"},{"n":"烏色咖啡","lat":24.565044,"lng":120.820091,"t":"food","d":[2],"pid":"ChIJYVXwoBKtaTQRWCbgGBLXqZE"},{"n":"勝興車站・舊山線自行車","lat":24.388216,"lng":120.781987,"t":"spot","d":[2],"pid":"ChIJf5hiYY4FaTQRwPcak944Lys"}], ROUTES = {"1":["交大劇本殺","永和豆漿","賓城大飯店"],"2":["賓城大飯店","聯合大學","烏色咖啡","勝興車站・舊山線自行車"]}, DCOL = {"1":"#b5654a","2":"#18a0b0"}, KEY = 'AIzaSyDohDNbe_FmGwtBsvnMsb1V3eEO1n-Ukeo', REGION = '';
+  const ICON = { spot:'#1B91C9', food:'#D4883C', stay:'#8B6BB1', air:'#E05252' };
+  let map, info, bounds, markers = [], lines = {}, loaded = false, loading = false;
+
+  function dirURL(s) {
+    if (s.pid) return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(s.n) + '&destination_place_id=' + s.pid + '&travelmode=driving';
+    const dest = REGION ? encodeURIComponent(s.n + ' ' + REGION) : (s.lat + ',' + s.lng);
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + dest + '&travelmode=driving';
+  }
+  function allURL() {
+    if (!SPOTS.length) return 'https://www.google.com/maps';
+    const o = SPOTS[0], d = SPOTS[SPOTS.length - 1];
+    const wp = SPOTS.slice(1, -1).slice(0, 8).map(s => s.lat + ',' + s.lng).join('|');
+    return 'https://www.google.com/maps/dir/?api=1&origin=' + o.lat + ',' + o.lng + '&destination=' + d.lat + ',' + d.lng + (wp ? '&waypoints=' + encodeURIComponent(wp) : '') + '&travelmode=driving';
+  }
+  function fail() {
+    const el = document.getElementById('gmap'); if (!el) return;
+    el.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;padding:20px;text-align:center;font-family:serif;color:#5A4232">'
+      + '<div style="font-size:13px">地圖暫時無法載入</div>'
+      + '<a href="' + allURL() + '" target="_blank" rel="noopener" style="background:#1a73e8;color:#fff;padding:8px 16px;border-radius:18px;text-decoration:none;font-size:13px">在 Google Maps 開啟全部景點</a></div>';
+  }
+  window.gm_authFailure = fail;
+
+  window.initGmap = function () {
+    const el = document.getElementById('gmap'); if (!el || !window.google) { fail(); return; }
+    map = new google.maps.Map(el, { mapTypeControl:true, streetViewControl:false, fullscreenControl:true, zoom:12 });
+    info = new google.maps.InfoWindow();
+    bounds = new google.maps.LatLngBounds();
+    markers = SPOTS.map(s => {
+      const m = new google.maps.Marker({ position:{lat:s.lat,lng:s.lng}, map, title:s.n,
+        icon:{ path:google.maps.SymbolPath.CIRCLE, fillColor:ICON[s.t]||'#1B91C9', fillOpacity:1, strokeColor:'#fff', strokeWeight:2, scale:10 } });
+      m._d = s.d; m._n = s.n;
+      m.addListener('click', () => { info.setContent('<div style="font-size:13px;line-height:1.5"><b>' + s.n + '</b><br><a href="' + dirURL(s) + '" target="_blank" rel="noopener" style="color:#1a73e8">🧭 在 Google Maps 導航</a></div>'); info.open(map, m); });
+      bounds.extend(m.getPosition()); return m;
+    });
+    Object.keys(ROUTES).forEach(day => {
+      const p = ROUTES[day].map(n => { const s = SPOTS.find(o => o.n === n); return s ? {lat:s.lat,lng:s.lng} : null; }).filter(Boolean);
+      if (p.length >= 2) lines[day] = new google.maps.Polyline({ path:p, strokeColor:DCOL[day]||'#1B91C9', strokeWeight:4, strokeOpacity:0.85 });
+    });
+    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.addEventListener('click', () => setDay(b.dataset.day)));
+    loaded = true; setDay('all');
+  };
+
+  function setDay(day) {
+    if (!loaded) return;
+    document.querySelectorAll('#gmapTabs .gmap-tab').forEach(b => b.classList.toggle('active', b.dataset.day === String(day)));
+    const order = (day !== 'all' && ROUTES[day]) ? ROUTES[day] : null;
+    const b2 = new google.maps.LatLngBounds(); let cnt = 0, last = null;
+    markers.forEach(m => {
+      const on = day === 'all' || m._d.indexOf(Number(day)) >= 0;
+      m.setMap(on ? map : null);
+      if (on) { b2.extend(m.getPosition()); cnt++; last = m.getPosition(); }
+      if (order) { const i = order.indexOf(m._n); m.setLabel(i >= 0 ? { text:String(i + 1), color:'#fff', fontSize:'11px', fontWeight:'700' } : null); }
+      else m.setLabel(null);
+    });
+    Object.keys(lines).forEach(d => lines[d].setMap((day === 'all' || String(day) === d) ? map : null));
+    if (cnt === 1) { map.setCenter(last); map.setZoom(15); }
+    else if (cnt > 1) map.fitBounds(b2);
+  }
+
+  function load() {
+    if (loaded || loading) { onShow(); return; }
+    loading = true;
+    const s = document.createElement('script'); s.async = true;
+    s.src = 'https://maps.googleapis.com/maps/api/js?key=' + KEY + '&callback=initGmap&loading=async';
+    s.onerror = fail; document.head.appendChild(s);
+  }
+  function onShow() {
+    if (loaded && map) setTimeout(() => { google.maps.event.trigger(map, 'resize'); const a = document.querySelector('#gmapTabs .gmap-tab.active'); setDay(a ? a.dataset.day : 'all'); }, 90);
+  }
+  function wire() {
+    const tt = document.querySelector('.tab-btn[data-page="page-traffic"]');
+    if (tt) tt.addEventListener('click', () => { load(); onShow(); });
+    const tp = document.getElementById('page-traffic');
+    if (tp && tp.classList.contains('active')) load();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
+})();
+</script>
+<!--/TRIPGMAP-->
+    </div>
+
+    <!-- PAGE: 行程 -->
+    <div class="page" id="page-itinerary">
+      <div class="day-tabs" id="dayTabs">
+        <button class="day-tab-btn active" data-day="d1">D1 9/11</button>
+        <button class="day-tab-btn" data-day="d2">D2 9/12</button>
+      </div>
+
+      <!-- D1 -->
+      <div class="day-panel active" id="day-d1">
+        <div class="day-banner">
+          <div class="day-banner-num">D1</div>
+          <div class="day-banner-info">
+            <div class="day-banner-title">交大劇本殺 · 水槍 · 半夜豆漿</div>
+            <div class="day-banner-date">9月11日（五）→ 12日凌晨</div>
+          </div>
+        </div>
+        <div class="itinerary-list">
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">19:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">交大主持劇本殺</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">《極目2：九爺我想給你養老》・還跟玩家一起打水槍 🔫・主持到半夜兩點</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E5%9C%8B%E7%AB%8B%E9%99%BD%E6%98%8E%E4%BA%A4%E9%80%9A%E5%A4%A7%E5%AD%B8&destination_place_id=ChIJMV8k71c2aDQRmj5yOn_aKTk" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">02:10</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">永和豆漿</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">收工後的半夜宵夜 🥛</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E6%B0%B8%E5%92%8C%E8%B1%86%E6%BC%BF%E5%A4%A7%E7%8E%8B&destination_place_id=ChIJz3ur8e41aDQRYRZcuptSadw" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">02:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">賓城大飯店</div><span class="itype itype-宿">宿</span></div>
+              <div class="itinerary-desc">Check in・新竹東區中正路13號</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E8%B3%93%E5%9F%8E%E5%A4%A7%E9%A3%AF%E5%BA%97&destination_place_id=ChIJE4GPD8I1aDQRzTphehEN1dc" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- D2 -->
+      <div class="day-panel" id="day-d2">
+        <div class="day-banner">
+          <div class="day-banner-num">D2</div>
+          <div class="day-banner-info">
+            <div class="day-banner-title">找表弟 · 烏色咖啡 · 舊山線自行車</div>
+            <div class="day-banner-date">9月12日（六）</div>
+          </div>
+        </div>
+        <div class="itinerary-list">
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">12:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">睡飽出門</div><span class="itype itype-宿">宿</span></div>
+              <div class="itinerary-desc">賓城大飯店退房</div>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">13:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">國立聯合大學</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">去找表弟</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E5%9C%8B%E7%AB%8B%E8%81%AF%E5%90%88%E5%A4%A7%E5%AD%B8&destination_place_id=ChIJm5eOLeSraTQRT0jM49NKbZ0" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">14:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">烏色咖啡</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">和表弟一起吃・苗栗市縣府路</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E7%83%8F%E8%89%B2%E5%92%96%E5%95%A1&destination_place_id=ChIJYVXwoBKtaTQRWCbgGBLXqZE" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">16:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">勝興火車站</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">舊山線最高點的老車站</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E4%B8%89%E7%BE%A9%E9%84%89%E5%8B%9D%E8%88%88%E8%BB%8A%E7%AB%99&destination_place_id=ChIJWYx-pVAFaTQRmryV-_-6004" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">17:30</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">舊山線鐵道自行車</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">18:30 車子沒電，四個人一起踩也踩不太動，最後靠後面的車幫忙推 😂</div>
+              <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=%E8%8B%97%E6%A0%97%E8%88%8A%E5%B1%B1%E7%B7%9A%E9%90%B5%E9%81%93%E8%87%AA%E8%A1%8C%E8%BB%8A-%E5%8B%9D%E8%88%88%E7%AB%99&destination_place_id=ChIJf5hiYY4FaTQRwPcak944Lys" target="_blank" rel="noopener">🧭 導航</a>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">21:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">回程往台北</div><span class="itype itype-動">動</span></div>
+              <div class="itinerary-desc">三義 → 台北</div>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-time-col"><div class="itinerary-time">22:00</div><div class="itinerary-line"></div></div>
+            <div class="itinerary-dot"></div>
+            <div class="itinerary-card">
+              <div class="itinerary-card-top"><div class="itinerary-name">買燒烤回家吃</div><span class="itype itype-食">食</span></div>
+              <div class="itinerary-desc">到台北後買燒烤，在家裡吃 🍢</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: 景點 -->
+    <div class="page" id="page-spots">
+      <div class="page-section-title">📍 必訪景點</div>
+      <div id="spotList"></div>
+    </div>
+
+    <!-- PAGE: 照片 -->
+    <div class="page" id="page-photos">
+      <div class="photo-wall" id="photoWall"></div>
+    </div>
+
+
+
+    
+
+  </div><!-- /pages -->
+
+  <nav class="tab-bar" aria-label="主選單">
+    <button class="tab-btn active" data-page="page-home" type="button"><span class="tab-icon">🏠</span><span class="tab-label">總覽</span></button>
+    <button class="tab-btn" data-page="page-traffic" type="button"><span class="tab-icon">🧭</span><span class="tab-label">交通</span></button>
+    <button class="tab-btn" data-page="page-itinerary" type="button"><span class="tab-icon">📅</span><span class="tab-label">行程</span></button>
+    <button class="tab-btn" data-page="page-spots" type="button"><span class="tab-icon">📍</span><span class="tab-label">景點</span></button>
+    <button class="tab-btn" data-page="page-photos" type="button"><span class="tab-icon">📷</span><span class="tab-label">照片</span></button>
+  </nav>
+
+</div>
+
+<div id="photoOverlay"></div>
+<button id="photoRefreshBtn">↺</button>
+
+<script>
+const tabBtns = document.querySelectorAll('.tab-btn');
+const pages = document.querySelectorAll('.page');
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.page;
+    tabBtns.forEach(b => b.classList.remove('active'));
+    pages.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(target).classList.add('active');
+  });
+});
+
+
+const dayTabBtns = document.querySelectorAll('.day-tab-btn');
+const dayPanels = document.querySelectorAll('.day-panel');
+dayTabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const day = btn.dataset.day;
+    dayTabBtns.forEach(b => b.classList.remove('active'));
+    dayPanels.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('day-' + day).classList.add('active');
+  });
+});
+
+</script>
+
+<script>window.TRIP_ID = 'hsinchu-miaoli-2026';</script>
+<script src="../assets/trip-page.js" defer></script>
+</body>
+</html>

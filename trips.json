@@ -95,6 +95,28 @@
       ]
     },
     {
+      "id": "hsinchu-miaoli-2026",
+      "title": "新竹苗栗行",
+      "startDate": "2026-09-11",
+      "endDate": "2026-09-12",
+      "destination": "新竹・苗栗",
+      "people": 2,
+      "status": "done",
+      "tags": ["劇本殺", "找表弟", "舊山線", "鐵道自行車"],
+      "file": "20260911_12/260911新竹苗栗.html",
+      "itemPrefix": "hsmiaoli2026__",
+      "photos": [],
+      "spots": [
+        { "name": "國立陽明交通大學", "category": "室內景點", "region": "東區", "emoji": "🎭", "desc": "主持劇本殺《極目2：九爺我想給你養老》・打水槍", "mapUrl": "https://maps.google.com/?q=國立陽明交通大學+光復校區" },
+        { "name": "永和豆漿大王（食品路）", "category": "食物", "region": "東區", "emoji": "🥛", "desc": "半夜兩點的宵夜", "mapUrl": "https://maps.google.com/?q=永和豆漿大王+新竹+食品路" },
+        { "name": "賓城大飯店", "category": "住宿", "region": "東區", "emoji": "🏨", "desc": "9/11 住宿・凌晨兩點半入住", "mapUrl": "https://maps.google.com/?q=賓城大飯店+新竹" },
+        { "name": "國立聯合大學", "category": "室外景點", "region": "苗栗市", "emoji": "🎓", "desc": "找表弟", "mapUrl": "https://maps.google.com/?q=國立聯合大學+二坪山校區" },
+        { "name": "烏色咖啡", "category": "食物", "region": "苗栗市", "emoji": "☕", "desc": "和表弟一起吃", "mapUrl": "https://maps.google.com/?q=烏色咖啡+苗栗" },
+        { "name": "勝興火車站", "category": "室外景點", "region": "三義鄉", "emoji": "🚂", "desc": "舊山線最高點老車站", "mapUrl": "https://maps.google.com/?q=勝興車站+三義" },
+        { "name": "舊山線鐵道自行車", "category": "室外景點", "region": "三義鄉", "emoji": "🚲", "desc": "騎到沒電，靠後面的車幫忙推", "mapUrl": "https://maps.google.com/?q=舊山線鐵道自行車+勝興站" }
+      ]
+    },
+    {
       "id": "tainan-2026",
       "title": "台南行",
       "startDate": "2026-09-24",
