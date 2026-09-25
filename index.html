@@ -892,7 +892,7 @@
     border-radius: 24px 24px 0 0;
     padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
     animation: modalUp 0.32s cubic-bezier(0.32,0.72,0,1);
-    max-height: 82vh; display: flex; flex-direction: column;
+    max-height: 88vh; display: flex; flex-direction: column;
   }
   @keyframes modalUp {
     from { transform: translateX(-50%) translateY(100%); }
@@ -906,20 +906,25 @@
     width: 36px; height: 4px;
     background: #D4C8B0; border-radius: 2px;
   }
-  .spot-modal-head { padding: 8px 20px 14px; flex-shrink: 0; border-bottom: 1px solid #EDE4CC; }
-  .smd-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-  .smd-emoji { font-size: 42px; flex-shrink: 0; line-height: 1; }
-  .smd-name { font-size: 18px; font-weight: 700; color: #3E2A1A; margin-bottom: 5px; }
-  .smd-trip { font-size: 12px; color: #8C7660; margin-bottom: 4px; }
-  .smd-avg {
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px; background: #FDF3E7;
-    border-radius: 12px;
+  .spot-modal-head { padding: 6px 20px 12px; flex-shrink: 0; border-bottom: 1px solid #EDE4CC; }
+  .smd-top { display: flex; align-items: center; gap: 13px; }
+  .smd-emoji { font-size: 38px; flex-shrink: 0; line-height: 1; }
+  .smd-top-body { flex: 1; min-width: 0; }
+  .smd-name { font-size: 18px; font-weight: 700; color: #3E2A1A; margin-bottom: 3px; }
+  .smd-trip {
+    display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+    font-size: 12px; color: #8C7660; margin-bottom: 5px;
   }
-  .smd-avg-stars { font-size: 18px; letter-spacing: 1px; }
-  .smd-avg-num { font-size: 22px; font-weight: 800; color: #8C5A1A; }
-  .smd-avg-count { font-size: 12px; color: #B07840; }
-  .smd-unrated { font-size: 13px; color: #B0A090; }
+  .smd-trip .spot-cat-badge { position: static; top: auto; right: auto; }
+  .smd-avg {
+    display: inline-flex; align-items: baseline; gap: 6px;
+    padding: 3px 10px; background: #FDF3E7;
+    border-radius: 999px;
+  }
+  .smd-avg-stars { font-size: 13px; letter-spacing: 0.5px; }
+  .smd-avg-num { font-size: 15px; font-weight: 800; color: #8C5A1A; }
+  .smd-avg-count { font-size: 11px; color: #B07840; }
+  .smd-unrated { font-size: 12px; color: #B0A090; }
   .spot-modal-body { flex: 1; overflow-y: auto; padding: 14px 20px 8px; }
   .smd-revs-title { font-size: 11px; font-weight: 700; color: #8C7660; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 10px; }
   .smd-review {
@@ -940,7 +945,37 @@
   }
   .smd-rate-title {
     font-size: 11px; font-weight: 700; color: #8C7660;
-    letter-spacing: 0.7px; text-transform: uppercase; margin-bottom: 10px;
+    letter-spacing: 0.7px; text-transform: uppercase;
+  }
+  /* 收合狀態只留一顆按鈕，把版面讓給評分紀錄 */
+  .smd-rate-trigger {
+    width: 100%; padding: 11px 14px;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    background: #F5F0E8; border: 1.5px solid #D4C8B0;
+    border-radius: 12px;
+    font-size: 14px; font-weight: 700; font-family: inherit;
+    color: #6B5640; cursor: pointer; touch-action: manipulation;
+    transition: background 0.15s;
+  }
+  .smd-rate-trigger:active { background: #EDE4CC; }
+  .smd-rate-section.open .smd-rate-trigger { display: none; }
+  .smd-rate-fields { display: none; }
+  .smd-rate-section.open .smd-rate-fields {
+    display: block;
+    animation: smdFieldsIn 0.18s ease both;
+  }
+  @keyframes smdFieldsIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .smd-rate-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .smd-rate-collapse {
+    background: none; border: none; padding: 2px 4px;
+    font-family: inherit; font-size: 12px; font-weight: 700;
+    color: #8C7660; cursor: pointer; touch-action: manipulation;
   }
   .smd-stars-row { display: flex; gap: 4px; margin-bottom: 10px; }
   .smd-star {
@@ -1345,27 +1380,33 @@
     <div class="spot-modal-handle"></div>
     <div class="spot-modal-head" id="spot-modal-head"></div>
 
-    <!-- 評分輸入 -->
-    <div class="smd-rate-section">
-      <div class="smd-rate-title">我要評分</div>
-      <div class="smd-role-row" id="smd-role-row">
-        <span class="smd-role-label">我是</span>
-        <button class="smd-role-btn role-H" data-role="H" type="button">H</button>
-        <button class="smd-role-btn role-L" data-role="L" type="button">L</button>
+    <!-- 評分輸入（預設收合，把空間讓給評分紀錄） -->
+    <div class="smd-rate-section" id="smd-rate-section">
+      <button class="smd-rate-trigger" id="smd-rate-trigger" type="button">⭐ 我要評分</button>
+      <div class="smd-rate-fields">
+        <div class="smd-rate-head">
+          <div class="smd-rate-title">我要評分</div>
+          <button class="smd-rate-collapse" id="smd-rate-collapse" type="button">收起 ▲</button>
+        </div>
+        <div class="smd-role-row" id="smd-role-row">
+          <span class="smd-role-label">我是</span>
+          <button class="smd-role-btn role-H" data-role="H" type="button">H</button>
+          <button class="smd-role-btn role-L" data-role="L" type="button">L</button>
+        </div>
+        <div class="smd-stars-row" id="smd-stars-row">
+          <button class="smd-star" data-s="1">☆</button>
+          <button class="smd-star" data-s="2">☆</button>
+          <button class="smd-star" data-s="3">☆</button>
+          <button class="smd-star" data-s="4">☆</button>
+          <button class="smd-star" data-s="5">☆</button>
+        </div>
+        <textarea class="smd-comment" id="smd-comment-inp" rows="2" placeholder="留下你的想法（選填）"></textarea>
+        <button class="smd-submit" id="smd-submit-btn">送出評分</button>
       </div>
-      <div class="smd-stars-row" id="smd-stars-row">
-        <button class="smd-star" data-s="1">☆</button>
-        <button class="smd-star" data-s="2">☆</button>
-        <button class="smd-star" data-s="3">☆</button>
-        <button class="smd-star" data-s="4">☆</button>
-        <button class="smd-star" data-s="5">☆</button>
-      </div>
-      <textarea class="smd-comment" id="smd-comment-inp" rows="2" placeholder="留下你的想法（選填）"></textarea>
-      <button class="smd-submit" id="smd-submit-btn">送出評分</button>
     </div>
 
     <div class="spot-modal-body">
-      <div class="smd-revs-title">評分紀錄 <span class="smd-revs-hint">長按可刪除</span></div>
+      <div class="smd-revs-title" id="smd-revs-title">評分紀錄 <span class="smd-revs-hint">長按可刪除</span></div>
       <div id="spot-modal-reviews"></div>
     </div>
     <div class="spot-modal-foot">
@@ -2080,12 +2121,27 @@ document.querySelectorAll('.smd-role-btn').forEach(b => b.addEventListener('clic
   modalRole = b.dataset.role; paintRoles();
 }));
 
+// 評分紀錄標題帶出則數（保留原本的「長按可刪除」提示）
+function setRevsCount(n) {
+  const el = document.getElementById('smd-revs-title');
+  if (!el) return;
+  el.innerHTML = `評分紀錄${n ? ` · ${n} 則` : ''} <span class="smd-revs-hint">長按可刪除</span>`;
+}
+
+// 評分輸入預設收合，讓「評分紀錄」吃下整個 modal 的高度
+function setRateOpen(open) {
+  document.getElementById('smd-rate-section').classList.toggle('open', open);
+}
+
 function closeSpotModal() {
   document.getElementById('spot-modal-bg').classList.remove('open');
   modalStarPick = 0;
   paintStars(0);
+  setRateOpen(false);
   document.getElementById('smd-comment-inp').value = '';
 }
+document.getElementById('smd-rate-trigger').addEventListener('click', () => setRateOpen(true));
+document.getElementById('smd-rate-collapse').addEventListener('click', () => setRateOpen(false));
 document.getElementById('spot-modal-close').addEventListener('click', closeSpotModal);
 document.getElementById('spot-modal-bg').addEventListener('click', e => {
   if (e.target === document.getElementById('spot-modal-bg')) closeSpotModal();
@@ -2119,6 +2175,7 @@ document.getElementById('smd-submit-btn').addEventListener('click', async () => 
     paintStars(0);
     document.getElementById('smd-comment-inp').value = '';
     setTimeout(() => { smdSubmitting = false; syncSmdSubmit(); }, 1500);
+    setRateOpen(false);
     await loadModalReviews(modalSpotKey);
     loadAllRatings();
   } catch(e) {
@@ -2138,9 +2195,11 @@ async function loadModalReviews(key) {
     const reviews = await HLReviews.fetchByKeys([key]);
     if (key !== modalSpotKey) return;
     if (!reviews.length) {
+      setRevsCount(0);
       box.innerHTML = '<div class="smd-empty">還沒有評分紀錄</div>';
       return;
     }
+    setRevsCount(reviews.length);
     box.innerHTML = reviews.map((r, i) => {
       const { role, text } = HLReviews.parse(r);
       const date = r.created_at
@@ -2167,6 +2226,7 @@ async function loadModalReviews(key) {
       });
     });
   } catch(e) {
+    setRevsCount(0);
     box.innerHTML = '<div class="smd-error">⚠️ 載入失敗</div>';
   }
 }
@@ -2179,24 +2239,27 @@ async function openSpotModal(i) {
   modalRole = HLReviews.lastRole();
   paintStars(0);
   paintRoles();
+  setRateOpen(false);
   document.getElementById('smd-comment-inp').value = '';
 
   const rd = ratingsMap[key];
   document.getElementById('spot-modal-head').innerHTML = `
     <div class="smd-top">
       <div class="smd-emoji">${spot.emoji}</div>
-      <div>
+      <div class="smd-top-body">
         <div class="smd-name">${escHtml(spot.name)}</div>
-        <div class="smd-trip">📍 ${escHtml(spot.region)}${spot.desc ? '・' + escHtml(spot.desc) : ''}</div>
-        <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
+        <div class="smd-trip">
+          <span>📍 ${escHtml(spot.region)}${spot.desc ? '・' + escHtml(spot.desc) : ''}</span>
+          <span class="spot-cat-badge ${spot.category}">${spot.category}</span>
+        </div>
+        ${rd
+          ? `<div class="smd-avg">
+               <span class="smd-avg-stars">${starsHtml(rd.avg)}</span>
+               <span class="smd-avg-num">${rd.avg}</span>
+               <span class="smd-avg-count">(${rd.count} 則)</span>
+             </div>`
+          : `<span class="smd-unrated">尚未評分</span>`}
       </div>
-    </div>
-    <div class="smd-avg">
-      ${rd
-        ? `<span class="smd-avg-stars">${starsHtml(rd.avg)}</span>
-           <span class="smd-avg-num">${rd.avg}</span>
-           <span class="smd-avg-count">(${rd.count} 則評分)</span>`
-        : `<span class="smd-unrated">尚未評分</span>`}
     </div>`;
 
   // 同一筆支出同時可以跳到旅行頁與記帳頁（只是連結，兩邊資料互不影響）
