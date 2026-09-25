@@ -27,9 +27,17 @@
   --border: #EEEEF3;
   --sh:     0 2px 20px rgba(0,0,0,0.07);
   --sh-sm:  0 1px 8px rgba(0,0,0,0.05);
+  --nav-h:  62px;
+  /* Android 三鍵導覽模式下 env(safe-area-inset-bottom) 會是 0，
+     用 max() 給一個保底間距，底部 tab 才不會貼齊螢幕最底緣。 */
+  --safe-bottom: max(env(safe-area-inset-bottom, 0px), 6px);
+}
+@media (display-mode: standalone) {
+  :root { --safe-bottom: max(env(safe-area-inset-bottom, 0px), 10px); }
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; overflow: hidden; }
+@supports (height: 100dvh) { html, body { height: 100dvh; } }
 body {
   font-family: -apple-system, 'SF Pro Text', 'PingFang TC', 'Noto Sans TC', sans-serif;
   background: var(--bg); color: var(--text);
@@ -39,12 +47,11 @@ body {
 /* ── App shell ─────────────────────────────────────────────── */
 .app {
   max-width: 430px; margin: 0 auto;
-  height: 100svh; height: -webkit-fill-available;
+  height: 100%; min-height: 0;
   display: flex; flex-direction: column;
   background: var(--bg); position: relative;
   overflow: hidden;
 }
-@supports (height: 100dvh) { .app { height: 100dvh; } }
 
 /* ── Header ────────────────────────────────────────────────── */
 .hdr {
@@ -260,7 +267,8 @@ body {
   flex-shrink: 0; display: flex;
   background: var(--card);
   border-top: 1px solid var(--border);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: var(--safe-bottom);
+  min-height: calc(var(--nav-h) + var(--safe-bottom));
   position: relative; z-index: 200;
 }
 .bnav-btn {
@@ -284,7 +292,7 @@ body {
 /* ── FAB ─────────────────────────────────────────────────────── */
 .fab {
   position: fixed;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 68px);
+  bottom: calc(var(--safe-bottom) + var(--nav-h) + 12px);
   right: 20px;
   width: 58px; height: 58px; border-radius: 50%;
   background: linear-gradient(145deg, #FF6B6B, #FF3D3D);
@@ -310,7 +318,7 @@ body {
 .sheet {
   width: 100%; max-width: 430px;
   background: var(--card); border-radius: 28px 28px 0 0;
-  padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+  padding-bottom: max(var(--safe-bottom), 16px);
   animation: sheetUp 0.32s cubic-bezier(0.32,0.72,0,1);
   max-height: 96vh; overflow-y: auto;
 }
@@ -527,7 +535,7 @@ body {
 }
 /* Toast */
 .toast {
-  position: fixed; bottom: calc(env(safe-area-inset-bottom,0px) + 140px);
+  position: fixed; bottom: calc(var(--safe-bottom) + var(--nav-h) + 82px);
   left: 50%; transform: translateX(-50%) translateY(20px);
   background: rgba(30,30,40,0.88); color: white;
   padding: 10px 20px; border-radius: 24px;
@@ -802,6 +810,8 @@ let editingId     = null;
 let _sheetPushed  = false;
 
 const DAY_NAMES = ['日','一','二','三','四','五','六'];
+const TABS    = ['today', 'monthly', 'ledger'];
+const TAB_KEY = 'happy-lucky:ledger-tab';
 const ymd = d =>
   `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const fmtDate = ds => {
@@ -1365,6 +1375,7 @@ function switchTab(name) {
     p.classList.toggle('active', p.id === 'tab-'+name));
   if (name === 'monthly') renderMonthly();
   if (name === 'ledger')  renderLedger();
+  try { sessionStorage.setItem(TAB_KEY, name); } catch (e) {}
 }
 document.querySelectorAll('.bnav-btn').forEach(btn =>
   btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
@@ -1459,11 +1470,20 @@ function showToast(msg) {
 }
 
 buildCatGrid();
+const _params = new URLSearchParams(location.search);
 // 讀 ?date= URL 參數，讓從查詢頁跳過來時能直接停在對應日期
-const _urlDate = new URLSearchParams(location.search).get('date');
+const _urlDate = _params.get('date');
 if (_urlDate) { viewDate = new Date(_urlDate + 'T00:00:00'); }
 syncPicker();
 renderToday();
+// 讀 ?tab=monthly / #monthly，讓桌面捷徑與連結能一步直達月報；
+// 沒指定就回到上次停留的分頁。
+const _initTab = [
+  _params.get('tab'),
+  location.hash.replace(/^#/, ''),
+  (() => { try { return sessionStorage.getItem(TAB_KEY); } catch (e) { return null; } })(),
+].find(v => TABS.includes(v));
+if (_initTab && _initTab !== 'today') switchTab(_initTab);
 checkAnniversary();
 loadAll().then(() => setupRealtime());
 </script>

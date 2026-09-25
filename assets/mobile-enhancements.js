@@ -8,6 +8,10 @@
   let activeTab = 'home';
   let bannerTimer = 0;
 
+  // 只有 index.html 這種捲動式版型才需要接管 viewport。
+  // app-shell 頁（account.html、各旅程頁）自己排版並處理安全區，
+  // 若硬塞 viewport-fit=cover，Android 會讓內容延伸到系統導覽列底下，
+  // 底部 tab bar 就會被系統列蓋住。
   function updateViewport() {
     let meta = document.querySelector('meta[name="viewport"]');
     if (!meta) {
@@ -16,6 +20,11 @@
       document.head.appendChild(meta);
     }
     meta.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
+  }
+
+  // index.html 的分頁列：.tabs > .tab-btn[data-tab]
+  function isIndexLayout() {
+    return !!document.querySelector('.tabs .tab-btn[data-tab]');
   }
 
   function toast(message, duration = 2600) {
@@ -211,8 +220,10 @@
   }
 
   function init() {
-    updateViewport();
+    const indexLayout = isIndexLayout();
+    if (indexLayout) updateViewport();
     document.documentElement.classList.add('pwa-mobile-enhanced');
+    if (indexLayout) document.documentElement.classList.add('pwa-layout-index');
     if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
       document.documentElement.classList.add('is-standalone');
     }
