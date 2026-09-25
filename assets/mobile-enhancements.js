@@ -27,6 +27,50 @@
     return !!document.querySelector('.tabs .tab-btn[data-tab]');
   }
 
+  const isAndroid = () => /Android/i.test(navigator.userAgent);
+  const isStandalone = () =>
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: fullscreen)').matches ||
+    navigator.standalone === true;
+
+  // 量出瀏覽器實際回報的 env(safe-area-inset-bottom)
+  function probeSafeBottom() {
+    const el = document.createElement('div');
+    el.style.cssText =
+      'position:fixed;left:-9999px;bottom:0;width:1px;pointer-events:none;' +
+      'height:env(safe-area-inset-bottom, 0px)';
+    document.body.appendChild(el);
+    const h = el.getBoundingClientRect().height;
+    el.remove();
+    return h;
+  }
+
+  // ?pwadebug=1 顯示版面診斷數值（平常不會出現）
+  function showViewportDebug() {
+    if (!/[?&]pwadebug=1/.test(location.search)) return;
+    const root = document.documentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const nav = document.querySelector('.bottom-nav, .tab-bar, .tabs');
+    const navRect = nav ? nav.getBoundingClientRect() : null;
+    const rows = [
+      ['display-mode', isStandalone() ? 'standalone' : 'browser'],
+      ['innerHeight', window.innerHeight],
+      ['clientHeight', root.clientHeight],
+      ['screen/dpr', Math.round(screen.height / dpr) + '  (dpr ' + dpr + ')'],
+      ['env inset-bottom', probeSafeBottom() + 'px'],
+      ['--safe-bottom', getComputedStyle(root).getPropertyValue('--safe-bottom').trim() || '(未設定)'],
+      ['shell 高度', (document.querySelector('.app, .phone-frame') || {}).clientHeight || '-'],
+      ['底部列 top→bottom', navRect ? Math.round(navRect.top) + ' → ' + Math.round(navRect.bottom) : '(找不到)'],
+      ['底部列超出畫面', navRect ? Math.round(navRect.bottom - root.clientHeight) + 'px' : '-'],
+    ];
+    const box = document.createElement('div');
+    box.className = 'pwa-debug-box';
+    box.innerHTML = '<b>版面診斷</b>' + rows.map(([k, v]) =>
+      `<div><span>${k}</span><code>${v}</code></div>`).join('');
+    box.addEventListener('click', () => box.remove());
+    document.body.appendChild(box);
+  }
+
   function toast(message, duration = 2600) {
     let region = document.querySelector('.pwa-toast-region');
     if (!region) {
@@ -224,9 +268,8 @@
     if (indexLayout) updateViewport();
     document.documentElement.classList.add('pwa-mobile-enhanced');
     if (indexLayout) document.documentElement.classList.add('pwa-layout-index');
-    if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
-      document.documentElement.classList.add('is-standalone');
-    }
+    if (isAndroid()) document.documentElement.classList.add('is-android');
+    if (isStandalone()) document.documentElement.classList.add('is-standalone');
     window.happyLuckyToast = toast;
     setupAlertToasts();
     setupTabs();
@@ -241,6 +284,8 @@
       window.dispatchEvent(new CustomEvent('happy-lucky-online'));
     });
     if (!navigator.onLine) showConnectionStatus(false);
+
+    showViewportDebug();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });

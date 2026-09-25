@@ -226,3 +226,23 @@ html.pwa-layout-index.keyboard-open .tabs {
     transition-duration: .01ms !important;
   }
 }
+
+/* ?pwadebug=1 的版面診斷面板（平常不會出現） */
+.pwa-debug-box {
+  position: fixed;
+  z-index: 2000;
+  left: 50%;
+  top: calc(12px + var(--pwa-safe-top));
+  transform: translateX(-50%);
+  width: min(340px, calc(100% - 24px));
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(20, 16, 12, 0.92);
+  color: #F5EFE0;
+  font: 500 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
+.pwa-debug-box b { display: block; margin-bottom: 6px; font-size: 13px; }
+.pwa-debug-box div { display: flex; justify-content: space-between; gap: 10px; }
+.pwa-debug-box span { opacity: .72; }
+.pwa-debug-box code { color: #8FE3A6; text-align: right; }
