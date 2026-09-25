@@ -27,6 +27,71 @@
     return !!document.querySelector('.tabs .tab-btn[data-tab]');
   }
 
+  const isAndroid = () => /Android/i.test(navigator.userAgent);
+  const isStandalone = () =>
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: fullscreen)').matches ||
+    navigator.standalone === true;
+
+  // 量出瀏覽器實際回報的 env(safe-area-inset-bottom)
+  function probeSafeBottom() {
+    const el = document.createElement('div');
+    el.style.cssText =
+      'position:fixed;left:-9999px;bottom:0;width:1px;pointer-events:none;' +
+      'height:env(safe-area-inset-bottom, 0px)';
+    document.body.appendChild(el);
+    const h = el.getBoundingClientRect().height;
+    el.remove();
+    return h;
+  }
+
+  // Android 15 起系統強制 edge-to-edge，安裝版 PWA 的內容會延伸到系統導覽列底下。
+  // Chrome 在三鍵導覽模式下常把 safe-area-inset-bottom 回報為 0，頁面就補償不到，
+  // 底部 tab bar 會整條被系統列蓋住（瀏覽器分頁不是 standalone，所以不受影響）。
+  // 這裡偵測到「Android 安裝版 + inset 回報 0」時，直接補一個導覽列高度的保底值。
+  const ANDROID_NAV_FALLBACK = 48; // Android 三鍵導覽列標準高度 48dp
+  function applyAndroidSafeBottom() {
+    const root = document.documentElement;
+    if (!isAndroid() || !isStandalone()) return 0;
+    const inset = probeSafeBottom();
+    if (inset >= 1) {                       // 瀏覽器有正常回報就用它的
+      root.style.removeProperty('--safe-bottom');
+      root.style.removeProperty('--pwa-safe-bottom');
+      return inset;
+    }
+    const px = ANDROID_NAV_FALLBACK + 'px';
+    root.style.setProperty('--safe-bottom', px);
+    root.style.setProperty('--pwa-safe-bottom', px);
+    root.classList.add('android-nav-fallback');
+    return 0;
+  }
+
+  // ?pwadebug=1 顯示版面診斷數值（平常不會出現）
+  function showViewportDebug() {
+    if (!/[?&]pwadebug=1/.test(location.search)) return;
+    const root = document.documentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const nav = document.querySelector('.bottom-nav, .tab-bar, .tabs');
+    const navRect = nav ? nav.getBoundingClientRect() : null;
+    const rows = [
+      ['display-mode', isStandalone() ? 'standalone' : 'browser'],
+      ['innerHeight', window.innerHeight],
+      ['clientHeight', root.clientHeight],
+      ['screen/dpr', Math.round(screen.height / dpr) + '  (dpr ' + dpr + ')'],
+      ['env inset-bottom', probeSafeBottom() + 'px'],
+      ['--safe-bottom', getComputedStyle(root).getPropertyValue('--safe-bottom').trim() || '(未設定)'],
+      ['補償啟用', root.classList.contains('android-nav-fallback') ? '是 (' + ANDROID_NAV_FALLBACK + 'px)' : '否'],
+      ['底部列 top→bottom', navRect ? Math.round(navRect.top) + ' → ' + Math.round(navRect.bottom) : '(找不到)'],
+      ['底部列超出畫面', navRect ? Math.round(navRect.bottom - root.clientHeight) + 'px' : '-'],
+    ];
+    const box = document.createElement('div');
+    box.className = 'pwa-debug-box';
+    box.innerHTML = '<b>版面診斷</b>' + rows.map(([k, v]) =>
+      `<div><span>${k}</span><code>${v}</code></div>`).join('');
+    box.addEventListener('click', () => box.remove());
+    document.body.appendChild(box);
+  }
+
   function toast(message, duration = 2600) {
     let region = document.querySelector('.pwa-toast-region');
     if (!region) {
@@ -224,9 +289,9 @@
     if (indexLayout) updateViewport();
     document.documentElement.classList.add('pwa-mobile-enhanced');
     if (indexLayout) document.documentElement.classList.add('pwa-layout-index');
-    if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
-      document.documentElement.classList.add('is-standalone');
-    }
+    if (isAndroid()) document.documentElement.classList.add('is-android');
+    if (isStandalone()) document.documentElement.classList.add('is-standalone');
+    applyAndroidSafeBottom();
     window.happyLuckyToast = toast;
     setupAlertToasts();
     setupTabs();
@@ -241,6 +306,14 @@
       window.dispatchEvent(new CustomEvent('happy-lucky-online'));
     });
     if (!navigator.onLine) showConnectionStatus(false);
+
+    // 轉螢幕或切換導覽模式後重新量一次
+    let reprobe = 0;
+    window.addEventListener('resize', () => {
+      clearTimeout(reprobe);
+      reprobe = window.setTimeout(applyAndroidSafeBottom, 180);
+    });
+    showViewportDebug();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
