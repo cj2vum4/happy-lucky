@@ -1920,15 +1920,8 @@ async function loadAllRatings() {
   const get = q => fetch(`${SB_URL}/rest/v1/trip_reviews?${q}&order=created_at.desc`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } })
       .then(r => r.json()).then(collect).catch(() => {});
-  // 舊版：景點名稱評分（只用來顯示已有評論的舊景點，不再開放新景點評分）
-  const fetches = TRIPS.filter(t => t.itemPrefix).map(t => get(`trip_id=like.${t.itemPrefix}*`));
-  const noPrefixNames = TRIPS.filter(t => !t.itemPrefix).flatMap(t => (t.spots || []).map(s => s.name));
-  if (noPrefixNames.length) {
-    fetches.push(get(`trip_id=in.(${noPrefixNames.map(n => encodeURIComponent(n)).join(',')})`));
-  }
-  // 記帳時勾選加入查詢的支出：food__{name}
-  fetches.push(get('trip_id=like.food__*'));
-  await Promise.all(fetches);
+  // 查詢頁只有記帳寫入（勾選加入查詢）的項目：food__{name}
+  await get('trip_id=like.food__*');
   ratingsMap = next;
   renderSearch();
 }
@@ -1961,10 +1954,7 @@ async function loadUserFoodSpots() {
 const fmtNum = n => Number(n).toLocaleString('zh-TW');
 
 function getAllUsedRegions() {
-  return new Set([
-    ...TRIPS.flatMap(t => (t.spots || []).map(s => s.region)),
-    ...userFoodSpots.map(s => s.region),
-  ].filter(Boolean));
+  return new Set(userFoodSpots.map(s => s.region).filter(Boolean));
 }
 
 function buildRegionSelector() { renderRegionSelector(); }
@@ -2013,18 +2003,8 @@ function setRegionSub(region, cityKey) {
 }
 
 function renderSearch() {
-  const TODAY = new Date().toISOString().slice(0, 10);
-  const allSpots = [];
-  TRIPS.forEach(trip => {
-    if (trip.startDate && trip.startDate > TODAY) return;
-    (trip.spots || []).forEach(spot => {
-      // 景點本身不再是評分對象；只保留以前已經有評論的舊景點，免得回憶消失
-      const key = (trip.itemPrefix || '') + spot.name;
-      if (!ratingsMap[key]) return;
-      allSpots.push({ ...spot, key, legacy: true, tripFile: trip.file, sortDate: trip.startDate || '' });
-    });
-  });
-  allSpots.push(...userFoodSpots);
+  // 查詢只列記帳寫入的項目；行程的景點、住宿、美食一律不列入
+  const allSpots = [...userFoodSpots];
 
   let filtered = allSpots;
   if (activeCategory !== 'all') filtered = filtered.filter(s => s.category === activeCategory);

@@ -39,7 +39,8 @@
 - 旅程頁「景點」分頁上方的「💸 旅途開支評分」由 `assets/trip-page.js` 讀 `ledger_entries`（日期落在 trip 的 startDate–endDate）產生
 - 首頁「查詢」**只收記帳時主動勾「加入查詢評分」（note 以 `#spot` 結尾）的支出**，旅行期間的記帳不會自動加入
 - 查詢彈窗：記帳日期落在某趟旅行內 → 同時有「行程頁」「記帳頁 ?date=」可選；否則只有記帳頁。評論存在 `trip_reviews`，**不會改動記帳資料**
-- 評論 key：旅程頁的一般支出 `exp__{ledger id}`；勾選加入查詢的支出 `food__{name}`（同名合併）；舊景點評分 `{itemPrefix}{spot name}` 只在已有評論時於查詢頁顯示
+- 評論 key：旅程頁的一般支出 `exp__{ledger id}`；勾選加入查詢的支出 `food__{name}`（同名合併）
+- **行程的任何內容（景點、住宿、美食、trips.json spots）都不會出現在查詢頁**，舊的景點評分 `{itemPrefix}{spot name}` 也不再顯示
 - 角色 H / L：存在 comment 開頭 `[H] ` / `[L] `，送出前必選（預設帶入該裝置上次選的角色）
 - 長按評論刪除：先嘗試 DELETE，權限不足時寫入刪除標記 `comment = '#del:{被刪那筆 id}'`；讀取一律經 `HLReviews.fold()` 過濾
 - 共用邏輯在 `assets/reviews.js`（`window.HLReviews`），index 與旅程頁都用它，不要各自重寫
@@ -80,7 +81,7 @@ git remote set-url origin "http://local_proxy@127.0.0.1:43657/git/cj2vum4/happy-
 
 ## 資料來源
 - `trips.json`：**景點（spots）與照片（photos）的唯一資料來源**，旅程頁的景點卡片與照片牆都由它產生，不要再把景點寫死在 HTML 裡
-- `itemPrefix` + spot name = 舊版景點評分 key（僅保留顯示既有評論；改 spot 名稱會讓舊評論變孤兒）
+- `itemPrefix` + spot name = 舊版景點評分 key（已停用，查詢頁不再顯示；資料仍留在 trip_reviews）
 - 新增旅程：trips.json 加一筆（含 id/itemPrefix/spots/photos）＋建立行程頁 HTML（referencing 南投頁的結構），頁尾 `window.TRIP_ID` 填 trips.json 的 id
 - 例外：`20260520/260520天使仙境.html` 是舊格式紀念頁，不吃共用模組，維持原樣
 
