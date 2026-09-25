@@ -132,7 +132,7 @@
       "endDate": "2026-09-25",
       "destination": "台南",
       "people": 2,
-      "status": "planning",
+      "status": "done",
       "tags": ["安平", "牛肉湯", "夕陽", "機車趴趴走"],
       "file": "20260924_25/260924台南.html",
       "itemPrefix": "tainan2026__",
@@ -148,12 +148,8 @@
         { "name": "樹屋咖啡館", "category": "食物", "region": "安平區", "emoji": "🌳", "desc": "安平樹屋園區內・10:00–17:00", "mapUrl": "https://maps.google.com/?q=樹屋咖啡館+安平" },
         { "name": "阿財牛肉湯", "category": "食物", "region": "安平區", "emoji": "🥣", "desc": "12:00 開門・古堡街", "mapUrl": "https://maps.google.com/?q=阿財牛肉湯+安平" },
         { "name": "安平老街", "category": "室外景點", "region": "安平區", "emoji": "🏮", "desc": "延平街・蝦餅・劍獅", "mapUrl": "https://maps.google.com/?q=安平老街" },
-        { "name": "劉記韭菜盒子", "category": "食物", "region": "安平區", "emoji": "🥟", "desc": "14:30–18:30", "mapUrl": "https://maps.google.com/?q=劉記韭菜盒子+安平" },
-        { "name": "永樂市場", "category": "食物", "region": "中西區", "emoji": "🛒", "desc": "國華街・小吃多半白天營業", "mapUrl": "https://maps.google.com/?q=永樂市場+台南" },
-        { "name": "神農街", "category": "室外景點", "region": "中西區", "emoji": "🏚️", "desc": "老屋巷弄・文青小店", "mapUrl": "https://maps.google.com/?q=神農街+台南" },
-        { "name": "揣茶", "category": "食物", "region": "北區", "emoji": "🧋", "desc": "週五 10:00–17:00・週四休", "mapUrl": "https://maps.google.com/?q=揣茶+台南" },
-        { "name": "丹丹漢堡 成功店", "category": "食物", "region": "北區", "emoji": "🍔", "desc": "台南限定速食・麵線羹＋炸雞", "mapUrl": "https://maps.google.com/?q=丹丹漢堡+成功店+台南" },
-        { "name": "武聖夜市", "category": "食物", "region": "中西區", "emoji": "🌙", "desc": "週三、五、六營業", "mapUrl": "https://maps.google.com/?q=武聖夜市+台南" }
+        { "name": "綠海足體養生館", "category": "室內景點", "region": "中西區", "emoji": "💆", "desc": "9/25 90 分鐘全身油壓・$1,300/人", "mapUrl": "https://maps.google.com/?q=綠海足體養生館+台南" },
+        { "name": "神農街", "category": "室外景點", "region": "中西區", "emoji": "🏚️", "desc": "9/25 晚上散步", "mapUrl": "https://maps.google.com/?q=神農街+台南" }
       ]
     },
     {
