@@ -1248,9 +1248,15 @@ function pickDistrict(dist) {
 function restoreRegionPicker(regionStr) {
   selCity = null; selDistrict = null;
   if (regionStr) {
-    for (const c of CITY_DISTRICTS) {
-      if (c.city === regionStr) { selCity = c.city; break; }
-      if (c.dists.includes(regionStr)) { selCity = c.city; selDistrict = regionStr; break; }
+    const sp = regionStr.indexOf(' ');
+    if (sp > 0) {
+      selCity = regionStr.slice(0, sp); selDistrict = regionStr.slice(sp + 1);
+    } else if (CITY_DISTRICTS.some(c => c.city === regionStr)) {
+      selCity = regionStr;
+    } else {
+      // 舊資料只有區名：只有一個縣市有這個區才自動帶入，同名區（如北區）留給使用者重選
+      const cands = CITY_DISTRICTS.filter(c => c.dists.includes(regionStr));
+      if (cands.length === 1) { selCity = cands[0].city; selDistrict = regionStr; }
     }
   }
   buildRegionPicker();
@@ -1321,7 +1327,8 @@ document.getElementById('save-btn').addEventListener('click', async () => {
   btn.textContent = '…'; btn.disabled = true;
   const noteRaw  = document.getElementById('note-inp').value.trim();
   const isSpot   = document.getElementById('spot-toggle').checked;
-  const locRaw   = selDistrict || selCity || '';
+  // 地區存成「縣市 區」（例：台南市 北區），避免不同縣市同名的區混在一起
+  const locRaw   = selDistrict ? `${selCity} ${selDistrict}` : (selCity || '');
   const noteVal  = (isSpot && noteRaw)
     ? (locRaw ? `${noteRaw}|${locRaw}` : noteRaw) + '#spot'
     : noteRaw;

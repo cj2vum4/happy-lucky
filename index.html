@@ -1941,7 +1941,7 @@ async function loadUserFoodSpots() {
       const d = new Date(e.date + 'T00:00:00');
       userFoodSpots.push({
         name: it.name, key: it.key, category: it.category, emoji: it.emoji, noMap: !it.hasName,
-        region: it.noteRegion || (trip ? trip.destination : '未分類'),
+        ...resolveRegion(it.noteRegion, trip),
         desc: `${trip ? trip.title + '・' : ''}${d.getMonth() + 1}/${d.getDate()}・${e.category} $${fmtNum(e.amount)}`,
         tripFile: trip ? trip.file : null, ledgerDate: e.date,
         mapUrl: null, sortDate: e.date,
@@ -1953,8 +1953,32 @@ async function loadUserFoodSpots() {
 }
 const fmtNum = n => Number(n).toLocaleString('zh-TW');
 
-function getAllUsedRegions() {
-  return new Set(userFoodSpots.map(s => s.region).filter(Boolean));
+// 記帳的地區：新格式「台南市 北區」（縣市＋區）；舊資料只有「北區」或「台南市」
+// 舊資料的區名若在多個縣市都有，就用記帳日期所在的旅程來判斷；判斷不出來就不歸到任何縣市
+function resolveRegion(noteRegion, trip) {
+  const tripCity = trip ? REGION_HIERARCHY.find(c => c.regions.includes(trip.destination)) : null;
+  if (noteRegion) {
+    const sp = noteRegion.indexOf(' ');
+    if (sp > 0) return { city: noteRegion.slice(0, sp), region: noteRegion.slice(sp + 1) };
+    if (REGION_HIERARCHY.some(c => c.key === noteRegion)) return { city: noteRegion, region: noteRegion };
+    const cands = REGION_HIERARCHY.filter(c => c.regions.includes(noteRegion));
+    if (cands.length === 1) return { city: cands[0].key, region: noteRegion };
+    if (tripCity && cands.includes(tripCity)) return { city: tripCity.key, region: noteRegion };
+    return { city: null, region: noteRegion };
+  }
+  if (trip) return { city: tripCity ? tripCity.key : null, region: trip.destination };
+  return { city: null, region: '未分類' };
+}
+
+// 縣市 → 該縣市底下實際有記帳的區
+function cityGroups() {
+  const m = {};
+  userFoodSpots.forEach(s => {
+    if (!s.city) return;
+    if (!m[s.city]) m[s.city] = new Set();
+    if (s.region !== s.city) m[s.city].add(s.region);
+  });
+  return m;
 }
 
 function buildRegionSelector() { renderRegionSelector(); }
@@ -1962,25 +1986,28 @@ function buildRegionSelector() { renderRegionSelector(); }
 function renderRegionSelector() {
   const container = document.getElementById('region-selector');
   if (!container) return;
-  const allRegions = getAllUsedRegions();
+  const groups = cityGroups();
+  const cities = [
+    ...REGION_HIERARCHY.filter(c => groups[c.key]),
+    ...Object.keys(groups).filter(k => !REGION_HIERARCHY.some(c => c.key === k)).map(k => ({ key: k, label: k, emoji: '📍' })),
+  ];
   let html = '<div class="region-parent-row">';
   html += `<button class="region-parent-btn ${activeRegion === 'all' ? 'city-active' : ''}" onclick="setRegionAll()">🗾 全部</button>`;
-  REGION_HIERARCHY.forEach(city => {
-    if (!city.regions.some(r => allRegions.has(r))) return;
+  cities.forEach(city => {
     const isOpen = openCityKey === city.key;
-    const isCityActive = activeRegion === 'city:' + city.key || city.regions.includes(activeRegion);
+    const isCityActive = activeRegion === 'city:' + city.key || (isOpen && activeRegion !== 'all');
     const cls = ['region-parent-btn', isCityActive ? 'city-active' : '', isOpen ? 'city-open' : ''].filter(Boolean).join(' ');
     html += `<button class="${cls}" onclick="toggleCity('${city.key}')">${city.emoji} ${city.label} <span class="region-expand-arrow">›</span></button>`;
   });
   html += '</div>';
-  REGION_HIERARCHY.forEach(city => {
-    const subs = city.regions.filter(r => allRegions.has(r));
+  cities.forEach(city => {
+    const subs = [...groups[city.key]];
     if (!subs.length) return;
     const isOpen = openCityKey === city.key;
     html += `<div class="region-sub-panel ${isOpen ? 'open' : ''}">`;
     subs.forEach(r => {
       const safe = r.replace(/'/g, '&#39;');
-      html += `<button class="region-sub-btn ${activeRegion === r ? 'active' : ''}" onclick="setRegionSub('${safe}','${city.key}')">${r}</button>`;
+      html += `<button class="region-sub-btn ${isOpen && activeRegion === r ? 'active' : ''}" onclick="setRegionSub('${safe}','${city.key}')">${r}</button>`;
     });
     html += '</div>';
   });
@@ -2011,10 +2038,9 @@ function renderSearch() {
   if (activeRegion !== 'all') {
     if (activeRegion.startsWith('city:')) {
       const cityKey = activeRegion.slice(5);
-      const city = REGION_HIERARCHY.find(c => c.key === cityKey);
-      if (city) filtered = filtered.filter(s => city.regions.includes(s.region));
+      filtered = filtered.filter(s => s.city === cityKey);
     } else {
-      filtered = filtered.filter(s => s.region === activeRegion);
+      filtered = filtered.filter(s => s.region === activeRegion && s.city === openCityKey);
     }
   }
   if (searchText) {
@@ -2046,7 +2072,7 @@ function renderSearch() {
   if (activeRegion !== 'all') {
     if (activeRegion.startsWith('city:')) {
       const city = REGION_HIERARCHY.find(c => c.key === activeRegion.slice(5));
-      if (city) parts.push(city.label);
+      parts.push(city ? city.label : activeRegion.slice(5));
     } else {
       parts.push(activeRegion);
     }
