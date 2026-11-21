@@ -47,7 +47,7 @@
 - 共用邏輯在 `assets/reviews.js`（`window.HLReviews`），index 與旅程頁都用它，不要各自重寫
 
 ### 首頁分頁
-- 一般模式：首頁／行事曆／查詢／想去；首頁不再顯示回憶相簿
+- 一般模式：首頁／行事曆／查詢／想去／風雲榜；首頁不再顯示回憶相簿
 - 點「N 趟旅行」統計卡 → 切換成「返回／行程／相簿」：行程＝已去行程（status done）條列＋進入按鈕；相簿＝原回憶相簿
 
 ### PWA
@@ -91,3 +91,15 @@ git remote set-url origin "http://local_proxy@127.0.0.1:43657/git/cj2vum4/happy-
 - insert-only 事件流：`{t:'add', name, city, cat, ig, note}` / `{t:'done', v:true|false}` / `{t:'del'}`，讀取時依 `created_at` 升冪折疊出最新狀態，不需要 UPDATE/DELETE 權限
 - `wish__` 開頭的資料不會進任何評分統計（評分查詢都用明確前綴或精準名稱比對）
 - `cat` 只有兩種：`食物`（預設）／`景點`；`city` 自由填寫，清單有 2 個以上城市時自動長出城市篩選 chips
+
+## 風雲榜（index.html「風雲榜」分頁）
+- 程式在 `assets/rank.js`、樣式在 `assets/rank.css`（class 一律 `rk-` 開頭），index.html 只放 `#page-ranking > #rkRoot` 與 tab 按鈕
+- 資料存在 `trip_reviews`：`trip_id = 'rank__{itemId}'`、`comment` = JSON 事件，insert-only，依 `created_at` 升冪折疊（同想去清單，沒有另開資料表）
+- 事件：`{t:'add', major, cat, name, city, dist, note, map, rank}` / `{t:'edit', ...同欄位}` / `{t:'rank', v:1|2|3}` / `{t:'hall'}` / `{t:'del'}`
+- 每個品類（`major｜cat`）只有前三名：狀元／榜眼／探花；插入名次時以下順推，擠出第 3 名的自動進名人堂（記錄卸榜名次、日期、被誰擠下、最高名次）
+- 種子資料寫在 `rank.js` 的 `SEEDS`（視為最早的事件，從不寫入資料庫），要改種子請改程式，不要去資料庫補
+- `rank__` 開頭的資料不會進任何評分或查詢統計；新增任何 `trip_reviews` 查詢時，務必用明確前綴（`food__` 等）或精準 key，不要用會掃到 `rank__` / `wish__` 的條件
+- 刻意不收：照片、價格、日期、H/L 欄位
+
+## Service worker 注意
+- `sw.js` 只在 HTML 沒有 `<script ... mobile-enhancements.js>` 標籤時才注入底部 tab／更新提示；註解裡提到檔名不影響（2026-11 修正前，index.html 的一段註解會讓注入被跳過）

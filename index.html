@@ -1176,6 +1176,12 @@
 
   /* ============ 行程 / 相簿 模式 ============ */
   html body .tabs.tabs-off { display: none !important; }
+  /* 一般模式 5 個分頁（不依賴 mobile-enhancements.css 的快取版本） */
+  html.pwa-layout-index body .tabs:not(#tabs-trips) { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; padding-left: 4px !important; padding-right: 4px !important; }
+  @media (max-width: 420px) {
+    .tabs { gap: 2px; padding-left: 8px; padding-right: 8px; }
+    .tab-btn { padding: 8px 11px; }
+  }
   html body #tabs-trips { grid-template-columns: 64px 1fr 1fr !important; }
   .tab-back { color: var(--coffee-mid); }
   .stat-card.clickable { cursor: pointer; position: relative; touch-action: manipulation; transition: transform 0.15s; }
@@ -1206,7 +1212,10 @@
   .spot-cat-badge.交通 { background: #F3E5F5; color: #8E24AA; border-color: rgba(142,36,170,0.3); }
   .spot-cat-badge.其他 { background: #ECEFF1; color: #607D8B; border-color: rgba(96,125,139,0.3); }
 </style>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/rank.css">
 <script src="assets/reviews.js"></script>
+<script src="assets/rank.js" defer></script>
 </head>
 <body>
 
@@ -1222,6 +1231,7 @@
     <button class="tab-btn" data-tab="calendar">行事曆</button>
     <button class="tab-btn" data-tab="search">查詢</button>
     <button class="tab-btn" data-tab="wishlist">想去</button>
+    <button class="tab-btn" data-tab="ranking">風雲榜</button>
   </div>
   <div class="tabs tabs-off" id="tabs-trips">
     <button class="tab-btn tab-back" id="trips-back" type="button"><span class="tab-icon" aria-hidden="true">‹</span><span>返回</span></button>
@@ -1371,6 +1381,11 @@
     <div id="wish-list"></div>
   </div>
 
+  <!-- 風雲榜（內容由 assets/rank.js 產生，樣式在 assets/rank.css，class 一律 rk- 開頭） -->
+  <div id="page-ranking" class="page">
+    <div class="rk-root" id="rkRoot"></div>
+  </div>
+
   <div class="footer-note">made with care</div>
 </div>
 
@@ -1474,7 +1489,7 @@ function showLoadError(msg) {
     </div>`;
 }
 
-// 分頁切換（兩組分頁：首頁/行事曆/查詢/想去 ↔ 行程/相簿）
+// 分頁切換（兩組分頁：首頁/行事曆/查詢/想去/風雲榜 ↔ 行程/相簿）
 const TRIP_MODE_TABS = ['trips', 'album'];
 function setTabMode(trips) {
   document.querySelector('.tabs:not(#tabs-trips)').classList.toggle('tabs-off', trips);

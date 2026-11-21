@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = '2026-09-25.11';
+const VERSION = '2026-11-21.1';
 const CORE_CACHE = `happy-lucky-core-${VERSION}`;
 const RUNTIME_CACHE = `happy-lucky-runtime-${VERSION}`;
 const IMAGE_CACHE = `happy-lucky-images-${VERSION}`;
@@ -19,6 +19,8 @@ const CORE_ASSETS = [
   './assets/mobile-enhancements.css',
   './assets/mobile-enhancements.js',
   './assets/reviews.js',
+  './assets/rank.js',
+  './assets/rank.css',
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/icon-512-maskable.png',
@@ -57,7 +59,8 @@ async function enhanceHtml(response, requestUrl) {
   if (path.endsWith('/app.html') || path.endsWith('/offline.html')) return response;
 
   let html = await response.text();
-  if (html.includes('mobile-enhancements.js')) {
+  // 只看真的 <script> 標籤（index.html 的註解也會提到這個檔名，不能只比對字串）
+  if (/<script[^>]+mobile-enhancements\.js/.test(html)) {
     return new Response(html, { status: response.status, statusText: response.statusText, headers: response.headers });
   }
 
